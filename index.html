@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RUNNERSHUB - Premium ERP Suite</title>
+    <title>RUNNERSHUB ERP - Cloud Sync</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -19,104 +20,44 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
-
-    <style>
-        /* === SYSTEM TOKENS & PREMIUM AESTHETIC === */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        
-        :root {
-            --bg-body: #f1f5f9; --bg-card: rgba(255, 255, 255, 0.85);
-            --sidebar-bg: linear-gradient(195deg, #0f172a 0%, #1e293b 100%);
-            --sidebar-hover: rgba(255,255,255,0.08); --sidebar-active: rgba(59, 130, 246, 0.25);
-            --text-main: #1e293b; --text-muted: #64748b;
-            --border: rgba(226, 232, 240, 0.8);
-            --primary: #3b82f6; --primary-hover: #2563eb;
-            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-            --radius: 16px;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
-        
-        /* === CORE LAYOUT === */
-        .sidebar { width: 250px; background: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .sidebar-brand { padding: 25px 20px; color: white; font-size: 20px; font-weight: 900; letter-spacing: 1.5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-group { padding: 20px 20px 8px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800; letter-spacing: 1px; }
-        .nav-item { padding: 12px 20px; color: #cbd5e1; cursor: pointer; font-weight: 600; border-left: 3px solid transparent; }
-        .nav-item:hover { background: var(--sidebar-hover); color: white; }
-        .nav-item.active { background: var(--sidebar-active); color: white; border-left-color: var(--primary); }
-        
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .view { display: none; } .view.active { display: block; }
-
-        /* === COMPONENTS === */
-        .card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius); padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.6); margin-bottom: 25px; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header-bar h1 { font-size: 28px; font-weight: 800; }
-        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: white; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { padding: 14px 12px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 800; border-bottom: 2px solid var(--border); }
-        td { padding: 16px 12px; border-bottom: 1px solid var(--border); }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 600px; }
-    </style>
 </head>
 <body>
-
-    <nav class="sidebar">
-        <div>
-            <div class="sidebar-brand">RUNNERSHUB ERP</div>
-            <div class="sidebar-group">Main</div>
-            <div class="nav-item active" onclick="app.nav('dashboard')">📊 Command Center</div>
-            <div class="sidebar-group">Sales</div>
-            <div class="nav-item" onclick="app.nav('invoices')">🧾 Tax Invoices</div>
-            <div class="sidebar-group">Purchases</div>
-            <div class="nav-item" onclick="app.nav('expenses')">💸 Bill Tracker</div>
-        </div>
-    </nav>
-
-    <main class="main-content">
-        <div id="view-dashboard" class="view active">
-            <div class="header-bar"><h1>Financial Command Center</h1></div>
-            <div class="card"><table id="d-inv-table"><thead><tr><th>Inv #</th><th>Client</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
-        </div>
-        </main>
+    <h1>RUNNERSHUB ERP</h1>
+    <div id="status">Connecting to Cloud...</div>
 
     <script>
         const app = {
-            db: { invoices: [], expenses: [] },
-            
-            nav: async (view) => {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById('view-' + view).classList.add('active');
-                
-                // Fetch live from Firebase
-                const snapshot = await db.collection(view === 'dashboard' ? 'invoices' : view).get();
-                app.db[view === 'dashboard' ? 'invoices' : view] = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
-                app.render(view);
-            },
-            
-            render: (view) => {
-                if(view === 'dashboard') {
-                    let html = '';
-                    app.db.invoices.forEach(row => {
-                        html += `<tr><td>${row.number}</td><td>${row.customer}</td><td>${row.total}</td><td>${row.status}</td>
-                                 <td><button onclick="app.del('invoices', '${row.id}')">🗑️</button></td></tr>`;
-                    });
-                    document.getElementById('d-inv-table').querySelector('tbody').innerHTML = html;
+            db: { invoices: [] },
+
+            // Syncs your entire app state to the Cloud
+            save: async () => {
+                try {
+                    await db.collection('data').doc('master').set(app.db);
+                    document.getElementById('status').innerText = "Cloud Sync Success!";
+                } catch (e) {
+                    console.error("Sync Error: ", e);
+                    document.getElementById('status').innerText = "Sync Failed.";
                 }
             },
-            
-            del: async (entity, id) => {
-                await db.collection(entity).doc(id).delete();
-                app.nav(document.querySelector('.view.active').id.replace('view-', ''));
+
+            // Pulls your entire app state from the Cloud
+            init: async () => {
+                try {
+                    const doc = await db.collection('data').doc('master').get();
+                    if (doc.exists) {
+                        app.db = doc.data();
+                        document.getElementById('status').innerText = "Cloud Data Loaded.";
+                    } else {
+                        document.getElementById('status').innerText = "Cloud Database Empty.";
+                    }
+                } catch (e) {
+                    document.getElementById('status').innerText = "Init Failed.";
+                }
             }
         };
-        app.nav('dashboard');
+
+        // Run this on startup
+        app.init();
     </script>
 </body>
 </html>
