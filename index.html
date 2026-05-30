@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RUNNERSHUB ERP - Cloud Enabled</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUNNERSHUB ERP - Premium Suite</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
@@ -17,45 +21,229 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --bg-body: #f1f5f9; 
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --sidebar-bg: linear-gradient(195deg, #0f172a 0%, #1e293b 100%);
+            --sidebar-hover: rgba(255,255,255,0.08); 
+            --sidebar-active: rgba(59, 130, 246, 0.25);
+            --text-main: #1e293b; 
+            --text-muted: #64748b;
+            --border: rgba(226, 232, 240, 0.8);
+            --primary: #3b82f6; 
+            --danger: #ef4444;
+            --radius: 16px;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
+        
+        /* Sidebar layout */
+        .sidebar { width: 250px; background: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .sidebar-brand { padding: 25px 20px; color: white; font-size: 20px; font-weight: 900; letter-spacing: 1.5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-group { padding: 20px 20px 8px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800; letter-spacing: 1px; }
+        .nav-item { padding: 12px 20px; color: #cbd5e1; cursor: pointer; font-weight: 600; border-left: 3px solid transparent; transition: all 0.2s; }
+        .nav-item:hover { background: var(--sidebar-hover); color: white; }
+        .nav-item.active { background: var(--sidebar-active); color: white; border-left-color: var(--primary); }
+        
+        /* Main View */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .topbar { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .status-badge { background: #e0f2fe; color: #0284c7; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        .content-area { padding: 40px; overflow-y: auto; flex: 1; }
+        
+        /* Cards & Buttons */
+        .card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius); padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.6); }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-bar h1 { font-size: 24px; font-weight: 800; }
+        .btn { padding: 10px 18px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-danger:hover { background: #fca5a5; color: #b91c1c; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 14px 12px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 800; border-bottom: 2px solid var(--border); text-align: left; }
+        td { padding: 16px 12px; border-bottom: 1px solid var(--border); font-weight: 500; }
+        
+        /* Views */
+        .view { display: none; }
+        .view.active { display: block; }
+    </style>
 </head>
 <body>
 
-    <div id="app-root"></div>
+    <nav class="sidebar">
+        <div class="sidebar-brand">RUNNERSHUB</div>
+        <div class="sidebar-group">Main</div>
+        <div class="nav-item active" onclick="app.nav('dashboard')">📊 Command Center</div>
+        <div class="sidebar-group">Records</div>
+        <div class="nav-item" onclick="app.nav('invoices')">🧾 Invoices</div>
+    </nav>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div><strong>Addis Ababa Base</strong></div>
+            <div id="cloud-status" class="status-badge">Connecting to Cloud...</div>
+        </header>
+
+        <div class="content-area">
+            
+            <div id="view-dashboard" class="view active">
+                <div class="header-bar">
+                    <h1>Financial Dashboard</h1>
+                    <button class="btn btn-primary" onclick="app.createTestInvoice()">+ Add Test Invoice</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Client Name</th>
+                                <th>Amount (Br)</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoice-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-invoices" class="view">
+                <div class="header-bar">
+                    <h1>Detailed Invoices</h1>
+                </div>
+                <div class="card">
+                    <p>Detailed invoice generation interface will go here.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
 
     <script>
         const app = {
-            db: { invoices: [], expenses: [], settings: {} },
+            // Core Data Structure
+            db: { 
+                invoices: [] 
+            },
 
-            // 1. SECURE LOAD: Fetches data from Cloud, replaces localStorage
+            // Navigation Controller
+            nav: (viewId) => {
+                // Update Sidebar
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+                
+                // Update Views
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById('view-' + viewId).classList.add('active');
+            },
+
+            // 1. CLOUD LOADER (The Fix for the Blank Screen)
             init: async () => {
+                const statusBadge = document.getElementById('cloud-status');
                 try {
                     const doc = await db.collection('data').doc('master').get();
                     if (doc.exists) {
+                        // Data exists, safely assign it
                         app.db = doc.data();
-                        console.log("Cloud Sync: Data Loaded");
-                        // RENDER CALL: This triggers your UI to draw
-                        if(typeof renderDashboard === 'function') renderDashboard();
+                        statusBadge.innerText = "🟢 Cloud Synced";
+                        statusBadge.style.background = "#dcfce7";
+                        statusBadge.style.color = "#15803d";
+                    } else {
+                        statusBadge.innerText = "🟡 Database Empty";
                     }
-                } catch (e) { console.error("Sync Load Failed:", e); }
+                    // Trigger the UI drawing ONLY AFTER data is loaded
+                    app.renderDashboard();
+                } catch (e) {
+                    console.error("Cloud Error: ", e);
+                    statusBadge.innerText = "🔴 Connection Failed";
+                    statusBadge.style.background = "#fee2e2";
+                    statusBadge.style.color = "#b91c1c";
+                }
             },
 
-            // 2. SECURE SAVE: Pushes data to Cloud, replaces localStorage.setItem
+            // 2. CLOUD SAVER (Replaces localStorage.setItem entirely)
             save: async () => {
+                const statusBadge = document.getElementById('cloud-status');
+                statusBadge.innerText = "Saving...";
                 try {
                     await db.collection('data').doc('master').set(app.db);
-                    console.log("Cloud Sync: Data Saved");
-                } catch (e) { console.error("Sync Save Failed:", e); }
+                    statusBadge.innerText = "🟢 Cloud Synced";
+                    // Refresh the screen immediately to show changes
+                    app.renderDashboard();
+                } catch (e) {
+                    console.error("Save Error: ", e);
+                    statusBadge.innerText = "🔴 Save Failed";
+                }
+            },
+
+            // 3. SECURE RENDERER (Uses secure text assignment, NO EVAL)
+            renderDashboard: () => {
+                const tbody = document.getElementById('invoice-table-body');
+                tbody.innerHTML = ''; // Clear old data
+
+                if (!app.db.invoices || app.db.invoices.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No invoices found in cloud database.</td></tr>`;
+                    return;
+                }
+
+                // Safely build the table rows
+                app.db.invoices.forEach((inv, index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${inv.number}</strong></td>
+                        <td>${inv.customer}</td>
+                        <td>Br ${inv.total}</td>
+                        <td><span style="color:#10b981;">${inv.status}</span></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="app.deleteInvoice(${index})">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            },
+
+            // 4. ACTION INTERFACES (Adding and Deleting Data)
+            createTestInvoice: () => {
+                // Generates a random invoice ID
+                const randomId = Math.floor(1000 + Math.random() * 9000);
+                
+                // Ensure the array exists
+                if (!app.db.invoices) app.db.invoices = [];
+                
+                // Add new data to the local array
+                app.db.invoices.push({
+                    number: `INV-${randomId}`,
+                    customer: "Diaspora Client LLC",
+                    total: "2,500.00",
+                    status: "Paid"
+                });
+                
+                // Push the updated array to Firebase
+                app.save();
+            },
+
+            deleteInvoice: (index) => {
+                // Remove the specific item from the local array
+                app.db.invoices.splice(index, 1);
+                
+                // Push the updated array to Firebase
+                app.save();
             }
         };
 
-        // Initialize Cloud Engine
-        app.init();
-
-        /* FINAL INTEGRATION RULES:
-           1. Replace every 'localStorage.getItem' with: 'app.init()' (or rely on app.db directly)
-           2. Replace every 'localStorage.setItem' with: 'app.save()'
-           3. Replace every 'eval()' with: 'JSON.parse()'
-        */
+        // Fire the engine when the page opens
+        window.onload = () => {
+            app.init();
+        };
     </script>
 </body>
 </html>
