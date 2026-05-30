@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>RUNNERSHUB ERP - Cloud Enabled</title>
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
@@ -23,36 +20,42 @@
 </head>
 <body>
 
-    <div id="app-ui">
-        </div>
+    <div id="app-root"></div>
 
     <script>
         const app = {
-            db: { invoices: [], expenses: [] }, // Your data object
+            db: { invoices: [], expenses: [], settings: {} },
 
-            // Save to Cloud
-            save: async () => {
-                try {
-                    await db.collection('data').doc('master').set(app.db);
-                } catch (e) { console.error("Sync Error", e); }
-            },
-
-            // Load from Cloud and render
+            // 1. SECURE LOAD: Fetches data from Cloud, replaces localStorage
             init: async () => {
                 try {
                     const doc = await db.collection('data').doc('master').get();
                     if (doc.exists) {
                         app.db = doc.data();
-                        console.log("Cloud Sync: Loaded");
-                        // 2. CALL YOUR ORIGINAL RENDER FUNCTION HERE
-                        // e.g., renderDashboard(); 
+                        console.log("Cloud Sync: Data Loaded");
+                        // RENDER CALL: This triggers your UI to draw
+                        if(typeof renderDashboard === 'function') renderDashboard();
                     }
-                } catch (e) { console.error("Load Error", e); }
+                } catch (e) { console.error("Sync Load Failed:", e); }
+            },
+
+            // 2. SECURE SAVE: Pushes data to Cloud, replaces localStorage.setItem
+            save: async () => {
+                try {
+                    await db.collection('data').doc('master').set(app.db);
+                    console.log("Cloud Sync: Data Saved");
+                } catch (e) { console.error("Sync Save Failed:", e); }
             }
         };
 
-        // Initialize on load
+        // Initialize Cloud Engine
         app.init();
+
+        /* FINAL INTEGRATION RULES:
+           1. Replace every 'localStorage.getItem' with: 'app.init()' (or rely on app.db directly)
+           2. Replace every 'localStorage.setItem' with: 'app.save()'
+           3. Replace every 'eval()' with: 'JSON.parse()'
+        */
     </script>
 </body>
 </html>
