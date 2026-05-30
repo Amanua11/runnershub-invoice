@@ -26,9 +26,11 @@
             display: flex;
             justify-content: space-between;
             padding: 20px 25px;
+            margin-bottom: 5px; /* tightened gap for the new button */
         }
         .summary-stat {
             text-align: center;
+            width: 50%;
         }
         .summary-stat h4 {
             margin: 0 0 5px 0;
@@ -87,6 +89,14 @@
         .btn-danger:hover {
             background-color: #c9302c;
         }
+        .btn-success {
+            background-color: #28a745;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
         .invoice-box {
             border: 1px solid #dee2e6;
             padding: 25px;
@@ -116,7 +126,6 @@
 </head>
 <body>
 
-    <!-- Session Summary Dashboard -->
     <div class="card summary-card">
         <div class="summary-stat">
             <h4>Invoices Generated</h4>
@@ -127,8 +136,9 @@
             <p id="totalRevenue">Br 0.00</p>
         </div>
     </div>
+    
+    <button class="btn-success" onclick="exportDailyReport()">📥 Export End-of-Day Report</button>
 
-    <!-- Input Form -->
     <div class="card">
         <div class="brand-header">
             <h2 style="margin:0;">RUNNERSHUB</h2>
@@ -193,7 +203,6 @@
         <button onclick="generateRunnersHubInvoice()">Generate RUNNERSHUB Invoice</button>
     </div>
 
-    <!-- Invoice Render -->
     <div class="card invoice-box" id="invoiceDisplay" style="display:none;">
         <h3 style="text-align:center; margin-top:0; letter-spacing: 1px;">RUNNERSHUB OFFICIAL INVOICE</h3>
         <p><strong>Billed To:</strong> <span id="resClient"></span></p>
@@ -216,7 +225,6 @@
         <div class="line"></div>
         <p style="text-align:center; font-style: italic; font-size: 14px; color: #6c757d;">Thank you for trusting RUNNERSHUB with your concierge needs!</p>
 
-        <!-- Void Button -->
         <button class="btn-danger" onclick="voidCurrentInvoice()">Delete / Void This Invoice</button>
     </div>
 
@@ -226,6 +234,9 @@
         let totalRevenueGenerated = 0;
         let currentInvoiceActive = false;
         let currentInvoiceTotal = 0;
+        
+        // NEW: Ledger to track invoice details for the export
+        let sessionInvoiceLedger = []; 
 
         function generateRunnersHubInvoice() {
             let client = document.getElementById('clientName').value || "Valued Client";
@@ -299,13 +310,17 @@
             document.getElementById('resTotal').innerText = "Br " + grandTotal.toFixed(2);
 
             // Update Session Dashboard Summary
-            // If there is already an active invoice on screen, we don't double count it.
-            // We just add the new one.
             totalInvoicesGenerated++;
             totalRevenueGenerated += grandTotal;
             
             document.getElementById('totalInvoices').innerText = totalInvoicesGenerated;
             document.getElementById('totalRevenue').innerText = "Br " + totalRevenueGenerated.toFixed(2);
+
+            // NEW: Add this invoice to our ledger memory
+            sessionInvoiceLedger.push({
+                clientName: client,
+                totalAmount: grandTotal
+            });
 
             // Store current invoice state for potential voiding
             currentInvoiceTotal = grandTotal;
@@ -326,13 +341,15 @@
                 totalInvoicesGenerated--;
                 totalRevenueGenerated -= currentInvoiceTotal;
 
-                // Safety net to prevent negative stats
                 if (totalInvoicesGenerated < 0) totalInvoicesGenerated = 0;
                 if (totalRevenueGenerated < 0) totalRevenueGenerated = 0;
 
                 // Update Dashboard UI
                 document.getElementById('totalInvoices').innerText = totalInvoicesGenerated;
                 document.getElementById('totalRevenue').innerText = "Br " + totalRevenueGenerated.toFixed(2);
+
+                // NEW: Remove the last entry from our ledger memory
+                sessionInvoiceLedger.pop();
 
                 // Hide the invoice display and reset state
                 document.getElementById('invoiceDisplay').style.display = 'none';
@@ -344,6 +361,50 @@
                 // Wrong Password (and user didn't hit 'Cancel')
                 alert("Error: Incorrect Master Password. Invoice deletion denied.");
             }
+        }
+
+        // NEW: Function to generate and download the text report
+        function exportDailyReport() {
+            if (sessionInvoiceLedger.length === 0) {
+                alert("No invoices have been generated yet today.");
+                return;
+            }
+
+            // Build the text file content
+            let reportText = "========================================\n";
+            reportText += "  RUNNERSHUB - DAILY CONCIERGE REPORT\n";
+            reportText += "========================================\n\n";
+            
+            let today = new Date();
+            reportText += "Date: " + today.toLocaleDateString() + "\n";
+            reportText += "Time of Export: " + today.toLocaleTimeString() + "\n";
+            reportText += "----------------------------------------\n";
+            reportText += "Total Valid Invoices: " + totalInvoicesGenerated + "\n";
+            reportText += "Total Revenue Collected: Br " + totalRevenueGenerated.toFixed(2) + "\n\n";
+            
+            reportText += "--- INDIVIDUAL INVOICE LOG ---\n";
+            
+            // Loop through our memory ledger and print each client
+            sessionInvoiceLedger.forEach((invoice, index) => {
+                reportText += (index + 1) + ". Client: " + invoice.clientName + "  |  Total: Br " + invoice.totalAmount.toFixed(2) + "\n";
+            });
+            
+            reportText += "\n========================================\n";
+            reportText += "End of Report\n";
+
+            // Create a virtual file to download
+            let blob = new Blob([reportText], { type: "text/plain" });
+            let link = document.createElement("a");
+            
+            // Generate a filename with today's date
+            let dateString = today.toISOString().split('T')[0];
+            link.download = "RunnersHUB_Report_" + dateString + ".txt";
+            link.href = window.URL.createObjectURL(blob);
+            
+            // Click the link automatically
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
