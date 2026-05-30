@@ -3,30 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUNNERSHUB - Concierge Billing</title>
+    <title>RUNNERSHUB - Corporate Billing</title>
     <style>
+        /* Modern Corporate Color Palette & Typography */
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-blue: #2563eb;
+            --accent-hover: #1d4ed8;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            max-width: 650px;
-            margin: 20px auto;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
             padding: 20px;
-            background-color: #f4f4f6;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-main);
         }
+
         .card {
-            background: white;
-            padding: 25px;
+            background: var(--card-bg);
+            padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
         }
+
+        /* Top Dashboard Styling */
         .summary-card {
-            background: #2c3e50;
+            background: var(--text-main);
             color: white;
             display: flex;
             justify-content: space-between;
-            padding: 20px 25px;
-            margin-bottom: 5px; /* tightened gap for the new button */
+            align-items: center;
+            padding: 20px 30px;
         }
         .summary-stat {
             text-align: center;
@@ -34,209 +51,307 @@
         }
         .summary-stat h4 {
             margin: 0 0 5px 0;
-            font-size: 14px;
-            color: #b1c4d6;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
         }
         .summary-stat p {
             margin: 0;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 700;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        /* Corporate Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
         }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+        }
+        .tab-btn:hover:not(.active) {
+            color: var(--text-main);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 18px; }
         .form-group.custom-box {
-            background: #fff8e1;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #ffe082;
+            background: #f1f5f9;
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             box-sizing: border-box;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+            background-color: #fff;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Agent Payout Display */
+        .agent-payout-box {
+            background: #eff6ff;
+            border: 1px dashed var(--accent-blue);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .agent-payout-box h3 {
+            margin: 0;
+            color: var(--accent-blue);
+            font-size: 24px;
+        }
+        .agent-payout-box p {
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
             font-size: 14px;
         }
-        .discount-row {
-            color: #d9534f;
-        }
+
+        /* Buttons */
         button {
             width: 100%;
-            padding: 12px;
-            background-color: #2c3e50; 
-            color: white;
+            padding: 14px;
             border: none;
             border-radius: 6px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            transition: background-color 0.2s;
         }
-        button:hover {
-            background-color: #1a252f;
-        }
-        .btn-danger {
-            background-color: #d9534f;
-            margin-top: 20px;
-        }
-        .btn-danger:hover {
-            background-color: #c9302c;
-        }
-        .btn-success {
-            background-color: #28a745;
-            margin-bottom: 20px;
-            margin-top: 0;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
+        .btn-primary { background-color: var(--accent-blue); color: white; margin-top: 15px;}
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-danger { background-color: var(--danger); color: white; margin-top: 25px; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-success { background-color: var(--success); color: white; margin-bottom: 25px; }
+        .btn-success:hover { background-color: #059669; }
+
+        /* Invoice Render Styling */
         .invoice-box {
-            border: 1px solid #dee2e6;
-            padding: 25px;
+            border: 1px solid var(--border-color);
+            padding: 40px;
             background: #fff;
-            border-radius: 8px;
-        }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-        }
-        .line {
-            border-top: 1px solid #dee2e6;
-            margin: 12px 0;
-        }
-        .total {
-            font-size: 1.3em;
-            font-weight: bold;
-            border-top: 2px solid #212529;
-            padding-top: 10px;
+            border-radius: 0; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         .brand-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--text-main);
         }
+        .brand-header h2 { margin: 0; font-size: 28px; letter-spacing: 2px; }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+        .row.header-row { font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;}
+        .line { border-top: 1px solid var(--border-color); margin: 15px 0; }
+        .total {
+            font-size: 1.4em;
+            font-weight: bold;
+            border-top: 2px solid var(--text-main);
+            padding-top: 15px;
+        }
+        .discount-row { color: var(--danger); }
     </style>
 </head>
 <body>
 
     <div class="card summary-card">
         <div class="summary-stat">
-            <h4>Invoices Generated</h4>
+            <h4>Active Invoices</h4>
             <p id="totalInvoices">0</p>
         </div>
-        <div class="summary-stat">
-            <h4>Total Revenue</h4>
+        <div class="summary-stat" style="border-left: 1px solid #334155;">
+            <h4>Daily Revenue</h4>
             <p id="totalRevenue">Br 0.00</p>
         </div>
     </div>
     
-    <button class="btn-success" onclick="exportDailyReport()">📥 Export End-of-Day Report</button>
+    <button class="btn-success" onclick="exportDailyReport()">📥 Export Corporate End-of-Day Report</button>
 
     <div class="card">
-        <div class="brand-header">
-            <h2 style="margin:0;">RUNNERSHUB</h2>
-            <p style="color:#666; margin-top:5px;">Concierge Billing System</p>
-        </div>
-        
-        <datalist id="client-list">
-            <option value="Mr. Abebe">
-            <option value="Ms. Sara">
-            <option value="Embassy Corp">
-            <option value="VIP Guest">
-        </datalist>
-
-        <datalist id="service-list">
-            <option value="Visa Processing & Document Delivery">
-            <option value="VIP Airport Transfer">
-            <option value="Personal Shopping & Errands">
-            <option value="Hotel & Event Booking">
-            <option value="On-Demand Translation Services">
-        </datalist>
-
-        <div class="form-group">
-            <label>Client Name (Select or Type):</label>
-            <input list="client-list" id="clientName" placeholder="e.g. Mr. Abebe">
-        </div>
-        
-        <div class="form-group">
-            <label>Primary Service / Task:</label>
-            <input list="service-list" id="itemName1" placeholder="Choose or type service...">
-        </div>
-        <div class="form-group">
-            <label>Service 1 Price (Br):</label>
-            <input type="number" id="itemPrice1" value="0" min="0">
-        </div>
-        
-        <div class="form-group">
-            <label>Secondary Service / Task (Optional):</label>
-            <input list="service-list" id="itemName2" placeholder="Choose or type service...">
-        </div>
-        <div class="form-group">
-            <label>Service 2 Price (Br):</label>
-            <input type="number" id="itemPrice2" value="0" min="0">
+        <div class="tabs">
+            <button class="tab-btn active" id="btnInvoice" onclick="switchTab('invoiceTab')">Client Invoice Details</button>
+            <button class="tab-btn" id="btnAgent" onclick="switchTab('agentTab')">Internal Agent Portal</button>
         </div>
 
-        <div class="form-group custom-box">
-            <label>Custom Part / Service (Required if charging):</label>
-            <input type="text" id="customName" placeholder="e.g. Embassy Application Fee, Gift Purchase...">
-            <label style="margin-top: 10px;">Custom Part Price (Br):</label>
-            <input type="number" id="customPrice" value="0" min="0">
-        </div>
-        
-        <div class="form-group">
-            <label>Concierge Retainer / Extra Fee (Br):</label>
-            <input type="number" id="deliveryFee" value="0" min="0">
+        <datalist id="client-list"><option value="Mr. Abebe"><option value="Ms. Sara"><option value="Embassy Corp"><option value="VIP Guest"></datalist>
+        <datalist id="service-list"><option value="Visa Processing & Document Delivery"><option value="VIP Airport Transfer"><option value="Personal Shopping & Errands"><option value="Hotel & Event Booking"><option value="On-Demand Translation Services"></datalist>
+
+        <div id="invoiceTab" class="tab-content active">
+            <div class="form-group">
+                <label>Client Name</label>
+                <input list="client-list" id="clientName" placeholder="Select or type client name">
+            </div>
+            
+            <div class="form-group">
+                <label>Primary Service</label>
+                <input list="service-list" id="itemName1" placeholder="e.g. Visa Processing">
+            </div>
+            <div class="form-group">
+                <label>Service 1 Price (Br)</label>
+                <input type="number" id="itemPrice1" value="0" min="0" oninput="liveCalculateAgent()">
+            </div>
+            
+            <div class="form-group">
+                <label>Secondary Service (Optional)</label>
+                <input list="service-list" id="itemName2" placeholder="e.g. VIP Airport Transfer">
+            </div>
+            <div class="form-group">
+                <label>Service 2 Price (Br)</label>
+                <input type="number" id="itemPrice2" value="0" min="0" oninput="liveCalculateAgent()">
+            </div>
+
+            <div class="form-group custom-box">
+                <label>Custom Service / Part Description (Required if charging)</label>
+                <input type="text" id="customName" placeholder="e.g. Application Fee, Gift Purchase">
+                <label style="margin-top: 15px;">Custom Price (Br)</label>
+                <input type="number" id="customPrice" value="0" min="0" oninput="liveCalculateAgent()">
+            </div>
+            
+            <div class="form-group">
+                <label>Concierge Retainer / Extra Fee (Br)</label>
+                <input type="number" id="deliveryFee" value="0" min="0" oninput="liveCalculateAgent()">
+            </div>
+
+            <div class="form-group">
+                <label>Discount Amount (Br)</label>
+                <input type="number" id="discountAmt" value="0" min="0" oninput="liveCalculateAgent()">
+            </div>
+            
+            <button class="btn-primary" onclick="generateRunnersHubInvoice()">Generate Official Invoice</button>
         </div>
 
-        <div class="form-group">
-            <label>Discount Amount (Br):</label>
-            <input type="number" id="discountAmt" value="0" min="0">
+        <div id="agentTab" class="tab-content">
+            <div class="form-group">
+                <label>Agent / Runner Name</label>
+                <input type="text" id="agentName" placeholder="e.g. Samuel">
+            </div>
+            <div class="form-group">
+                <label>Agent Commission Percentage (%)</label>
+                <input type="number" id="agentPercentage" value="0" min="0" max="100" oninput="liveCalculateAgent()" placeholder="e.g. 10">
+            </div>
+
+            <div class="agent-payout-box">
+                <p>Calculated Payout for this Invoice</p>
+                <h3 id="displayAgentPayout">Br 0.00</h3>
+                <p style="font-size: 12px; margin-top: 10px;">*Calculated dynamically based on Subtotal after discount.</p>
+            </div>
+            
+            <button class="btn-primary" onclick="generateRunnersHubInvoice()">Generate Official Invoice</button>
         </div>
-        
-        <button onclick="generateRunnersHubInvoice()">Generate RUNNERSHUB Invoice</button>
     </div>
 
     <div class="card invoice-box" id="invoiceDisplay" style="display:none;">
-        <h3 style="text-align:center; margin-top:0; letter-spacing: 1px;">RUNNERSHUB OFFICIAL INVOICE</h3>
+        <div class="brand-header">
+            <h2>RUNNERSHUB</h2>
+            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px; text-transform: uppercase;">Concierge Services & Logistics</p>
+        </div>
+        
         <p><strong>Billed To:</strong> <span id="resClient"></span></p>
         <div class="line"></div>
         
-        <div class="row"><strong>Description</strong><strong>Amount</strong></div>
-        <div class="line"></div>
+        <div class="row header-row"><span>Description</span><span>Amount</span></div>
         
         <div class="row" id="resRow1" style="display:none;"><span><span id="lblItem1"></span></span><span id="resPrice1">Br 0.00</span></div>
         <div class="row" id="resRow2" style="display:none;"><span><span id="lblItem2"></span></span><span id="resPrice2">Br 0.00</span></div>
         <div class="row" id="resRowCustom" style="display:none;"><span><span id="lblCustom"></span></span><span id="resPriceCustom">Br 0.00</span></div>
         <div class="row" id="resRowDelivery" style="display:none;"><span>Concierge / Extra Fees</span><span id="resDelivery">Br 0.00</span></div>
         
-        <div class="line"></div>
-        <div class="row"><span>Subtotal:</span><span id="resSubtotal">Br 0.00</span></div>
-        <div class="row discount-row" id="resRowDiscount" style="display:none;"><span>Discount:</span><span id="resDiscount">- Br 0.00</span></div>
-        <div class="row"><span>VAT (15%):</span><span id="resVat">Br 0.00</span></div>
+        <div class="line" style="margin-top: 25px;"></div>
+        <div class="row" style="color: #64748b;"><span>Subtotal:</span><span id="resSubtotal">Br 0.00</span></div>
+        <div class="row discount-row" id="resRowDiscount" style="display:none;"><span>Discount Applied:</span><span id="resDiscount">- Br 0.00</span></div>
         <div class="row total"><span>GRAND TOTAL:</span><span id="resTotal">Br 0.00</span></div>
         
-        <div class="line"></div>
-        <p style="text-align:center; font-style: italic; font-size: 14px; color: #6c757d;">Thank you for trusting RUNNERSHUB with your concierge needs!</p>
+        <div class="line" style="margin-top: 30px;"></div>
+        <p style="text-align:center; font-style: italic; font-size: 13px; color: #94a3b8;">Thank you for trusting RUNNERSHUB with your corporate needs.</p>
 
-        <button class="btn-danger" onclick="voidCurrentInvoice()">Delete / Void This Invoice</button>
+        <button class="btn-danger" onclick="voidCurrentInvoice()">Void / Delete This Invoice</button>
     </div>
 
     <script>
-        // Session and State Variables
+        // Data Ledger and States
         let totalInvoicesGenerated = 0;
         let totalRevenueGenerated = 0;
         let currentInvoiceActive = false;
         let currentInvoiceTotal = 0;
-        
-        // NEW: Ledger to track invoice details for the export
         let sessionInvoiceLedger = []; 
+
+        function switchTab(tabId) {
+            document.getElementById('invoiceTab').classList.remove('active');
+            document.getElementById('agentTab').classList.remove('active');
+            document.getElementById('btnInvoice').classList.remove('active');
+            document.getElementById('btnAgent').classList.remove('active');
+
+            document.getElementById(tabId).classList.add('active');
+            if(tabId === 'invoiceTab') document.getElementById('btnInvoice').classList.add('active');
+            if(tabId === 'agentTab') document.getElementById('btnAgent').classList.add('active');
+        }
+
+        function liveCalculateAgent() {
+            let price1 = parseFloat(document.getElementById('itemPrice1').value) || 0;
+            let price2 = parseFloat(document.getElementById('itemPrice2').value) || 0;
+            let customPrice = parseFloat(document.getElementById('customPrice').value) || 0;
+            let delivery = parseFloat(document.getElementById('deliveryFee').value) || 0;
+            let discount = parseFloat(document.getElementById('discountAmt').value) || 0;
+            let percentage = parseFloat(document.getElementById('agentPercentage').value) || 0;
+
+            let subtotal = price1 + price2 + customPrice + delivery;
+            if (discount > subtotal) discount = subtotal; 
+            let finalAmount = subtotal - discount;
+
+            let agentPayout = finalAmount * (percentage / 100);
+            document.getElementById('displayAgentPayout').innerText = "Br " + agentPayout.toFixed(2);
+            return agentPayout;
+        }
 
         function generateRunnersHubInvoice() {
             let client = document.getElementById('clientName').value || "Valued Client";
@@ -247,22 +362,23 @@
             
             let customName = document.getElementById('customName').value.trim();
             let customPrice = parseFloat(document.getElementById('customPrice').value) || 0;
-
             let delivery = parseFloat(document.getElementById('deliveryFee').value) || 0;
             let discount = parseFloat(document.getElementById('discountAmt').value) || 0;
 
+            let agentName = document.getElementById('agentName').value || "Unassigned";
+            
             if (customPrice > 0 && customName === "") {
-                alert("Action Required: You entered a price for a Custom Part/Service, but left the description blank. Please specify what it is.");
+                switchTab('invoiceTab');
+                alert("Action Required: Custom Part description is blank. Please specify the service.");
                 document.getElementById('customName').focus(); 
                 return; 
             }
 
             let subtotal = price1 + price2 + customPrice + delivery;
             if (discount > subtotal) discount = subtotal; 
+            let grandTotal = subtotal - discount; // VAT removed here
             
-            let taxableAmount = subtotal - discount;
-            let vat = taxableAmount * 0.15;
-            let grandTotal = taxableAmount + vat;
+            let finalAgentPayout = liveCalculateAgent();
 
             document.getElementById('resClient').innerText = client;
             
@@ -270,138 +386,114 @@
                 document.getElementById('lblItem1').innerText = item1;
                 document.getElementById('resPrice1').innerText = "Br " + price1.toFixed(2);
                 document.getElementById('resRow1').style.display = 'flex';
-            } else {
-                document.getElementById('resRow1').style.display = 'none';
-            }
+            } else { document.getElementById('resRow1').style.display = 'none'; }
             
             if (price2 > 0 && item2 !== "") {
                 document.getElementById('lblItem2').innerText = item2;
                 document.getElementById('resPrice2').innerText = "Br " + price2.toFixed(2);
                 document.getElementById('resRow2').style.display = 'flex';
-            } else {
-                document.getElementById('resRow2').style.display = 'none';
-            }
+            } else { document.getElementById('resRow2').style.display = 'none'; }
 
             if (customPrice > 0) {
                 document.getElementById('lblCustom').innerText = customName;
                 document.getElementById('resPriceCustom').innerText = "Br " + customPrice.toFixed(2);
                 document.getElementById('resRowCustom').style.display = 'flex';
-            } else {
-                document.getElementById('resRowCustom').style.display = 'none';
-            }
+            } else { document.getElementById('resRowCustom').style.display = 'none'; }
 
             if (delivery > 0) {
                 document.getElementById('resDelivery').innerText = "Br " + delivery.toFixed(2);
                 document.getElementById('resRowDelivery').style.display = 'flex';
-            } else {
-                document.getElementById('resRowDelivery').style.display = 'none';
-            }
+            } else { document.getElementById('resRowDelivery').style.display = 'none'; }
 
             document.getElementById('resSubtotal').innerText = "Br " + subtotal.toFixed(2);
             
             if (discount > 0) {
                 document.getElementById('resDiscount').innerText = "- Br " + discount.toFixed(2);
                 document.getElementById('resRowDiscount').style.display = 'flex';
-            } else {
-                document.getElementById('resRowDiscount').style.display = 'none';
-            }
+            } else { document.getElementById('resRowDiscount').style.display = 'none'; }
 
-            document.getElementById('resVat').innerText = "Br " + vat.toFixed(2);
+            // VAT display removed completely
             document.getElementById('resTotal').innerText = "Br " + grandTotal.toFixed(2);
 
-            // Update Session Dashboard Summary
             totalInvoicesGenerated++;
             totalRevenueGenerated += grandTotal;
-            
             document.getElementById('totalInvoices').innerText = totalInvoicesGenerated;
             document.getElementById('totalRevenue').innerText = "Br " + totalRevenueGenerated.toFixed(2);
 
-            // NEW: Add this invoice to our ledger memory
             sessionInvoiceLedger.push({
                 clientName: client,
-                totalAmount: grandTotal
+                totalAmount: grandTotal,
+                agentData: agentName,
+                agentPayout: finalAgentPayout
             });
 
-            // Store current invoice state for potential voiding
             currentInvoiceTotal = grandTotal;
             currentInvoiceActive = true;
-
-            // Show Invoice Box
             document.getElementById('invoiceDisplay').style.display = 'block';
         }
 
         function voidCurrentInvoice() {
             if (!currentInvoiceActive) return;
 
-            // Prompt for Master Password
-            let passwordAttempt = prompt("Manager authorization required to delete this invoice.\n\nEnter Master Password:");
+            let passwordAttempt = prompt("Manager authorization required. Enter Master Password:");
             
             if (passwordAttempt === "RunnersHUB123") {
-                // Correct Password: Undo the session statistics
                 totalInvoicesGenerated--;
                 totalRevenueGenerated -= currentInvoiceTotal;
 
                 if (totalInvoicesGenerated < 0) totalInvoicesGenerated = 0;
                 if (totalRevenueGenerated < 0) totalRevenueGenerated = 0;
 
-                // Update Dashboard UI
                 document.getElementById('totalInvoices').innerText = totalInvoicesGenerated;
                 document.getElementById('totalRevenue').innerText = "Br " + totalRevenueGenerated.toFixed(2);
 
-                // NEW: Remove the last entry from our ledger memory
                 sessionInvoiceLedger.pop();
 
-                // Hide the invoice display and reset state
                 document.getElementById('invoiceDisplay').style.display = 'none';
                 currentInvoiceActive = false;
                 currentInvoiceTotal = 0;
-
-                alert("Success: Invoice deleted and session statistics reverted.");
+                alert("Success: Invoice deleted.");
             } else if (passwordAttempt !== null) {
-                // Wrong Password (and user didn't hit 'Cancel')
-                alert("Error: Incorrect Master Password. Invoice deletion denied.");
+                alert("Error: Incorrect Master Password.");
             }
         }
 
-        // NEW: Function to generate and download the text report
         function exportDailyReport() {
             if (sessionInvoiceLedger.length === 0) {
-                alert("No invoices have been generated yet today.");
+                alert("No invoices generated yet.");
                 return;
             }
 
-            // Build the text file content
-            let reportText = "========================================\n";
-            reportText += "  RUNNERSHUB - DAILY CONCIERGE REPORT\n";
-            reportText += "========================================\n\n";
+            let reportText = "=================================================\n";
+            reportText += "      RUNNERSHUB - CORPORATE FINANCIAL LOG\n";
+            reportText += "=================================================\n\n";
             
             let today = new Date();
             reportText += "Date: " + today.toLocaleDateString() + "\n";
-            reportText += "Time of Export: " + today.toLocaleTimeString() + "\n";
-            reportText += "----------------------------------------\n";
-            reportText += "Total Valid Invoices: " + totalInvoicesGenerated + "\n";
-            reportText += "Total Revenue Collected: Br " + totalRevenueGenerated.toFixed(2) + "\n\n";
+            reportText += "Time: " + today.toLocaleTimeString() + "\n";
+            reportText += "-------------------------------------------------\n";
+            reportText += "Total Active Invoices: " + totalInvoicesGenerated + "\n";
+            reportText += "Total Gross Revenue: Br " + totalRevenueGenerated.toFixed(2) + "\n\n";
             
-            reportText += "--- INDIVIDUAL INVOICE LOG ---\n";
+            reportText += "--- INDIVIDUAL LEDGER ENTRIES ---\n\n";
             
-            // Loop through our memory ledger and print each client
             sessionInvoiceLedger.forEach((invoice, index) => {
-                reportText += (index + 1) + ". Client: " + invoice.clientName + "  |  Total: Br " + invoice.totalAmount.toFixed(2) + "\n";
+                reportText += "Invoice #" + (index + 1) + "\n";
+                reportText += "  Client Name : " + invoice.clientName + "\n";
+                reportText += "  Final Billed: Br " + invoice.totalAmount.toFixed(2) + "\n";
+                reportText += "  Assigned Agt: " + invoice.agentData + "\n";
+                reportText += "  Agent Payout: Br " + invoice.agentPayout.toFixed(2) + "\n";
+                reportText += "  -------------------------------------\n";
             });
             
-            reportText += "\n========================================\n";
+            reportText += "\n=================================================\n";
             reportText += "End of Report\n";
 
-            // Create a virtual file to download
             let blob = new Blob([reportText], { type: "text/plain" });
             let link = document.createElement("a");
-            
-            // Generate a filename with today's date
             let dateString = today.toISOString().split('T')[0];
-            link.download = "RunnersHUB_Report_" + dateString + ".txt";
+            link.download = "RunnersHUB_Corporate_Log_" + dateString + ".txt";
             link.href = window.URL.createObjectURL(blob);
-            
-            // Click the link automatically
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
