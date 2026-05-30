@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RUNNERSHUB ERP - Cloud Sync</title>
+    <title>RUNNERSHUB ERP - Full Cloud Suite</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -20,44 +20,52 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
-</head>
+    
+    </head>
 <body>
-    <h1>RUNNERSHUB ERP</h1>
-    <div id="status">Connecting to Cloud...</div>
-
+    
     <script>
         const app = {
-            db: { invoices: [] },
+            // Your full data object
+            db: { 
+                settings: { orgName: 'RUNNERSHUB', currency: 'Br' },
+                customers: [], vendors: [], items: [],
+                quotes: [], invoices: [], expenses: []
+            },
 
-            // Syncs your entire app state to the Cloud
+            // CLOUD SAVER: Automatically pushes changes to Firestore
             save: async () => {
                 try {
                     await db.collection('data').doc('master').set(app.db);
-                    document.getElementById('status').innerText = "Cloud Sync Success!";
+                    console.log("Cloud Sync: Success");
                 } catch (e) {
-                    console.error("Sync Error: ", e);
-                    document.getElementById('status').innerText = "Sync Failed.";
+                    console.error("Cloud Sync: Failed", e);
                 }
             },
 
-            // Pulls your entire app state from the Cloud
+            // CLOUD LOADER: Pulls data on startup
             init: async () => {
                 try {
                     const doc = await db.collection('data').doc('master').get();
                     if (doc.exists) {
                         app.db = doc.data();
-                        document.getElementById('status').innerText = "Cloud Data Loaded.";
-                    } else {
-                        document.getElementById('status').innerText = "Cloud Database Empty.";
+                        console.log("Cloud Sync: Loaded");
+                        // Trigger your UI render functions here
                     }
                 } catch (e) {
-                    document.getElementById('status').innerText = "Init Failed.";
+                    console.error("Cloud Load Failed", e);
                 }
             }
         };
 
-        // Run this on startup
+        // Initialize App
         app.init();
+
+        /* INSTRUCTIONS FOR INTEGRATION:
+           1. Every function that modifies app.db (like adding an invoice or updating a setting) 
+              must end with a call to 'app.save()'.
+           2. Remove all instances of 'localStorage' from your legacy code.
+        */
     </script>
 </body>
 </html>
