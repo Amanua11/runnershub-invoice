@@ -3,735 +3,673 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUNNERSHUB - Enterprise Accounting Suite</title>
+    <title>RUNNERSHUB - Ultimate ERP Suite</title>
     <style>
-        /* Modern Corporate SaaS Design Tokens */
+        /* === SYSTEM TOKENS & RESET === */
         :root {
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: #1e293b;
-            --sidebar-active: #2563eb;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #cbd5e1;
-            --primary-blue: #2563eb;
-            --primary-hover: #1d4ed8;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --success: #10b981;
-            --success-hover: #059669;
-            --warning-bg: #fef3c7;
-            --warning-text: #b45309;
+            --bg-body: #f8fafc; --bg-card: #ffffff;
+            --sidebar-bg: #0f172a; --sidebar-hover: #1e293b; --sidebar-active: #3b82f6;
+            --text-main: #0f172a; --text-muted: #64748b; --text-light: #f8fafc;
+            --border: #e2e8f0; --border-focus: #94a3b8;
+            --primary: #2563eb; --primary-hover: #1d4ed8;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius: 8px;
         }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            font-size: 14px;
-        }
-
-        /* Sidebar Navigation Layout */
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-        .sidebar-header {
-            padding: 25px 20px;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .nav-item {
-            padding: 14px 20px;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 4px solid transparent;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-        .nav-item:hover, .nav-item.active {
-            background-color: var(--sidebar-hover);
-            color: white;
-        }
-        .nav-item.active {
-            border-left-color: var(--sidebar-active);
-            background-color: #1e293b;
-        }
-
-        .sidebar-bottom {
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding: 20px 0;
-            background-color: #020617;
-        }
-        .sidebar-label {
-            padding: 0 20px 10px 20px;
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #475569;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        .action-item {
-            padding: 10px 20px;
-            color: #94a3b8;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-        .action-item:hover { color: white; background-color: var(--sidebar-hover); }
-
-        /* Main App Workspace Layout */
-        .main-content {
-            flex: 1;
-            padding: 35px;
-            overflow-y: auto;
-        }
-        .view-section { display: none; animation: viewFade 0.25s ease-in-out; }
-        .view-section.active { display: block; }
-        @keyframes viewFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Module Components & Data Grids */
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
-        }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 25px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 25px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-
-        /* Dashboard Accounting Badges */
-        .metric-card {
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            border-left: 5px solid var(--primary-blue);
-        }
-        .metric-card.revenue { border-left-color: var(--success); }
-        .metric-card h3 { margin: 0 0 6px 0; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .metric-card p { margin: 0; font-size: 30px; font-weight: 700; }
-
-        /* Form Controls */
-        .form-group { display: flex; flex-direction: column; margin-bottom: 16px;}
-        .form-group label {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-        input, select, textarea {
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
-            transition: all 0.15s ease;
-        }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-
-        .custom-service-block {
-            background: #fdf2e9;
-            padding: 20px;
-            border-radius: 6px;
-            border: 1px solid #fed7aa;
-            margin-top: 10px;
-            margin-bottom: 25px;
-        }
-
-        /* Module Tabs Layout */
-        .form-tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 25px;
-        }
-        .tab-trigger {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tab-trigger.active {
-            color: var(--primary-blue);
-            border-bottom: 3px solid var(--primary-blue);
-            margin-bottom: -2px;
-        }
-        .tab-pane { display: none; }
-        .tab-pane.active { display: block; }
-
-        /* Ledger Tables */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th { background: #f8fafc; color: var(--text-muted); font-size: 11px; text-transform: uppercase; padding: 14px 12px; text-align: left; border-bottom: 2px solid var(--border-color); font-weight: 700; }
-        td { padding: 14px 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
         
-        .badge { padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .badge-unpaid { background: var(--warning-bg); color: var(--warning-text); }
+        /* === LAYOUT === */
+        .sidebar { width: 240px; background: var(--sidebar-bg); display: flex; flex-direction: column; z-index: 100; box-shadow: var(--shadow-xl); overflow-y: auto; }
+        .sidebar-brand { padding: 20px; color: white; font-size: 20px; font-weight: 900; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-group { padding: 15px 20px 5px; font-size: 11px; text-transform: uppercase; color: #475569; font-weight: 700; letter-spacing: 1px; }
+        .nav-item { padding: 10px 20px; color: #94a3b8; cursor: pointer; transition: 0.2s; font-weight: 500; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: rgba(37,99,235,0.15); color: white; border-left-color: var(--primary); }
+        
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Calculation Summaries */
-        .billing-summary-block { display: flex; justify-content: space-between; margin-top: 25px; }
-        .summary-notes-area { width: 48%; }
-        .summary-calculation-area { width: 44%; background: #f8fafc; padding: 24px; border-radius: 6px; border: 1px solid var(--border-color); }
-        .calc-item-line { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; font-size: 14px; }
-        .calc-item-line.grand-total-line { border-top: 2px solid #0f172a; margin-top: 12px; padding-top: 16px; font-size: 22px; font-weight: 800; color: var(--primary-blue); }
-        .inline-calc-input { width: 110px; text-align: right; }
-
-        /* Internal Payout Metrics Box */
-        .agent-payout-box {
-            background: #f0fdf4;
-            border: 1px dashed var(--success);
-            padding: 20px;
-            border-radius: 6px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .agent-payout-box h3 { margin: 0; color: var(--success); font-size: 26px; font-weight: 800; }
-        .agent-payout-box p { margin: 4px 0 0 0; color: var(--text-muted); font-size: 13px; }
-
-        /* Buttons Hierarchy */
-        .btn { padding: 11px 22px; border: none; border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s ease; }
-        .btn-primary { background: var(--primary-blue); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary-blue); color: var(--primary-blue); }
-        .btn-outline:hover { background: #eff6ff; }
+        /* === UI COMPONENTS === */
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-bar h1 { font-size: 24px; font-weight: 700; }
+        
+        .card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        
+        .metric { border-left: 4px solid var(--primary); padding: 20px; background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+        .metric h3 { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .metric p { font-size: 24px; font-weight: 800; }
+        
+        /* === TABLES === */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f1f5f9; padding: 12px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; border-bottom: 2px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .b-success { background: #d1fae5; color: #065f46; } .b-warning { background: #fef3c7; color: #92400e; } .b-danger { background: #fee2e2; color: #991b1b; } .b-primary { background: #dbeafe; color: #1e40af; }
+        
+        /* === FORMS & MODALS === */
+        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; background: #fff; transition: 0.2s; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        
+        .btn { padding: 10px 16px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .btn-primary { background: var(--primary); color: white; } .btn-primary:hover { background: var(--primary-hover); }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); } .btn-outline:hover { background: #f1f5f9; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: var(--danger-hover); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: var(--success-hover); }
-        .btn-danger-icon { background: none; border: none; color: var(--danger); font-size: 20px; cursor: pointer; }
+        .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px; } .btn-icon:hover { color: var(--danger); }
         
-        .btn-table-void { padding: 5px 10px; background: transparent; border: 1px solid var(--danger); color: var(--danger); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer; }
-        .btn-table-void:hover { background: var(--danger); color: white; }
+        /* Modal Overlay */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+        .modal-content { background: white; border-radius: var(--radius); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-xl); }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; }
+        
+        /* === TOAST NOTIFICATIONS === */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--sidebar-bg); color: white; padding: 15px 20px; border-radius: var(--radius); box-shadow: var(--shadow-md); font-weight: 500; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        /* Advanced Editor Grids */
+        .editor-calc { background: #f8fafc; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); width: 350px; margin-left: auto; margin-top: 20px; }
+        .calc-row { display: flex; justify-content: space-between; padding: 5px 0; align-items: center; }
+        .calc-total { border-top: 2px solid var(--text-main); margin-top: 10px; padding-top: 10px; font-size: 18px; font-weight: 800; color: var(--primary); }
+        
+        /* Reports */
+        .report-section { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .report-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+        .report-row.subtotal { font-weight: 700; background: #f8fafc; padding: 12px 10px; border-bottom: none; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Control Center -->
+    <!-- NAVIGATION SIDEBAR -->
     <nav class="sidebar">
-        <div class="sidebar-top">
-            <div class="sidebar-header">RUNNERSHUB</div>
-            <div class="nav-item active" id="navDashboard" onclick="toggleApplicationView('dashboardView')">📊 Operations Dashboard</div>
-            <div class="nav-item" id="navEditor" onclick="toggleApplicationView('editorView')">➕ Create Zoho Invoice</div>
-            <div class="nav-item" style="color: #10b981;" onclick="exportDailyReport()">📥 Export Financial Log (.txt)</div>
+        <div>
+            <div class="sidebar-brand">RUNNERSHUB ERP</div>
+            
+            <div class="sidebar-group">Core</div>
+            <div class="nav-item active" onclick="app.nav('dashboard')">📊 Dashboard</div>
+            
+            <div class="sidebar-group">CRM</div>
+            <div class="nav-item" onclick="app.nav('customers')">👥 Customers</div>
+            <div class="nav-item" onclick="app.nav('vendors')">🏢 Vendors</div>
+            
+            <div class="sidebar-group">Sales</div>
+            <div class="nav-item" onclick="app.nav('items')">📦 Products & Services</div>
+            <div class="nav-item" onclick="app.nav('quotes')">📝 Quotes</div>
+            <div class="nav-item" onclick="app.nav('invoices')">🧾 Invoices</div>
+            
+            <div class="sidebar-group">Purchases</div>
+            <div class="nav-item" onclick="app.nav('purchaseOrders')">🛒 Purchase Orders</div>
+            <div class="nav-item" onclick="app.nav('expenses')">💸 Expenses & Bills</div>
+            
+            <div class="sidebar-group">Accounting</div>
+            <div class="nav-item" onclick="app.nav('banking')">💳 Banking & Cash</div>
+            <div class="nav-item" onclick="app.nav('chartOfAccounts')">📋 Chart of Accounts</div>
+            <div class="nav-item" onclick="app.nav('journals')">📓 Manual Journals</div>
+            
+            <div class="sidebar-group">Intelligence</div>
+            <div class="nav-item" onclick="app.nav('reports')">📈 Financial Reports</div>
         </div>
         
-        <div class="sidebar-bottom">
-            <div class="sidebar-label">Data Redundancy Systems</div>
-            <div class="action-item" onclick="backupDatabaseToCloud()">⬇️ Backup Configuration (.json)</div>
-            <div class="action-item" onclick="triggerRestoreUpload()">⬆️ Restore Master Backup</div>
-            <input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="processRestoreDatabase(event)">
+        <div style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding: 10px 0;">
+            <div class="nav-item" onclick="app.nav('settings')">⚙️ Settings</div>
+            <div class="nav-item" style="color:var(--success);" onclick="app.sys.backup()">⬇️ Backup Data</div>
+            <div class="nav-item" style="color:var(--danger);" onclick="app.sys.reset()">⚠️ Reset System</div>
         </div>
     </nav>
 
-    <!-- Main Workspace Frame -->
+    <!-- MAIN APPLICATION WORKSPACE -->
     <main class="main-content">
+        <div id="toast-container"></div>
 
-        <!-- CORE MODULE 1: OPERATIONS DASHBOARD -->
-        <section id="dashboardView" class="view-section active">
-            <h2 style="margin-top:0; font-size: 26px;">Enterprise Analytics</h2>
-            
-            <div class="grid-3">
-                <div class="metric-card">
-                    <h3>Total Invoices Logged</h3>
-                    <p id="dashTotalCount">0</p>
-                </div>
-                <div class="metric-card revenue">
-                    <h3>Gross Revenue Portfolio</h3>
-                    <p id="dashTotalRevenue">Br 0.00</p>
-                </div>
-                <div class="metric-card success" style="border-left-color: #a855f7;">
-                    <h3>Data Sync Status</h3>
-                    <p style="color:#a855f7; font-size: 18px; margin-top:6px; font-weight: 700;">Local Mirror Secure</p>
-                </div>
+        <!-- DASHBOARD -->
+        <div id="view-dashboard" class="view active">
+            <div class="header-bar"><h1>Financial Command Center</h1></div>
+            <div class="grid-4" style="margin-bottom: 25px;">
+                <div class="metric"><h3>Receivables (Unpaid)</h3><p id="d-rec" style="color:var(--warning)">0.00</p></div>
+                <div class="metric"><h3>Payables (Owed)</h3><p id="d-pay" style="color:var(--danger)">0.00</p></div>
+                <div class="metric"><h3>Net Income (YTD)</h3><p id="d-net" style="color:var(--success)">0.00</p></div>
+                <div class="metric"><h3>Treasury Balance</h3><p id="d-liq" style="color:var(--primary)">0.00</p></div>
             </div>
-
-            <div class="card">
-                <h3 style="margin-top:0; padding-bottom:10px;">Master Invoice Ledger</h3>
-                <table id="dashboardTable">
-                    <thead>
-                        <tr>
-                            <th>Invoice ID</th>
-                            <th>Posting Date</th>
-                            <th>Customer Entity</th>
-                            <th>Assigned Agent</th>
-                            <th>Total Billed</th>
-                            <th>Status</th>
-                            <th style="text-align: center;">Controls</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dashboardTableBody">
-                        <!-- Automated Ledger Deployment -->
-                    </tbody>
-                </table>
-                <div id="emptyStatePlaceholder" style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 15px;">
-                    No records found in this session loop. Click "Create Zoho Invoice" to populate.
-                </div>
-            </div>
-        </section>
-
-        <!-- CORE MODULE 2: ZOHO INVOICE COMPILER -->
-        <section id="editorView" class="view-section card">
-            <h2 style="margin-top:0; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; font-size: 24px;">New Outbound Invoice</h2>
-
-            <!-- Predefined Zoho Data Frameworks -->
-            <datalist id="client-list">
-                <option value="Mr. Abebe"><option value="Ms. Sara"><option value="Embassy Corp"><option value="VIP Logistics Guest"><option value="Midroc Corporate Account">
-            </datalist>
-            <datalist id="service-list">
-                <option value="Visa Processing & Document Delivery"><option value="VIP Airport Transfer Pickups"><option value="Personal Premium Shopping Errands"><option value="Hotel & International Event Booking"><option value="On-Demand Professional Translation">
-            </datalist>
-
-            <!-- Metadata Configuration Framework -->
             <div class="grid-2">
-                <div class="form-group">
-                    <label>Customer Entity</label>
-                    <input list="client-list" id="customerName" placeholder="Select or type corporate client account">
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;">Recent Invoices</h3>
+                    <table id="d-inv-table"><thead><tr><th>Inv #</th><th>Client</th><th>Amount</th><th>Status</th></tr></thead><tbody></tbody></table>
                 </div>
-                <div class="form-group">
-                    <label>Billing & Delivery Destination Coordinates</label>
-                    <textarea id="billingAddress" rows="1" placeholder="Enter operational delivery/billing address details"></textarea>
-                </div>
-            </div>
-
-            <div class="grid-4">
-                <div class="form-group"><label>Invoice Sequence Number</label><input type="text" id="invoiceNumber" value="INV-10001"></div>
-                <div class="form-group"><label>Order Purchase Tracking (P.O.)</label><input type="text" id="poNumber" placeholder="PO-99281"></div>
-                <div class="form-group"><label>Issuance Date</label><input type="date" id="invoiceDate"></div>
-                <div class="form-group"><label>Maturity Due Date</label><input type="date" id="dueDate"></div>
-            </div>
-
-            <!-- Editor Multi-Tab Interface Context -->
-            <div class="form-tabs">
-                <button class="tab-trigger active" id="tabBtnClient" onclick="toggleFormTab('clientDetailsPane', 'tabBtnClient')">Line Item Configurations</button>
-                <button class="tab-trigger" id="tabBtnAgent" onclick="toggleFormTab('agentPortalPane', 'tabBtnAgent')">Internal Agent Allocation</button>
-            </div>
-
-            <!-- SUB-TAB 1: CLIENT DETAILS -->
-            <div id="clientDetailsPane" class="tab-pane active">
-                <table id="invoiceItemTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 45%;">Service Line-Item Description</th>
-                            <th style="width: 12%;">Qty</th>
-                            <th style="width: 18%;">Unit Rate (Br)</th>
-                            <th style="width: 20%; text-align: right;">Gross Net Amount</th>
-                            <th style="width: 5%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="lineItemTableBody">
-                        <tr>
-                            <td><input list="service-list" style="width: 100%; box-sizing: border-box;" class="item-name" placeholder="Choose pre-loaded corporate task or type custom service"></td>
-                            <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-qty" value="1" min="1" oninput="executeLedgerCalculations()"></td>
-                            <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-rate" value="0" min="0" oninput="executeLedgerCalculations()"></td>
-                            <td style="text-align: right; font-weight: 700;" class="item-amount">0.00</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-outline" style="margin-bottom: 25px;" onclick="addDynamicItemRow()">+ Append Invoice Row</button>
-
-                <!-- Mandatory Validation Custom Service Unit -->
-                <div class="custom-service-block">
-                    <label style="color:#c2410c;">🔒 Mandatory Specification Box: Custom Part / Outsourced Service Charges</label>
-                    <div class="grid-2" style="margin-bottom: 0; margin-top:10px;">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <input type="text" id="customPartDescription" placeholder="Specify exactly what this custom cost covers (Required if price is applied)">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <input type="number" id="customPartPrice" value="0" min="0" oninput="executeLedgerCalculations()" placeholder="Custom Charge Amount (Br)">
-                        </div>
-                    </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 15px;">Recent Expenses</h3>
+                    <table id="d-exp-table"><thead><tr><th>Date</th><th>Vendor</th><th>Category</th><th>Amount</th></tr></thead><tbody></tbody></table>
                 </div>
             </div>
+        </div>
 
-            <!-- SUB-TAB 2: AGENT ALLOCATION PORTAL -->
-            <div id="agentPortalPane" class="tab-pane">
+        <!-- CRM: CUSTOMERS -->
+        <div id="view-customers" class="view">
+            <div class="header-bar"><h1>Customers</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-customer')">+ New Customer</button></div>
+            <div class="card"><table id="tbl-customers"><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- CRM: VENDORS -->
+        <div id="view-vendors" class="view">
+            <div class="header-bar"><h1>Vendors & Suppliers</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-vendor')">+ New Vendor</button></div>
+            <div class="card"><table id="tbl-vendors"><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- INVENTORY: ITEMS -->
+        <div id="view-items" class="view">
+            <div class="header-bar"><h1>Products & Services</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-item')">+ New Item</button></div>
+            <div class="card"><table id="tbl-items"><thead><tr><th>Type</th><th>Name</th><th>Description</th><th>Sales Rate</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- SALES: INVOICES -->
+        <div id="view-invoices" class="view">
+            <div class="header-bar"><h1>Invoices</h1><button class="btn btn-primary" onclick="app.editor.open('Invoice')">+ Create Invoice</button></div>
+            <div class="card"><table id="tbl-invoices"><thead><tr><th>Date</th><th>Invoice #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- SALES: QUOTES -->
+        <div id="view-quotes" class="view">
+            <div class="header-bar"><h1>Quotes & Estimates</h1><button class="btn btn-primary" onclick="app.editor.open('Quote')">+ Create Quote</button></div>
+            <div class="card"><table id="tbl-quotes"><thead><tr><th>Date</th><th>Quote #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        
+        <!-- PURCHASES: POs -->
+        <div id="view-purchaseOrders" class="view">
+            <div class="header-bar"><h1>Purchase Orders</h1><button class="btn btn-primary" onclick="app.editor.open('PO')">+ Create P.O.</button></div>
+            <div class="card"><table id="tbl-pos"><thead><tr><th>Date</th><th>PO #</th><th>Vendor</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- PURCHASES: EXPENSES -->
+        <div id="view-expenses" class="view">
+            <div class="header-bar"><h1>Expenses</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-expense')">+ Record Expense</button></div>
+            <div class="card"><table id="tbl-expenses"><thead><tr><th>Date</th><th>Vendor</th><th>Category</th><th>Account</th><th>Amount</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- ACCOUNTING: BANKING -->
+        <div id="view-banking" class="view">
+            <div class="header-bar"><h1>Banking & Treasury</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-banking')">+ Record Transaction</button></div>
+            <div class="card"><table id="tbl-banking"><thead><tr><th>Date</th><th>Account</th><th>Type</th><th>Reference</th><th>Amount</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- ACCOUNTING: COA -->
+        <div id="view-chartOfAccounts" class="view">
+            <div class="header-bar"><h1>Chart of Accounts</h1></div>
+            <div class="card"><table id="tbl-coa"><thead><tr><th>Account Name</th><th>Type</th><th>Description</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        
+        <!-- ACCOUNTING: JOURNALS -->
+        <div id="view-journals" class="view">
+            <div class="header-bar"><h1>Manual Journals</h1><button class="btn btn-primary" onclick="app.ui.openModal('modal-journal')">+ New Journal Entry</button></div>
+            <div class="card"><table id="tbl-journals"><thead><tr><th>Date</th><th>Journal #</th><th>Notes</th><th>Amount</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+
+        <!-- INTELLIGENCE: REPORTS -->
+        <div id="view-reports" class="view">
+            <div class="header-bar"><h1>Financial Reports</h1><button class="btn btn-outline" onclick="window.print()">🖨️ Print Report</button></div>
+            <div class="grid-2">
+                <div class="card" id="report-pnl">
+                    <h2>Profit and Loss</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Accrual Basis</p>
+                    <!-- Generated via JS -->
+                </div>
+                <div class="card" id="report-aging">
+                    <h2>A/R Aging Summary</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Unpaid Invoices</p>
+                    <!-- Generated via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="view-settings" class="view">
+            <div class="header-bar"><h1>Organization Settings</h1><button class="btn btn-primary" onclick="app.sys.saveSettings()">Save Configurations</button></div>
+            <div class="card">
                 <div class="grid-2">
-                    <div class="form-group">
-                        <label>Assigned Courier Agent / Runner Name</label>
-                        <input type="text" id="agentNameText" placeholder="Enter runner/agent assigned to this track">
+                    <div class="form-group"><label>Organization Name</label><input type="text" id="set-orgName" value="RUNNERSHUB"></div>
+                    <div class="form-group"><label>Base Currency</label><select id="set-currency"><option>Br (ETB)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+                    <div class="form-group"><label>Global Tax Rate (%)</label><input type="number" id="set-taxRate" value="15"></div>
+                    <div class="form-group"><label>Invoice Prefix</label><input type="text" id="set-invPrefix" value="INV-"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- == MODALS (DATA ENTRY POPUPS) == -->
+        <!-- ========================================== -->
+
+        <!-- UNIVERSAL DOCUMENT EDITOR (Invoices, Quotes, POs) -->
+        <div class="modal-overlay" id="modal-editor" style="z-index: 500;">
+            <div class="modal-content" style="max-width: 900px; height: 95vh; display: flex; flex-direction: column;">
+                <div class="modal-header"><h2 id="editor-title">New Document</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-editor')">✖</button></div>
+                <div class="modal-body" style="flex:1; overflow-y:auto; background: #f8fafc;">
+                    <div class="card">
+                        <div class="grid-3">
+                            <div class="form-group"><label id="editor-entity-lbl">Customer / Vendor</label><select id="edit-entity"></select></div>
+                            <div class="form-group"><label>Document #</label><input type="text" id="edit-num" readonly></div>
+                            <div class="form-group"><label>Date</label><input type="date" id="edit-date"></div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Internal Agent Commission Split Percentage (%)</label>
-                        <input type="number" id="agentPercentageNumber" value="0" min="0" max="100" oninput="executeLedgerCalculations()" placeholder="e.g. 15">
+                    <div class="card">
+                        <table id="edit-table">
+                            <thead><tr><th style="width: 40%">Item Details</th><th style="width: 15%">Qty</th><th style="width: 20%">Rate</th><th style="width: 20%; text-align:right;">Amount</th><th></th></tr></thead>
+                            <tbody id="edit-tbody"></tbody>
+                        </table>
+                        <button class="btn btn-outline" style="margin-top: 10px;" onclick="app.editor.addRow()">+ Add Line Item</button>
+                        
+                        <div class="editor-calc">
+                            <div class="calc-row"><span>Subtotal</span><span id="edit-sub">0.00</span></div>
+                            <div class="calc-row"><span>Discount</span><input type="number" id="edit-disc" value="0" style="width: 80px; text-align: right;" oninput="app.editor.calc()"></div>
+                            <div class="calc-row"><span>Tax (<span id="edit-tax-lbl">15</span>%)</span><span id="edit-tax">0.00</span></div>
+                            <div class="calc-row calc-total"><span>Grand Total</span><span id="edit-total">0.00</span></div>
+                        </div>
                     </div>
                 </div>
-                <div class="agent-payout-box">
-                    <p>Internal Commission Allocation Payable to Agent</p>
-                    <h3 id="agentLivePayoutDisplay">Br 0.00</h3>
-                    <p style="font-size: 11px; margin-top: 6px;">*Calculation updates live based on absolute subtotal deductions (pre-tax adjustments).</p>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" onclick="app.ui.closeModal('modal-editor')">Cancel</button>
+                    <button class="btn btn-primary" onclick="app.editor.save()">Save & Issue Document</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Corporate Financial Math Block (VAT-Free Ledger) -->
-            <div class="billing-summary-block">
-                <div class="summary-notes-area">
-                    <div class="form-group"><label>Customer Invoice Remarks</label><textarea id="customerNotesText" rows="2" placeholder="Notes added here populate onto final corporate documentation..."></textarea></div>
-                    <div class="form-group"><label>Corporate Legal Terms & Frameworks</label><textarea id="termsConditionsText" rows="2" placeholder="Standard payment rules, late penalties context..."></textarea></div>
-                </div>
+        <!-- MODAL: Customer -->
+        <div class="modal-overlay" id="modal-customer"><div class="modal-content">
+            <div class="modal-header"><h2>New Customer</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-customer')">✖</button></div>
+            <div class="modal-body"><div class="grid-2">
+                <div class="form-group"><label>Display Name *</label><input type="text" id="mc-name"></div>
+                <div class="form-group"><label>Company Name</label><input type="text" id="mc-company"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="mc-email"></div>
+                <div class="form-group"><label>Phone</label><input type="text" id="mc-phone"></div>
+            </div></div>
+            <div class="modal-footer"><button class="btn btn-primary" onclick="app.crud.save('customers')">Save Customer</button></div>
+        </div></div>
 
-                <div class="summary-calculation-area">
-                    <div class="calc-item-line"><span>Aggregate Row Subtotal</span><span id="subtotalOutputDisplay">0.00</span></div>
-                    <div class="calc-item-line" style="color:var(--danger)"><span>Global Contractual Discount (Br)</span><input type="number" id="globalDiscountInput" class="inline-calc-input" value="0" min="0" oninput="executeLedgerCalculations()"></div>
-                    <div class="calc-item-line"><span>Courier Shipping / Freight Fees (Br)</span><input type="number" id="shippingChargesInput" class="inline-calc-input" value="0" min="0" oninput="executeLedgerCalculations()"></div>
-                    <div class="calc-item-line"><span>Auditing Rounding Adjustment (+/- Br)</span><input type="number" id="auditAdjustmentInput" class="inline-calc-input" value="0" oninput="executeLedgerCalculations()"></div>
-                    <div class="calc-item-line grand-total-line"><span>GRAND TOTAL BALANCE</span><span id="grandTotalOutputDisplay">0.00</span></div>
-                </div>
-            </div>
+        <!-- MODAL: Vendor -->
+        <div class="modal-overlay" id="modal-vendor"><div class="modal-content">
+            <div class="modal-header"><h2>New Vendor</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-vendor')">✖</button></div>
+            <div class="modal-body"><div class="grid-2">
+                <div class="form-group"><label>Vendor Name *</label><input type="text" id="mv-name"></div>
+                <div class="form-group"><label>Company Name</label><input type="text" id="mv-company"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="mv-email"></div>
+            </div></div>
+            <div class="modal-footer"><button class="btn btn-primary" onclick="app.crud.save('vendors')">Save Vendor</button></div>
+        </div></div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 35px; padding-top: 25px; border-top: 1px solid var(--border-color);">
-                <button class="btn btn-outline" onclick="toggleApplicationView('dashboardView')">Discard Adjustments</button>
-                <button class="btn btn-primary" onclick="processCommitInvoiceToLedger()">Commit & Log Outbound Invoice</button>
-            </div>
-        </section>
+        <!-- MODAL: Item -->
+        <div class="modal-overlay" id="modal-item"><div class="modal-content">
+            <div class="modal-header"><h2>New Product/Service</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-item')">✖</button></div>
+            <div class="modal-body"><div class="grid-2">
+                <div class="form-group"><label>Type</label><select id="mi-type"><option>Service</option><option>Goods</option></select></div>
+                <div class="form-group"><label>Name *</label><input type="text" id="mi-name"></div>
+                <div class="form-group"><label>Sales Rate (Br)</label><input type="number" id="mi-rate" value="0"></div>
+                <div class="form-group"><label>Description</label><input type="text" id="mi-desc"></div>
+            </div></div>
+            <div class="modal-footer"><button class="btn btn-primary" onclick="app.crud.save('items')">Save Item</button></div>
+        </div></div>
+
+        <!-- MODAL: Expense -->
+        <div class="modal-overlay" id="modal-expense"><div class="modal-content">
+            <div class="modal-header"><h2>Record Expense</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-expense')">✖</button></div>
+            <div class="modal-body"><div class="grid-2">
+                <div class="form-group"><label>Date</label><input type="date" id="me-date"></div>
+                <div class="form-group"><label>Expense Account</label><select id="me-account"></select></div>
+                <div class="form-group"><label>Amount (Br) *</label><input type="number" id="me-amt" value="0"></div>
+                <div class="form-group"><label>Paid Through</label><select id="me-bank"><option>Bank Account</option><option>Petty Cash</option></select></div>
+                <div class="form-group"><label>Vendor (Optional)</label><select id="me-vendor"></select></div>
+            </div></div>
+            <div class="modal-footer"><button class="btn btn-primary" onclick="app.crud.save('expenses')">Record Expense</button></div>
+        </div></div>
+
+        <!-- MODAL: Banking -->
+        <div class="modal-overlay" id="modal-banking"><div class="modal-content">
+            <div class="modal-header"><h2>Bank Transaction</h2><button class="btn-icon" onclick="app.ui.closeModal('modal-banking')">✖</button></div>
+            <div class="modal-body"><div class="grid-2">
+                <div class="form-group"><label>Date</label><input type="date" id="mb-date"></div>
+                <div class="form-group"><label>Account</label><select id="mb-acc"><option>Bank Account</option><option>Petty Cash</option></select></div>
+                <div class="form-group"><label>Type</label><select id="mb-type"><option>Deposit (+)</option><option>Withdrawal (-)</option></select></div>
+                <div class="form-group"><label>Amount (Br) *</label><input type="number" id="mb-amt" value="0"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Reference / Description</label><input type="text" id="mb-desc"></div>
+            </div></div>
+            <div class="modal-footer"><button class="btn btn-primary" onclick="app.crud.save('banking')">Save Transaction</button></div>
+        </div></div>
 
     </main>
 
     <script>
-        // Set Zoho Standard Metadata Dates Default
-        document.getElementById('invoiceDate').valueAsDate = new Date();
-        let computedDue = new Date(); computedDue.setDate(computedDue.getDate() + 15);
-        document.getElementById('dueDate').valueAsDate = computedDue;
+        /**
+         * RUNNERSHUB ERP - CORE ENGINE
+         * Advanced modular architecture encapsulating DB, UI, Editor, and Reporting.
+         */
+        const app = {
+            // Master Database State
+            db: JSON.parse(localStorage.getItem('rh_v2_db')) || {
+                settings: { orgName: 'RUNNERSHUB', currency: 'Br', tax: 15, invPrefix: 'INV-' },
+                customers: [], vendors: [], items: [],
+                quotes: [], invoices: [], pos: [],
+                expenses: [], banking: [], journals: [],
+                coa: [ // Default Chart of Accounts
+                    {id: 1, name: 'Sales Revenue', type: 'Income'}, {id: 2, name: 'Consulting Income', type: 'Income'},
+                    {id: 3, name: 'Cost of Goods Sold', type: 'Expense'}, {id: 4, name: 'Office Supplies', type: 'Expense'},
+                    {id: 5, name: 'Travel & Meals', type: 'Expense'}, {id: 6, name: 'Agent Commissions', type: 'Expense'},
+                    {id: 7, name: 'Bank Account', type: 'Asset'}, {id: 8, name: 'Petty Cash', type: 'Asset'}
+                ]
+            },
+            state: { editorMode: null }, // Tracks if Editor is Quote, Invoice, or PO
 
-        // Core App Routing Engine
-        function toggleApplicationView(viewId) {
-            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            
-            document.getElementById(viewId).classList.add('active');
-            if(viewId === 'dashboardView') {
-                document.getElementById('navDashboard').classList.add('active');
-                renderMasterLedgerTable();
-            } else if (viewId === 'editorView') {
-                document.getElementById('navEditor').classList.add('active');
-            }
-        }
+            // --- SYSTEM CORE ---
+            sys: {
+                save: () => localStorage.setItem('rh_v2_db', JSON.stringify(app.db)),
+                today: () => new Date().toISOString().split('T')[0],
+                rnd: (prefix) => prefix + Math.floor(10000 + Math.random() * 90000),
+                toast: (msg, type='success') => {
+                    const box = document.getElementById('toast-container');
+                    const t = document.createElement('div');
+                    t.className = `toast`; t.style.borderLeft = `4px solid var(--${type})`;
+                    t.innerHTML = msg; box.appendChild(t);
+                    setTimeout(() => t.remove(), 4000);
+                },
+                reset: () => { if(confirm("WARNING: WIPE ENTIRE DATABASE?")) { localStorage.removeItem('rh_v2_db'); location.reload(); } },
+                backup: () => {
+                    const blob = new Blob([JSON.stringify(app.db, null, 2)], {type: 'application/json'});
+                    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                    a.download = `RH_Backup_${app.sys.today()}.json`; a.click();
+                },
+                saveSettings: () => {
+                    app.db.settings.orgName = document.getElementById('set-orgName').value;
+                    app.db.settings.currency = document.getElementById('set-currency').value;
+                    app.db.settings.tax = parseFloat(document.getElementById('set-taxRate').value) || 0;
+                    app.db.settings.invPrefix = document.getElementById('set-invPrefix').value;
+                    app.sys.save(); app.sys.toast("Settings Saved"); app.nav('dashboard');
+                },
+                formatMoney: (num) => `${app.db.settings.currency.split(' ')[0]} ${parseFloat(num).toFixed(2)}`
+            },
 
-        // Sub-Tab Switcher Controller
-        function toggleFormTab(paneId, btnId) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-            document.querySelectorAll('.tab-trigger').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(paneId).classList.add('active');
-            document.getElementById(btnId).classList.add('active');
-        }
-
-        // Row Generation Matrix
-        function addDynamicItemRow() {
-            const tbody = document.getElementById('lineItemTableBody');
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input list="service-list" style="width: 100%; box-sizing: border-box;" class="item-name" placeholder="Choose pre-loaded corporate task or type custom service"></td>
-                <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-qty" value="1" min="1" oninput="executeLedgerCalculations()"></td>
-                <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-rate" value="0" min="0" oninput="executeLedgerCalculations()"></td>
-                <td style="text-align: right; font-weight: 700;" class="item-amount">0.00</td>
-                <td style="text-align: center;"><button class="btn-danger-icon" onclick="removeDynamicItemRow(this)">×</button></td>
-            `;
-            tbody.appendChild(row);
-            executeLedgerCalculations();
-        }
-
-        function removeDynamicItemRow(btnInstance) {
-            btnInstance.closest('tr').remove();
-            executeLedgerCalculations();
-        }
-
-        // Real-Time Calculation Engine 
-        function executeLedgerCalculations() {
-            const rows = document.getElementById('lineItemTableBody').getElementsByTagName('tr');
-            let itemRowsSubtotal = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                let qty = parseFloat(rows[i].querySelector('.item-qty').value) || 0;
-                let rate = parseFloat(rows[i].querySelector('.item-rate').value) || 0;
-                let rowSum = qty * rate;
-                rows[i].querySelector('.item-amount').innerText = rowSum.toFixed(2);
-                itemRowsSubtotal += rowSum;
-            }
-
-            // Bring in Custom Component
-            let customPartPrice = parseFloat(document.getElementById('customPartPrice').value) || 0;
-            let fullDeductionSubtotal = itemRowsSubtotal + customPartPrice;
-
-            // Bring in Modifiers
-            let discount = parseFloat(document.getElementById('globalDiscountInput').value) || 0;
-            let shipping = parseFloat(document.getElementById('shippingChargesInput').value) || 0;
-            let adjustment = parseFloat(document.getElementById('auditAdjustmentInput').value) || 0;
-
-            if (discount > fullDeductionSubtotal) discount = fullDeductionSubtotal;
-            let adjustedTaxableBasis = fullDeductionSubtotal - discount;
-
-            // Grand Total (VAT-free)
-            let finalCalculatedGrandTotal = adjustedTaxableBasis + shipping + adjustment;
-
-            // Agent Commission Calculations
-            let agentPercentage = parseFloat(document.getElementById('agentPercentageNumber').value) || 0;
-            let finalAgentPayCut = adjustedTaxableBasis * (agentPercentage / 100);
-
-            // Print Calculations to UI
-            document.getElementById('subtotalOutputDisplay').innerText = fullDeductionSubtotal.toFixed(2);
-            document.getElementById('grandTotalOutputDisplay').innerText = finalCalculatedGrandTotal.toFixed(2);
-            document.getElementById('agentLivePayoutDisplay').innerText = "Br " + finalAgentPayCut.toFixed(2);
-
-            return {
-                grandTotal: finalCalculatedGrandTotal,
-                agentPayout: finalAgentPayCut
-            };
-        }
-
-        // Database Framework Initialization
-        let runnershub_master_db = JSON.parse(localStorage.getItem('runnershub_enterprise_db')) || [];
-
-        // Save & Process Outbound Invoice Transaction
-        function processCommitInvoiceToLedger() {
-            let customer = document.getElementById('customerName').value.trim();
-            if (!customer) {
-                toggleFormTab('clientDetailsPane', 'tabBtnClient');
-                alert("Validation Exception: Customer Account parameter cannot be empty.");
-                document.getElementById('customerName').focus();
-                return;
-            }
-
-            // Custom Part Rule Checker
-            let customDesc = document.getElementById('customPartDescription').value.trim();
-            let customPrice = parseFloat(document.getElementById('customPartPrice').value) || 0;
-            if (customPrice > 0 && customDesc === "") {
-                toggleFormTab('clientDetailsPane', 'tabBtnClient');
-                alert("Validation Exception Block: You specified a transaction value for a Custom Part/Service. You are required to define the custom item description parameters.");
-                document.getElementById('customPartDescription').focus();
-                return;
-            }
-
-            let invoiceNumString = document.getElementById('invoiceNumber').value.trim();
-            let postingDate = document.getElementById('invoiceDate').value;
-            let assignedAgent = document.getElementById('agentNameText').value.trim() || "Unassigned Runner";
-
-            // Run final balance sync loop
-            let calculationPayload = executeLedgerCalculations();
-
-            // Store Invoice Schema Object
-            let invoicePayloadSchema = {
-                uid: Date.now(),
-                invoiceID: invoiceNumString,
-                postingDate: postingDate,
-                customerEntity: customer,
-                agentName: assignedAgent,
-                billedAmount: calculationPayload.grandTotal,
-                agentPayoutAmount: calculationPayload.agentPayout,
-                status: "Unpaid"
-            };
-
-            runnershub_master_db.push(invoicePayloadSchema);
-            localStorage.setItem('runnershub_enterprise_db', JSON.stringify(runnershub_master_db));
-
-            // Auto-increment alphanumeric serial sequencing setup (INV-10001 -> INV-10002)
-            try {
-                let parts = invoiceNumString.split('-');
-                let trailingSerial = parseInt(parts[1]);
-                if (!isNaN(trailingSerial)) {
-                    document.getElementById('invoiceNumber').value = parts[0] + "-" + (trailingSerial + 1);
-                }
-            } catch(e) {}
-
-            // Wipe Client Inputs for next execution cycle
-            document.getElementById('customerName').value = "";
-            document.getElementById('customPartDescription').value = "";
-            document.getElementById('customPartPrice').value = "0";
-            document.getElementById('globalDiscountInput').value = "0";
-            document.getElementById('shippingChargesInput').value = "0";
-            document.getElementById('auditAdjustmentInput').value = "0";
-            document.getElementById('agentNameText').value = "";
-            document.getElementById('agentPercentageNumber').value = "0";
-            
-            // Reinitialize item table template
-            document.getElementById('lineItemTableBody').innerHTML = `
-                <tr>
-                    <td><input list="service-list" style="width: 100%; box-sizing: border-box;" class="item-name" placeholder="Choose pre-loaded corporate task or type custom service"></td>
-                    <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-qty" value="1" min="1" oninput="executeLedgerCalculations()"></td>
-                    <td><input type="number" style="width: 100%; box-sizing: border-box;" class="item-rate" value="0" min="0" oninput="executeLedgerCalculations()"></td>
-                    <td style="text-align: right; font-weight: 700;" class="item-amount">0.00</td>
-                    <td></td>
-                </tr>
-            `;
-            executeLedgerCalculations();
-
-            alert("Transaction Executed: Invoice successfully synced with current database logs.");
-            toggleApplicationView('dashboardView');
-        }
-
-        // Ledger UI Compilation
-        function renderMasterLedgerTable() {
-            const tableBody = document.getElementById('dashboardTableBody');
-            const placeholder = document.getElementById('emptyStatePlaceholder');
-            tableBody.innerHTML = '';
-
-            let aggregatedGrossRevenue = 0;
-
-            if (runnershub_master_db.length === 0) {
-                placeholder.style.display = 'block';
-                document.getElementById('dashboardTable').style.display = 'none';
-            } else {
-                placeholder.style.display = 'none';
-                document.getElementById('dashboardTable').style.display = 'table';
-
-                // Display newest invoices on top
-                for (let i = runnershub_master_db.length - 1; i >= 0; i--) {
-                    let log = runnershub_master_db[i];
-                    aggregatedGrossRevenue += log.billedAmount;
-
-                    let rowMarkup = `<tr>
-                        <td><strong>${log.invoiceID}</strong></td>
-                        <td>${log.postingDate}</td>
-                        <td>${log.customerEntity}</td>
-                        <td><span style="color:var(--text-muted); font-weight:600;">${log.agentName}</span></td>
-                        <td style="font-weight:800; color:var(--primary-blue);">Br ${log.billedAmount.toFixed(2)}</td>
-                        <td><span class="badge badge-unpaid">${log.status}</span></td>
-                        <td style="text-align:center;">
-                            <button class="btn-table-void" onclick="executeSecureInvoiceVoid(${log.uid})">Void Entry</button>
-                        </td>
-                    </tr>`;
-                    tableBody.innerHTML += rowMarkup;
-                }
-            }
-
-            document.getElementById('dashTotalCount').innerText = runnershub_master_db.length;
-            document.getElementById('dashTotalRevenue').innerText = "Br " + aggregatedGrossRevenue.toFixed(2);
-        }
-
-        // Secured Deletion Rollback Authorization Protocol
-        function executeSecureInvoiceVoid(uniqueId) {
-            let verificationAttempt = prompt("Security Shield Authorization Required.\nEnter Manager Master Access Key:");
-            
-            if (verificationAttempt === "RunnersHUB123") {
-                // Filter targeted array matrix item out of active logs
-                runnershub_master_db = runnershub_master_db.filter(invoice => invoice.uid !== uniqueId);
-                localStorage.setItem('runnershub_enterprise_db', JSON.stringify(runnershub_master_db));
-                
-                renderMasterLedgerTable();
-                alert("Rollback Success: Outbound transaction voided. Financial parameters adjusted.");
-            } else if (verificationAttempt !== null) {
-                alert("Access Denied: Revocation access key failure.");
-            }
-        }
-
-        // Text Matrix Processing Export Ledger
-        function exportDailyReport() {
-            if (runnershub_master_db.length === 0) {
-                alert("Reporting Exception: Ledger empty. No invoice records to compile.");
-                return;
-            }
-
-            let report = "=====================================================================\n";
-            report += "         RUNNERSHUB AUDITED FINANCIAL STATEMENT & OPERATIONS LOG     \n";
-            report += "=====================================================================\n\n";
-            
-            let instance = new Date();
-            report += "Report Log Extraction Date : " + instance.toLocaleDateString() + "\n";
-            report += "Report Log Extraction Time : " + instance.toLocaleTimeString() + "\n";
-            report += "Data Engine Synchronization Status: Verified Active Mirror\n";
-            report += "---------------------------------------------------------------------\n";
-            
-            let totalBilledSum = 0;
-            runnershub_master_db.forEach(item => totalBilledSum += item.billedAmount);
-            
-            report += "Total Active Accounts Receivable Base : " + runnershub_master_db.length + " Invoices\n";
-            report += "Total Session Operational Net Revenue: Br " + totalBilledSum.toFixed(2) + "\n\n";
-            
-            report += "--- AUDITED SYSTEM ENTRY LOG ARRAYS ---\n\n";
-            
-            runnershub_master_db.forEach((item, index) => {
-                report += "Transaction Log Unit [" + (index + 1) + "]\n";
-                report += "  [SERIAL] Invoice Number: " + item.invoiceID + "\n";
-                report += "  [DATE]   Posting Reference: " + item.postingDate + "\n";
-                report += "  [ENTITY] Corporate Customer: " + item.customerEntity + "\n";
-                report += "  [AGENT]  Assigned Field Runner: " + item.agentName + "\n";
-                report += "  [METRIC] Grand Total Billed To Client: Br " + item.billedAmount.toFixed(2) + "\n";
-                report += "  [PAYOUT] Internal Runner Commission Paid: Br " + item.agentPayoutAmount.toFixed(2) + "\n";
-                report += "  -----------------------------------------------------------------\n";
-            });
-            
-            report += "\n=====================================================================\n";
-            report += "                    End of Corporate Statement\n";
-
-            let blob = new Blob([report], { type: "text/plain" });
-            let downloadLink = document.createElement("a");
-            let fileStampString = instance.toISOString().split('T')[0];
-            downloadLink.download = "RunnersHUB_SaaS_Ledger_" + fileStampString + ".txt";
-            downloadLink.href = window.URL.createObjectURL(blob);
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        }
-
-        // Configuration Backup Engine Matrix (.json redundancy)
-        function backupDatabaseToCloud() {
-            if (runnershub_master_db.length === 0) {
-                alert("Dumping Exception: Active system tracking database contains no objects.");
-                return;
-            }
-            const backupString = JSON.stringify(runnershub_master_db, null, 2);
-            const blob = new Blob([backupString], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const hiddenAnchor = document.createElement("a");
-            hiddenAnchor.href = url;
-            const dateStr = new Date().toISOString().split('T')[0];
-            hiddenAnchor.download = `RunnersHub_SystemBackup_${dateStr}.json`;
-            hiddenAnchor.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function triggerRestoreUpload() {
-            document.getElementById('restoreFileInput').click();
-        }
-
-        function processRestoreDatabase(event) {
-            const chosenFile = event.target.files[0];
-            if (!chosenFile) return;
-
-            const fileStreamingReader = new FileReader();
-            fileStreamingReader.onload = function(e) {
-                try {
-                    const parsedStructure = JSON.parse(e.target.result);
-                    if (!Array.isArray(parsedStructure)) throw new Error("Format Integrity Exception");
+            // --- UI CONTROLLER ---
+            ui: {
+                openModal: (id) => { 
+                    app.ui.populateSelects(); // Ensure dropdowns have latest DB data
+                    document.getElementById(id).classList.add('active'); 
+                    // Auto-set dates to today
+                    ['me-date', 'mb-date', 'edit-date'].forEach(d => { if(document.getElementById(d)) document.getElementById(d).value = app.sys.today(); });
+                },
+                closeModal: (id) => document.getElementById(id).classList.remove('active'),
+                populateSelects: () => {
+                    // Populate CRM dropdowns
+                    const cOpts = '<option value="">Select Customer...</option>' + app.db.customers.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+                    const vOpts = '<option value="">Select Vendor...</option>' + app.db.vendors.map(v => `<option value="${v.name}">${v.name}</option>`).join('');
+                    if(document.getElementById('edit-entity')) document.getElementById('edit-entity').innerHTML = app.state.editorMode === 'PO' ? vOpts : cOpts;
+                    if(document.getElementById('me-vendor')) document.getElementById('me-vendor').innerHTML = vOpts;
                     
-                    if (confirm("System Alert: You are about to upload a master database mirror array. This will override current session memory logs. Commit?")) {
-                        runnershub_master_db = parsedStructure;
-                        localStorage.setItem('runnershub_enterprise_db', JSON.stringify(runnershub_master_db));
-                        toggleApplicationView('dashboardView');
-                        alert("System Synced: Mirror arrays mapped to system storage successfully.");
-                    }
-                } catch (err) {
-                    alert("Mirror Exception: Invalid backup schema properties. Operation discarded.");
+                    // Populate Accounts
+                    const expOpts = app.db.coa.filter(a => a.type === 'Expense').map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+                    if(document.getElementById('me-account')) document.getElementById('me-account').innerHTML = expOpts;
+                },
+                buildTable: (tbodyId, data, cols, actions) => {
+                    let html = '';
+                    data.forEach(row => {
+                        html += '<tr>';
+                        cols.forEach(col => {
+                            let val = row[col];
+                            // Formatting
+                            if(col === 'amount' || col === 'total' || col === 'rate') val = app.sys.formatMoney(val);
+                            if(col === 'status') val = `<span class="badge ${val==='Paid'||val==='Approved' ? 'b-success' : (val==='Unpaid' ? 'b-warning' : 'b-primary')}">${val}</span>`;
+                            if(col === 'type') val = `<span class="badge ${val==='Deposit (+)' ? 'b-success' : 'b-danger'}">${val}</span>`;
+                            html += `<td>${val}</td>`;
+                        });
+                        html += `<td>${actions(row)} <button class="btn-icon" onclick="app.crud.del('${tbodyId.split('-')[1]}', ${row.id})">🗑️</button></td></tr>`;
+                    });
+                    document.getElementById(tbodyId).innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--text-muted)">No records found.</td></tr>';
                 }
-                event.target.value = '';
-            };
-            fileStreamingReader.readAsText(chosenFile);
-        }
+            },
 
-        // System Initialization Boot
-        renderMasterLedgerTable();
+            // --- VIEW ROUTER ---
+            nav: (view) => {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.getElementById('view-' + view).classList.add('active');
+                try { event.currentTarget.classList.add('active'); } catch(e){}
+                
+                // Render Logic per view
+                if(view === 'dashboard') app.reports.dashboard();
+                if(view === 'customers') app.ui.buildTable('tbl-customers', app.db.customers, ['name','company','email','phone'], ()=> '');
+                if(view === 'vendors') app.ui.buildTable('tbl-vendors', app.db.vendors, ['name','company','email'], ()=> '');
+                if(view === 'items') app.ui.buildTable('tbl-items', app.db.items, ['type','name','desc','rate'], ()=> '');
+                if(view === 'invoices') app.ui.buildTable('tbl-invoices', app.db.invoices, ['date','number','customer','total','status'], (r)=> r.status==='Unpaid'?`<button class="btn btn-outline" style="padding:2px 6px;font-size:10px" onclick="app.actions.markPaid(${r.id})">Mark Paid</button>`:'');
+                if(view === 'quotes') app.ui.buildTable('tbl-quotes', app.db.quotes, ['date','number','customer','total','status'], (r)=> r.status==='Draft'?`<button class="btn btn-outline" style="padding:2px 6px;font-size:10px" onclick="app.actions.convertQuote(${r.id})">Make Invoice</button>`:'');
+                if(view === 'purchaseOrders') app.ui.buildTable('tbl-pos', app.db.pos, ['date','number','customer','total','status'], ()=> '');
+                if(view === 'expenses') app.ui.buildTable('tbl-expenses', app.db.expenses, ['date','vendor','account','bank','amount'], ()=> '');
+                if(view === 'banking') app.ui.buildTable('tbl-banking', app.db.banking, ['date','account','type','desc','amount'], ()=> '');
+                if(view === 'chartOfAccounts') app.ui.buildTable('tbl-coa', app.db.coa, ['name','type'], ()=> '');
+                if(view === 'reports') app.reports.generate();
+                if(view === 'settings') {
+                    document.getElementById('set-orgName').value = app.db.settings.orgName;
+                    document.getElementById('set-currency').value = app.db.settings.currency;
+                    document.getElementById('set-taxRate').value = app.db.settings.tax;
+                    document.getElementById('set-invPrefix').value = app.db.settings.invPrefix;
+                }
+            },
+
+            // --- CRUD ENGINE ---
+            crud: {
+                save: (entity) => {
+                    let obj = { id: Date.now() };
+                    if(entity === 'customers') {
+                        obj.name = document.getElementById('mc-name').value;
+                        if(!obj.name) return alert('Name required');
+                        obj.company = document.getElementById('mc-company').value;
+                        obj.email = document.getElementById('mc-email').value;
+                        obj.phone = document.getElementById('mc-phone').value;
+                        app.ui.closeModal('modal-customer');
+                    }
+                    if(entity === 'vendors') {
+                        obj.name = document.getElementById('mv-name').value;
+                        if(!obj.name) return alert('Name required');
+                        obj.company = document.getElementById('mv-company').value;
+                        obj.email = document.getElementById('mv-email').value;
+                        app.ui.closeModal('modal-vendor');
+                    }
+                    if(entity === 'items') {
+                        obj.name = document.getElementById('mi-name').value;
+                        if(!obj.name) return alert('Name required');
+                        obj.type = document.getElementById('mi-type').value;
+                        obj.desc = document.getElementById('mi-desc').value;
+                        obj.rate = parseFloat(document.getElementById('mi-rate').value) || 0;
+                        app.ui.closeModal('modal-item');
+                    }
+                    if(entity === 'expenses') {
+                        obj.date = document.getElementById('me-date').value;
+                        obj.account = document.getElementById('me-account').value;
+                        obj.amount = parseFloat(document.getElementById('me-amt').value) || 0;
+                        if(obj.amount <= 0) return alert('Amount must be > 0');
+                        obj.bank = document.getElementById('me-bank').value;
+                        obj.vendor = document.getElementById('me-vendor').value || 'None';
+                        app.ui.closeModal('modal-expense');
+                        // Auto-log to banking
+                        app.db.banking.push({id: Date.now()+1, date: obj.date, account: obj.bank, type: 'Withdrawal (-)', amount: obj.amount, desc: `Expense: ${obj.account}`});
+                    }
+                    if(entity === 'banking') {
+                        obj.date = document.getElementById('mb-date').value;
+                        obj.account = document.getElementById('mb-acc').value;
+                        obj.type = document.getElementById('mb-type').value;
+                        obj.amount = parseFloat(document.getElementById('mb-amt').value) || 0;
+                        if(obj.amount <= 0) return alert('Amount must be > 0');
+                        obj.desc = document.getElementById('mb-desc').value || 'Manual Entry';
+                        app.ui.closeModal('modal-banking');
+                    }
+                    app.db[entity].push(obj);
+                    app.sys.save(); app.sys.toast(entity.toUpperCase() + " Saved"); app.nav(entity);
+                },
+                del: (entity, id) => {
+                    app.db[entity] = app.db[entity].filter(i => i.id !== id);
+                    app.sys.save(); app.sys.toast("Record Deleted", "danger"); app.nav(entity);
+                }
+            },
+
+            // --- UNIVERSAL DOCUMENT EDITOR (Invoices, Quotes, POs) ---
+            editor: {
+                open: (mode) => {
+                    app.state.editorMode = mode;
+                    document.getElementById('editor-title').innerText = "Create New " + mode;
+                    document.getElementById('editor-entity-lbl').innerText = mode === 'PO' ? 'Vendor' : 'Customer';
+                    document.getElementById('edit-tax-lbl').innerText = app.db.settings.tax;
+                    let prefix = mode === 'Invoice' ? app.db.settings.invPrefix : (mode==='Quote' ? 'EST-' : 'PO-');
+                    document.getElementById('edit-num').value = app.sys.rnd(prefix);
+                    document.getElementById('edit-tbody').innerHTML = '';
+                    app.editor.addRow();
+                    app.ui.openModal('modal-editor');
+                },
+                addRow: () => {
+                    const itemOpts = '<option value="">Select Item...</option>' + app.db.items.map(i => `<option value="${i.rate}">${i.name}</option>`).join('');
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><select style="width:100%" onchange="this.closest('tr').querySelector('.er-rate').value=this.value; app.editor.calc()">${itemOpts}</select></td>
+                        <td><input type="number" class="er-qty" style="width:100%" value="1" min="1" oninput="app.editor.calc()"></td>
+                        <td><input type="number" class="er-rate" style="width:100%" value="0" min="0" oninput="app.editor.calc()"></td>
+                        <td style="text-align:right; font-weight:700;" class="er-amt">0.00</td>
+                        <td style="text-align:center;"><button class="btn-icon" onclick="this.closest('tr').remove(); app.editor.calc()">🗑</button></td>
+                    `;
+                    document.getElementById('edit-tbody').appendChild(tr);
+                },
+                calc: () => {
+                    let sub = 0;
+                    document.querySelectorAll('#edit-tbody tr').forEach(row => {
+                        let qty = parseFloat(row.querySelector('.er-qty').value) || 0;
+                        let rate = parseFloat(row.querySelector('.er-rate').value) || 0;
+                        let amt = qty * rate;
+                        row.querySelector('.er-amt').innerText = amt.toFixed(2);
+                        sub += amt;
+                    });
+                    let disc = parseFloat(document.getElementById('edit-disc').value) || 0;
+                    let taxRate = app.db.settings.tax / 100;
+                    let taxAmt = (sub - disc) * taxRate;
+                    let total = (sub - disc) + taxAmt;
+                    
+                    document.getElementById('edit-sub').innerText = sub.toFixed(2);
+                    document.getElementById('edit-tax').innerText = taxAmt.toFixed(2);
+                    document.getElementById('edit-total').innerText = total.toFixed(2);
+                    return { sub, disc, taxAmt, total };
+                },
+                save: () => {
+                    let entity = document.getElementById('edit-entity').value;
+                    if(!entity) return alert('Customer/Vendor is required.');
+                    let totals = app.editor.calc();
+                    let payload = {
+                        id: Date.now(),
+                        number: document.getElementById('edit-num').value,
+                        date: document.getElementById('edit-date').value,
+                        customer: entity, // acts as vendor for POs
+                        total: totals.total,
+                        status: app.state.editorMode === 'Invoice' ? 'Unpaid' : (app.state.editorMode === 'Quote' ? 'Draft' : 'Issued')
+                    };
+                    
+                    let targetDB = app.state.editorMode === 'Invoice' ? 'invoices' : (app.state.editorMode === 'Quote' ? 'quotes' : 'pos');
+                    app.db[targetDB].push(payload);
+                    app.sys.save(); app.ui.closeModal('modal-editor'); app.sys.toast(app.state.editorMode + " Created!");
+                    app.nav(targetDB === 'pos' ? 'purchaseOrders' : targetDB);
+                }
+            },
+
+            // --- BUSINESS ACTIONS ---
+            actions: {
+                markPaid: (id) => {
+                    let inv = app.db.invoices.find(i => i.id === id);
+                    if(inv) { 
+                        inv.status = 'Paid'; app.sys.save(); app.nav('invoices'); app.sys.toast("Invoice Marked Paid"); 
+                        // Auto log income to Bank
+                        app.db.banking.push({id: Date.now(), date: app.sys.today(), account: 'Bank Account', type: 'Deposit (+)', amount: inv.total, desc: `Payment for ${inv.number}`});
+                        app.sys.save();
+                    }
+                },
+                convertQuote: (id) => {
+                    let qIdx = app.db.quotes.findIndex(q => q.id === id);
+                    let q = app.db.quotes[qIdx];
+                    q.number = app.sys.rnd(app.db.settings.invPrefix);
+                    q.status = 'Unpaid';
+                    app.db.invoices.push(q); app.db.quotes.splice(qIdx, 1);
+                    app.sys.save(); app.nav('invoices'); app.sys.toast("Converted to Invoice");
+                }
+            },
+
+            // --- INTELLIGENCE & REPORTING ---
+            reports: {
+                dashboard: () => {
+                    let rec = app.db.invoices.filter(i=>i.status==='Unpaid').reduce((s,i)=>s+i.total,0);
+                    let pay = app.db.expenses.reduce((s,e)=>s+e.amount,0); // Simplified payables
+                    let inc = app.db.invoices.filter(i=>i.status==='Paid').reduce((s,i)=>s+i.total,0);
+                    let liq = app.db.banking.reduce((s,tx)=> tx.type.includes('+') ? s+tx.amount : s-tx.amount, 0);
+
+                    document.getElementById('d-rec').innerText = app.sys.formatMoney(rec);
+                    document.getElementById('d-pay').innerText = app.sys.formatMoney(pay);
+                    document.getElementById('d-net').innerText = app.sys.formatMoney(inc - pay);
+                    document.getElementById('d-liq').innerText = app.sys.formatMoney(liq);
+
+                    app.ui.buildTable('d-inv-table', app.db.invoices.slice(-4).reverse(), ['number','customer','total','status'], ()=> '');
+                    app.ui.buildTable('d-exp-table', app.db.expenses.slice(-4).reverse(), ['date','vendor','account','amount'], ()=> '');
+                },
+                generate: () => {
+                    // Profit & Loss
+                    let totalIncome = app.db.invoices.filter(i=>i.status==='Paid').reduce((s,i)=>s+i.total,0);
+                    let expensesHTML = ''; let totalExp = 0;
+                    
+                    // Group expenses by account
+                    let expGroups = {};
+                    app.db.expenses.forEach(e => { expGroups[e.account] = (expGroups[e.account]||0) + e.amount; });
+                    for(const [acc, amt] of Object.entries(expGroups)) {
+                        expensesHTML += `<div class="report-row"><span>${acc}</span><span>${app.sys.formatMoney(amt)}</span></div>`;
+                        totalExp += amt;
+                    }
+
+                    document.getElementById('report-pnl').innerHTML = `
+                        <h2>Profit and Loss</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Cash Basis</p>
+                        <div class="report-row subtotal" style="color:var(--success)"><span>Total Income (Paid Inv.)</span><span>${app.sys.formatMoney(totalIncome)}</span></div>
+                        <h3 style="margin: 15px 0 5px; font-size:11px; text-transform:uppercase; color:var(--text-muted)">Operating Expenses</h3>
+                        ${expensesHTML || '<div class="report-row"><span>No Expenses Logged</span><span>$0.00</span></div>'}
+                        <div class="report-row subtotal" style="color:var(--danger); border-top: 2px solid var(--border)"><span>Total Expenses</span><span>${app.sys.formatMoney(totalExp)}</span></div>
+                        <div class="report-row subtotal" style="font-size: 16px; margin-top: 15px; background:var(--primary); color:white; border-radius:4px;"><span>NET PROFIT</span><span>${app.sys.formatMoney(totalIncome - totalExp)}</span></div>
+                    `;
+
+                    // A/R Aging
+                    let agingHTML = ''; let totalUnpaid = 0;
+                    app.db.customers.forEach(c => {
+                        let cOwes = app.db.invoices.filter(i => i.customer === c.name && i.status === 'Unpaid').reduce((s,i)=>s+i.total,0);
+                        if(cOwes > 0) {
+                            agingHTML += `<div class="report-row"><span>${c.name}</span><span>${app.sys.formatMoney(cOwes)}</span></div>`;
+                            totalUnpaid += cOwes;
+                        }
+                    });
+                    document.getElementById('report-aging').innerHTML = `
+                        <h2>A/R Aging Summary</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Outstanding Balances</p>
+                        ${agingHTML || '<div class="report-row"><span>All accounts clear!</span><span>$0.00</span></div>'}
+                        <div class="report-row subtotal" style="margin-top: 15px; border-top: 2px solid var(--border)"><span>Total Accounts Receivable</span><span>${app.sys.formatMoney(totalUnpaid)}</span></div>
+                    `;
+                },
+                mockData: () => {
+                    // Auto-generates starter data if DB is empty so the app isn't blank on first boot.
+                    if(app.db.customers.length === 0) {
+                        app.db.customers = [{id:1, name:'Acme Corp', company:'Acme', email:'hi@acme.com', phone:'555-0100'}, {id:2, name:'Globex', company:'Globex', email:'ceo@globex.com', phone:'555-0200'}];
+                        app.db.items = [{id:1, type:'Service', name:'Consulting', desc:'Hourly Strategy', rate: 1500}, {id:2, type:'Goods', name:'Server Rack', desc:'Hardware', rate: 4500}];
+                        app.db.invoices = [{id:1, number: 'INV-9921', date: app.sys.today(), customer: 'Acme Corp', total: 6900, status: 'Paid'}, {id:2, number: 'INV-9922', date: app.sys.today(), customer: 'Globex', total: 1725, status: 'Unpaid'}];
+                        app.db.expenses = [{id:1, date: app.sys.today(), vendor: 'AWS', account: 'Office Supplies', amount: 450, bank: 'Bank Account'}];
+                        app.db.banking = [{id:1, date: app.sys.today(), account: 'Bank Account', type: 'Deposit (+)', amount: 6900, desc: 'Acme Payment'}];
+                        app.sys.save();
+                    }
+                }
+            }
+        };
+
+        // --- BOOT SEQUENCE ---
+        app.reports.mockData(); // Seed data if fresh install
+        app.nav('dashboard');   // Load home screen
     </script>
 </body>
 </html>
