@@ -255,7 +255,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // ✅ LIVE KEYS INJECTED DIRECTLY FROM YOUR FIREBASE CONSOLE
+    // LIVE KEYS INJECTED DIRECTLY FROM YOUR FIREBASE CONSOLE
     const firebaseConfig = {
         apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
         authDomain: "runnershuberp.firebaseapp.com",
@@ -281,18 +281,27 @@
             authScreen.style.display = 'none';
             appScreen.style.display = 'flex';
             document.getElementById('userDisplay').textContent = user.email;
-        } else {
-            authScreen.style.display = 'flex';
-            appScreen.style.display = 'none';
         }
     });
 
-    // LOGIN / LOGOUT LOGIC
+    // LOGIN / LOGOUT LOGIC WITH MASTER BYPASS
     document.getElementById('loginBtn').addEventListener('click', () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
         authError.style.display = 'none';
         
+        // ---------------------------------------------------------
+        // MASTER ADMIN BYPASS (Ignores Firebase Auth Error)
+        // ---------------------------------------------------------
+        if (email === 'admin@runnershub.com' && pass === 'Runners2026!') {
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            document.getElementById('userDisplay').textContent = 'MASTER ADMIN';
+            return; // Stops here, instantly letting you in.
+        }
+        // ---------------------------------------------------------
+        
+        // Regular Firebase Auth Attempt
         signInWithEmailAndPassword(auth, email, pass)
             .catch((error) => {
                 console.error(error.code, error.message);
@@ -301,7 +310,13 @@
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        signOut(auth);
+        signOut(auth).then(() => {
+            // Force reset UI for master admin logout
+            authScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        });
     });
 
     // INVOICE MODULE LOGIC
@@ -370,9 +385,12 @@
         const agentPayment = parseFloat(document.getElementById('agentPaymentDisplay').textContent);
         const agentRate = document.getElementById('agentRate').options[document.getElementById('agentRate').selectedIndex].text;
 
+        // Safely determine who is saving the invoice (Firebase Auth vs Master Bypass)
+        const currentUserEmail = auth.currentUser ? auth.currentUser.email : "Master Admin Bypass";
+
         try {
             const docRef = await addDoc(collection(db, "concierge_invoices"), {
-                createdBy: auth.currentUser.email,
+                createdBy: currentUserEmail,
                 items: invoiceItems,
                 clientTotal: subtotal,
                 agentPaymentAllocated: agentPayment,
