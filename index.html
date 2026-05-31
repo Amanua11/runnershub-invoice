@@ -3,115 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUNNERSHUB ERP - Cloud Suite</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
-    <script>
-        // Your exact project configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
-            authDomain: "runnershuberp.firebaseapp.com",
-            projectId: "runnershuberp",
-            storageBucket: "runnershuberp.appspot.com",
-            messagingSenderId: "867809864192",
-            appId: "1:867809864192:web:f1b28454491128780046e5"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
-
+    <title>RUNNERSHUB ERP - Cloud Invoice Generator</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        
+        /* Glassmorphism UI */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
-            color: #0f172a;
             margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #fff;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            justify-content: center;
+            align-items: center;
         }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(195deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 10;
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        .sidebar h2 {
-            padding: 25px 20px;
-            margin: 0;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: #f8fafc;
-            font-size: 20px;
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            letter-spacing: 1px;
         }
-        .nav-item {
-            padding: 16px 20px;
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
+        }
+        input {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: bold;
             cursor: pointer;
-            font-weight: 600;
-            color: #cbd5e1;
-            border-left: 4px solid transparent;
-            transition: all 0.2s ease;
+            transition: background 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-top: 15px;
         }
-        .nav-item:hover { 
-            background: rgba(255,255,255,0.05); 
-            color: white;
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-        .nav-item.active { 
-            border-left-color: #3b82f6; 
-            background: rgba(59, 130, 246, 0.15); 
-            color: white;
+        .invoice-items {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 100px;
         }
-
-        /* Main Workspace Layout */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #f8fafc;
-        }
-        
-        .header {
-            background: white;
-            padding: 20px 40px;
-            border-bottom: 1px solid #e2e8f0;
+        .item-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
         }
+        .total-display {
+            font-size: 1.5em;
+            text-align: right;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="glass-panel">
+    <h2>RUNNERSHUB ERP</h2>
+    <p style="text-align: center; font-size: 0.9em; margin-bottom: 20px;">Invoice & Billing Module</p>
+
+    <div class="form-group">
+        <label>Item Description</label>
+        <input type="text" id="itemName" placeholder="e.g., Errand Service, Property Check">
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Price (Br)</label>
+            <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label>Quantity</label>
+            <input type="number" id="itemQty" placeholder="1" value="1">
+        </div>
+    </div>
+    
+    <button id="addItemBtn">Add Item to Invoice</button>
+
+    <div class="invoice-items" id="invoiceList">
+        </div>
+
+    <div class="total-display">
+        Total: <span id="invoiceTotal">0.00</span> Br
+    </div>
+
+    <button id="saveInvoiceBtn">Save Invoice to Cloud</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // Insert your Firebase configuration keys here
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase & Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Core Logic
+    let invoiceItems = [];
+    let currentTotal = 0;
+
+    const itemNameInput = document.getElementById('itemName');
+    const itemPriceInput = document.getElementById('itemPrice');
+    const itemQtyInput = document.getElementById('itemQty');
+    const invoiceList = document.getElementById('invoiceList');
+    const invoiceTotalDisplay = document.getElementById('invoiceTotal');
+
+    document.getElementById('addItemBtn').addEventListener('click', () => {
+        const name = itemNameInput.value.trim();
+        const price = parseFloat(itemPriceInput.value);
+        const qty = parseInt(itemQtyInput.value);
+
+        if (!name || isNaN(price) || isNaN(qty)) {
+            alert("Please enter valid item details.");
+            return;
+        }
+
+        // FIX IMPLEMENTED: Strict math processing prevents CSP blank screen errors. 
+        // Zero use of eval().
+        const lineTotal = price * qty; 
         
-        .header h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 800;
-            color: #1e293b;
+        invoiceItems.push({ name, price, qty, lineTotal });
+        
+        updateUI();
+        clearInputs();
+    });
+
+    function updateUI() {
+        invoiceList.innerHTML = '';
+        currentTotal = 0;
+
+        invoiceItems.forEach((item) => {
+            currentTotal += item.lineTotal;
+
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <span>${item.qty}x ${item.name}</span>
+                <span>${item.lineTotal.toFixed(2)} Br</span>
+            `;
+            invoiceList.appendChild(row);
+        });
+
+        invoiceTotalDisplay.textContent = currentTotal.toFixed(2);
+    }
+
+    function clearInputs() {
+        itemNameInput.value = '';
+        itemPriceInput.value = '';
+        itemQtyInput.value = '1';
+        itemNameInput.focus();
+    }
+
+    // Cloud Database Save Event
+    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
+        if (invoiceItems.length === 0) {
+            alert("Cannot save an empty invoice.");
+            return;
         }
 
-        .cloud-badge {
-            background: #e0f2fe;
-            color: #0369a1;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        try {
+            const docRef = await addDoc(collection(db, "invoices"), {
+                items: invoiceItems,
+                totalAmount: currentTotal,
+                currency: "Br",
+                createdAt: new Date()
+            });
+            alert("Invoice securely synced to RUNNERSHUB Firestore! ID: " + docRef.id);
+            
+            // Reset for next invoice
+            invoiceItems = [];
+            updateUI();
+        } catch (e) {
+            console.error("Cloud synchronization error: ", e);
+            alert("Failed to save invoice to cloud.");
         }
-
-        .workspace {
-            padding: 40px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        /* Cards and
+    });
+</script>
+</body>
+</html>
