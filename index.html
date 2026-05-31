@@ -151,7 +151,6 @@
 </head>
 <body>
 
-<!-- AUTHENTICATION SCREEN -->
 <div id="auth-screen">
     <div class="auth-box">
         <h2>RunnersHUB Login</h2>
@@ -163,13 +162,11 @@
     </div>
 </div>
 
-<!-- MAIN APPLICATION SCREEN (ZOHO STYLE) -->
 <div id="app-screen" style="display: none;">
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>RunnersHUB</h2>
-            <p>ERP System</p>
+            <p>ERP System - Trial</p>
         </div>
         <div class="nav-menu">
             <div class="nav-item">Dashboard</div>
@@ -179,9 +176,7 @@
         </div>
     </div>
 
-    <!-- Main Workspace -->
     <div class="main-content">
-        <!-- Top Header -->
         <div class="header">
             <h3 style="margin: 0; color: var(--text-main);">Create Concierge Invoice</h3>
             <div class="user-profile">
@@ -190,10 +185,8 @@
             </div>
         </div>
 
-        <!-- Content Area -->
         <div class="content-area">
             
-            <!-- Item Entry Card -->
             <div class="card">
                 <h3>Add Service Item</h3>
                 <div class="form-row">
@@ -213,7 +206,6 @@
                 <button class="btn-primary" id="addItemBtn">+ Add to Line Items</button>
             </div>
 
-            <!-- Invoice Details Card -->
             <div class="card">
                 <h3>Invoice Details</h3>
                 <table class="data-table">
@@ -226,8 +218,7 @@
                         </tr>
                     </thead>
                     <tbody id="invoiceTableBody">
-                        <!-- Items inject here -->
-                    </tbody>
+                        </tbody>
                 </table>
 
                 <div class="totals-section">
@@ -235,7 +226,6 @@
                         <span>Subtotal:</span>
                         <span id="subtotalDisplay">0.00 Br</span>
                     </div>
-                    <!-- AGENT PAYMENT CALCULATION (Replaces Tax) -->
                     <div class="totals-row agent-payment">
                         <span>
                             Agent Payment 
@@ -260,13 +250,14 @@
     </div>
 </div>
 
-<!-- FIREBASE INTEGRATION: Auth & Firestore -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // 1. FIREBASE CONFIGURATION
+    // =======================================================================
+    // ⚠️ CRITICAL STEP: REPLACE THESE PLACEHOLDERS WITH YOUR FIREBASE KEYS ⚠️
+    // =======================================================================
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_AUTH_DOMAIN",
@@ -275,17 +266,20 @@
         messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
         appId: "YOUR_APP_ID"
     };
+    // =======================================================================
+    // END OF FIREBASE KEYS
+    // =======================================================================
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // 2. UI ELEMENTS MAP
+    // UI ELEMENTS MAP
     const authScreen = document.getElementById('auth-screen');
     const appScreen = document.getElementById('app-screen');
     const authError = document.getElementById('auth-error');
     
-    // 3. AUTHENTICATION STATE OBSERVER
+    // AUTHENTICATION STATE OBSERVER
     onAuthStateChanged(auth, (user) => {
         if (user) {
             authScreen.style.display = 'none';
@@ -297,7 +291,7 @@
         }
     });
 
-    // 4. LOGIN / LOGOUT LOGIC
+    // LOGIN / LOGOUT LOGIC
     document.getElementById('loginBtn').addEventListener('click', () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
@@ -314,7 +308,7 @@
         signOut(auth);
     });
 
-    // 5. INVOICE MODULE LOGIC (CSP Safe - No Eval)
+    // INVOICE MODULE LOGIC (CSP Safe - No Eval)
     let invoiceItems = [];
     
     document.getElementById('addItemBtn').addEventListener('click', () => {
@@ -369,7 +363,7 @@
         document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`; // Total billed to client
     }
 
-    // 6. CLOUD SYNC (FIRESTORE)
+    // CLOUD SYNC (FIRESTORE)
     document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
         if (invoiceItems.length === 0) {
             alert("Please add service items before saving.");
