@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RunnersHUB ERP</title>
+    <!-- FontAwesome for Zoho-style Sidebar Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- ZOHO ENTERPRISE CSS --- */
         :root { 
-            --z-blue: #0050d2;
-            --z-blue-hover: #003eb0;
-            --z-sidebar: #111827;
-            --z-sidebar-hover: #1f2937;
+            --z-blue: #2f78ff;
+            --z-blue-hover: #1e61db;
+            --z-sidebar-bg: #f9fbfd;
+            --z-sidebar-text: #4b5563;
             --z-bg: #f3f4f6;
             --z-border: #e5e7eb;
             --z-text-dark: #111827;
@@ -20,7 +22,7 @@
         }
         body { 
             margin: 0; 
-            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--z-bg); 
             color: var(--z-text-dark);
             height: 100vh; 
@@ -31,24 +33,27 @@
         /* --- APP LAYOUT --- */
         #app-screen { width: 100%; height: 100%; display: flex; }
         
-        /* SIDEBAR */
+        /* EXACT ZOHO LIGHT SIDEBAR */
         .sidebar { 
-            width: 240px; background: var(--z-sidebar); color: white; 
-            display: flex; flex-direction: column; flex-shrink: 0;
+            width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); 
+            display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border);
         }
         .sidebar-brand { 
-            padding: 20px; font-size: 16px; font-weight: 600; 
-            border-bottom: 1px solid #374151; display: flex; align-items: center; gap: 10px;
+            padding: 20px 24px; font-size: 17px; font-weight: 700; color: var(--z-text-dark);
+            display: flex; align-items: center; gap: 10px;
         }
         .org-icon { background: var(--z-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-        .nav-group { padding: 16px 0; }
+        .nav-group { padding: 10px 0; display: flex; flex-direction: column; gap: 2px; }
         .nav-item { 
-            padding: 10px 20px; cursor: pointer; font-size: 14px; color: #9ca3af;
-            display: flex; align-items: center; gap: 12px; border-left: 3px solid transparent; transition: 0.2s;
+            padding: 10px 16px; margin: 0 12px; cursor: pointer; font-size: 14px; color: var(--z-sidebar-text);
+            display: flex; align-items: center; border-radius: 8px; transition: 0.15s ease-in-out; font-weight: 500;
         }
-        .nav-item:hover { color: white; background: var(--z-sidebar-hover); }
-        .nav-item.active { background: var(--z-sidebar-hover); color: white; border-left-color: var(--z-blue); font-weight: 500; }
-        .nav-divider { border-top: 1px solid #374151; margin: 10px 0; }
+        .nav-item:hover { background: #f0f4f8; color: var(--z-text-dark); }
+        .nav-item.active { background: var(--z-blue); color: white; }
+        .nav-icon { width: 24px; text-align: center; margin-right: 10px; font-size: 15px; }
+        .nav-caret { margin-left: auto; font-size: 12px; opacity: 0.6; }
+        
+        .nav-divider { border-top: 1px solid var(--z-border); margin: 15px 0; }
 
         /* MAIN WORKSPACE */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -70,71 +75,114 @@
 
         /* REUSABLE CARDS & FORMS */
         .card { 
-            background: var(--z-card-bg); border-radius: 6px; border: 1px solid var(--z-border); 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px;
+            background: var(--z-card-bg); border-radius: 8px; border: 1px solid var(--z-border); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px;
         }
-        .card-header { margin-top: 0; margin-bottom: 20px; font-size: 16px; color: var(--z-blue); border-bottom: 1px solid var(--z-border); padding-bottom: 12px; }
+        .card-header { margin-top: 0; margin-bottom: 20px; font-size: 16px; color: var(--z-text-dark); font-weight: 600; padding-bottom: 12px; }
         
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 16px; }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--z-text-muted); }
         .input-group input, .input-group select { 
-            padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;
+            padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 14px;
         }
-        .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); outline: none; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); outline: none; box-shadow: 0 0 0 2px rgba(47,120,255,0.2); }
         
         .btn-primary { 
-            background: var(--z-blue); color: white; border: none; padding: 8px 16px; 
-            border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 13px;
+            background: var(--z-blue); color: white; border: none; padding: 9px 18px; 
+            border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s;
         }
         .btn-primary:hover { background: var(--z-blue-hover); }
+        .btn-outline { 
+            background: white; color: var(--z-blue); border: 1px solid var(--z-blue); padding: 9px 18px; 
+            border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s;
+        }
+        .btn-outline:hover { background: #f0f4f8; }
+
+        /* ON-THE-SPOT AGENT UI */
+        .agent-spot-details {
+            display: none; margin-top: 15px; padding: 16px; background: #f8fafc; 
+            border: 1px solid #e2e8f0; border-radius: 6px; border-left: 4px solid var(--z-blue);
+        }
+        .agent-spot-details h4 { margin: 0 0 5px 0; color: var(--z-text-dark); font-size: 14px; }
+        .agent-spot-details p { margin: 0; color: var(--z-text-muted); font-size: 13px; }
+        
+        .agent-quick-add {
+            display: none; margin-top: 15px; padding: 20px; background: #ffffff; 
+            border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
 
         /* DATA TABLES */
         .data-table { width: 100%; border-collapse: collapse; }
         .data-table th { 
             background: #f9fafb; padding: 12px 16px; text-align: left; 
             font-size: 12px; color: var(--z-text-muted); font-weight: 600; border-bottom: 1px solid var(--z-border);
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
         .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); font-size: 14px; }
         .data-table .col-right { text-align: right; }
-        .status-badge { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .status-badge { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 
         /* INVOICE SPECIFIC TOTALS */
-        .totals-section { display: flex; justify-content: flex-end; padding-top: 16px; }
-        .totals-box { width: 300px; background: #fdfdfd; border: 1px solid var(--z-border); padding: 16px; border-radius: 4px; }
-        .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 13px; }
-        .tot-row.agent-payout { color: #d84315; }
-        .rate-select { border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 4px; font-size: 12px; margin-left: 8px; }
-        .tot-row.grand-total { font-size: 16px; font-weight: 600; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--z-border); }
+        .totals-section { display: flex; justify-content: flex-end; padding-top: 20px; }
+        .totals-box { width: 320px; background: #fdfdfd; border: 1px solid var(--z-border); padding: 20px; border-radius: 6px; }
+        .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; }
+        .tot-row.agent-payout { color: #d84315; font-weight: 500; }
+        .rate-select { border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 4px; font-size: 12px; margin-left: 8px; font-weight: bold; }
+        .tot-row.grand-total { font-size: 18px; font-weight: 600; margin-top: 10px; padding-top: 15px; border-top: 1px solid var(--z-border); }
 
         /* DASHBOARD METRICS */
         .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px; }
-        .kpi-card { background: white; padding: 24px; border-radius: 6px; border: 1px solid var(--z-border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .kpi-title { font-size: 13px; color: var(--z-text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
-        .kpi-value { font-size: 28px; font-weight: 600; color: var(--z-text-dark); }
+        .kpi-card { background: white; padding: 24px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .kpi-title { font-size: 13px; color: var(--z-text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
+        .kpi-value { font-size: 32px; font-weight: 700; color: var(--z-text-dark); }
         .kpi-profit { color: var(--z-success); }
     </style>
 </head>
 <body>
 
-<!-- MAIN APP LAYOUT -->
+<!-- MAIN APP LAYOUT (LOGIN BYPASSED FOR DEV) -->
 <div id="app-screen">
     
-    <!-- SIDEBAR -->
+    <!-- EXACT ZOHO LIGHT SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <span class="org-icon">RH</span> RunnersHUB
         </div>
         <div class="nav-group">
-            <div class="nav-item active" data-target="view-dashboard">Dashboard</div>
-            <div class="nav-item" data-target="view-customers">Customers</div>
-            <div class="nav-item" data-target="view-agents">Agent Network</div>
-            
-            <div class="nav-divider"></div>
-            
-            <div class="nav-item" data-target="view-invoices">New Invoice</div>
-            <div class="nav-item" data-target="view-invoice-list">Invoice List</div>
-            <div class="nav-item" data-target="view-reports">Financial Reports</div>
+            <div class="nav-item active" data-target="view-dashboard">
+                <i class="fa-solid fa-house nav-icon"></i> Home
+            </div>
+            <div class="nav-item" data-target="view-placeholder">
+                <i class="fa-solid fa-box nav-icon"></i> Items <i class="fa-solid fa-caret-right nav-caret"></i>
+            </div>
+            <div class="nav-item" data-target="view-placeholder">
+                <i class="fa-solid fa-building-columns nav-icon"></i> Banking
+            </div>
+            <div class="nav-item" data-target="view-invoices">
+                <i class="fa-solid fa-cart-shopping nav-icon"></i> Sales (Invoices) <i class="fa-solid fa-caret-right nav-caret"></i>
+            </div>
+            <div class="nav-item" data-target="view-placeholder">
+                <i class="fa-solid fa-bag-shopping nav-icon"></i> Purchases <i class="fa-solid fa-caret-right nav-caret"></i>
+            </div>
+            <div class="nav-item" data-target="view-placeholder">
+                <i class="fa-solid fa-clock nav-icon"></i> Time Tracking <i class="fa-solid fa-caret-right nav-caret"></i>
+            </div>
+            <div class="nav-item" data-target="view-agents">
+                <i class="fa-solid fa-user-tie nav-icon"></i> Accountant (Agents) <i class="fa-solid fa-caret-right nav-caret"></i>
+            </div>
+            <div class="nav-item" data-target="view-reports">
+                <i class="fa-solid fa-chart-simple nav-icon"></i> Reports
+            </div>
+            <div class="nav-item" data-target="view-customers">
+                <i class="fa-regular fa-folder nav-icon"></i> Documents (Clients)
+            </div>
+        </div>
+        
+        <div class="nav-group" style="margin-top: auto; border-top: 1px solid var(--z-border);">
+            <div class="nav-item" data-target="view-placeholder">
+                <i class="fa-solid fa-sliders nav-icon"></i> Configure Features list
+            </div>
         </div>
     </aside>
 
@@ -142,7 +190,7 @@
     <main class="workspace">
         <!-- HEADER -->
         <header class="top-header">
-            <div class="header-title" id="mainHeaderTitle">Dashboard</div>
+            <div class="header-title" id="mainHeaderTitle">Home</div>
             <div class="user-actions">
                 <span class="user-email" id="userDisplay">Active Developer Session</span>
             </div>
@@ -151,7 +199,7 @@
         <!-- SCROLL AREA -->
         <div class="scroll-area">
             
-            <!-- VIEW: DASHBOARD -->
+            <!-- VIEW: DASHBOARD (Home) -->
             <div id="view-dashboard" class="view-section active-view">
                 <div class="kpi-grid">
                     <div class="kpi-card">
@@ -163,25 +211,34 @@
                         <div class="kpi-value" id="kpiAgents">0</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-title">Session Revenue (Br)</div>
+                        <div class="kpi-title">Total Processed (Br)</div>
                         <div class="kpi-value" id="kpiRevenue">0.00</div>
                     </div>
                 </div>
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        This is your active proof-of-concept workspace. Navigate through the sidebar to add your Diaspora clients, register your on-the-ground agents, and generate billing invoices. Check the <strong>Reports</strong> tab to monitor your actual profit margins.
+                        This workspace matches your Zoho configuration. Use the <strong>Sales</strong> tab to generate Concierge Invoices and assign agents on-the-spot. Track your network in <strong>Accountant</strong> and view margins in <strong>Reports</strong>.
                     </p>
                 </div>
             </div>
 
-            <!-- VIEW: CUSTOMERS -->
+            <!-- VIEW: PLACEHOLDER -->
+            <div id="view-placeholder" class="view-section">
+                <div class="card" style="text-align: center; padding: 60px 20px;">
+                    <i class="fa-solid fa-person-digging" style="font-size: 48px; color: var(--z-border); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--z-text-dark);">Module Not Activated</h3>
+                    <p style="color: var(--z-text-muted);">This Zoho category is locked for the current Proof of Concept trial.</p>
+                </div>
+            </div>
+
+            <!-- VIEW: CUSTOMERS (Documents) -->
             <div id="view-customers" class="view-section">
                 <div class="card">
-                    <h3 class="card-header">Add New Client</h3>
+                    <h3 class="card-header">Add New Diaspora Client</h3>
                     <div class="form-grid">
                         <div class="input-group">
-                            <label>Client Name / Diaspora Reference</label>
+                            <label>Client Name / Reference</label>
                             <input type="text" id="newClientName" placeholder="e.g., Abebe Kebede (US)">
                         </div>
                         <div class="input-group">
@@ -189,7 +246,7 @@
                             <input type="text" id="newClientContact" placeholder="Contact Details">
                         </div>
                     </div>
-                    <button class="btn-primary" id="saveClientBtn">Save Client to CRM</button>
+                    <button class="btn-primary" id="saveClientBtn">Save Client</button>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
@@ -207,7 +264,7 @@
                 </div>
             </div>
 
-            <!-- VIEW: AGENT NETWORK -->
+            <!-- VIEW: AGENTS (Accountant) -->
             <div id="view-agents" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Register Concierge Agent</h3>
@@ -244,26 +301,60 @@
                 </div>
             </div>
 
-            <!-- VIEW: NEW INVOICE -->
+            <!-- VIEW: INVOICES (Sales) -->
             <div id="view-invoices" class="view-section">
+                
+                <!-- Invoice Setup & Agent On-The-Spot Assignment -->
                 <div class="card">
-                    <h3 class="card-header">Invoice Configuration</h3>
+                    <h3 class="card-header">New Concierge Invoice</h3>
                     <div class="form-grid">
                         <div class="input-group">
-                            <label>Bill To (Select Client)</label>
+                            <label>Bill To (Client)</label>
                             <select id="invoiceClientSelect">
-                                <option value="">-- Add a client in Customers tab first --</option>
+                                <option value="">-- Add a client in Documents tab first --</option>
                             </select>
                         </div>
                         <div class="input-group">
-                            <label>Fulfilling Agent</label>
-                            <select id="invoiceAgentSelect">
-                                <option value="">-- Select or leave blank --</option>
-                            </select>
+                            <label>Assign Agent On-The-Spot</label>
+                            <div style="display: flex; gap: 10px;">
+                                <select id="invoiceAgentSelect" style="flex: 1;">
+                                    <option value="">-- Select Existing Agent --</option>
+                                </select>
+                                <button class="btn-outline" id="showQuickAddAgentBtn" style="padding: 0 12px;"><i class="fa-solid fa-plus"></i> New</button>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- Inline Agent Details Display -->
+                    <div id="agentSpotDetails" class="agent-spot-details">
+                        <h4 id="spotAgentName">Agent Name</h4>
+                        <p id="spotAgentTier">Tier Details</p>
+                    </div>
+
+                    <!-- Inline Quick Add Agent Form -->
+                    <div id="agentQuickAdd" class="agent-quick-add">
+                        <h4 style="margin: 0 0 15px 0; color: var(--z-blue); font-size: 14px;">Quick Register Agent</h4>
+                        <div class="form-grid" style="margin-bottom: 15px;">
+                            <div class="input-group">
+                                <label>Agent Name</label>
+                                <input type="text" id="quickAgentName" placeholder="Full Name">
+                            </div>
+                            <div class="input-group">
+                                <label>Commission Rate</label>
+                                <select id="quickAgentTier">
+                                    <option value="15%">15% Commission</option>
+                                    <option value="20%">20% Commission</option>
+                                    <option value="25%">25% Commission</option>
+                                    <option value="28%">28% Commission</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="saveQuickAgentBtn">Save & Assign</button>
+                        <button class="btn-outline" id="cancelQuickAgentBtn" style="margin-left: 10px;">Cancel</button>
                     </div>
                 </div>
 
+                <!-- Invoice Line Items -->
                 <div class="card">
                     <h3 class="card-header">Service Tasks</h3>
                     <div class="form-grid">
@@ -303,6 +394,8 @@
                                 <span>Sub Total</span>
                                 <span id="subtotalDisplay">0.00 Br</span>
                             </div>
+                            
+                            <!-- Agent Payment Auto-Updates based on assigned agent -->
                             <div class="tot-row agent-payout">
                                 <span>
                                     Agent Payment 
@@ -315,6 +408,7 @@
                                 </span>
                                 <span id="agentPaymentDisplay">0.00 Br</span>
                             </div>
+                            
                             <div class="tot-row grand-total">
                                 <span>Total Billed to Client</span>
                                 <span id="grandTotalDisplay">0.00 Br</span>
@@ -323,33 +417,30 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- VIEW: INVOICE LIST (NEW) -->
-            <div id="view-invoice-list" class="view-section">
+                <!-- Invoice Master List -->
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <div style="padding: 24px; border-bottom: 1px solid var(--z-border);">
-                        <h3 class="card-header" style="border:none; padding:0; margin:0;">Master Invoice Ledger</h3>
+                        <h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Invoice ID</th>
-                                <th>Date</th>
                                 <th>Client</th>
-                                <th>Agent</th>
+                                <th>Assigned Agent</th>
                                 <th class="col-right">Total (Br)</th>
                                 <th style="text-align: center;">Status</th>
                             </tr>
                         </thead>
                         <tbody id="masterInvoiceListBody">
-                            <tr><td colspan="6" style="text-align: center; color: #9ca3af;">No invoices generated yet.</td></tr>
+                            <tr><td colspan="5" style="text-align: center; color: #9ca3af;">No invoices synced yet.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VIEW: REPORTS (NEW) -->
+            <!-- VIEW: REPORTS -->
             <div id="view-reports" class="view-section">
                 <div class="kpi-grid">
                     <div class="kpi-card">
@@ -368,7 +459,7 @@
                 <div class="card">
                     <h3 class="card-header">Margin Analysis</h3>
                     <p style="color: var(--z-text-muted);">
-                        This reporting module tracks the spread between what Diaspora clients are billed and the 15%-28% commissions paid out to your on-the-ground concierge agents. Your Net Profit represents the capital retained by RunnersHUB.
+                        This reporting module automatically tracks the spread between what Diaspora clients are billed and the exact commission tiers paid out to your assigned agents.
                     </p>
                 </div>
             </div>
@@ -402,13 +493,10 @@
         agents: [],
         currentInvoiceItems: [],
         invoices: [],
-        metrics: {
-            revenue: 0,
-            payouts: 0
-        }
+        metrics: { revenue: 0, payouts: 0 }
     };
 
-    // --- UI CONTROLLER: NAVIGATION ---
+    // --- UI CONTROLLER: SIDEBAR NAVIGATION ---
     const navItems = document.querySelectorAll('.nav-item');
     const viewSections = document.querySelectorAll('.view-section');
     const mainHeaderTitle = document.getElementById('mainHeaderTitle');
@@ -421,7 +509,13 @@
             item.classList.add('active');
             const targetId = item.getAttribute('data-target');
             document.getElementById(targetId).classList.add('active-view');
-            mainHeaderTitle.textContent = item.textContent;
+            
+            // Clean up text format for header
+            let titleText = item.textContent.trim();
+            if(titleText.includes("Sales")) titleText = "Invoices";
+            if(titleText.includes("Accountant")) titleText = "Agent Network";
+            if(titleText.includes("Documents")) titleText = "Customers";
+            mainHeaderTitle.textContent = titleText;
         });
     });
 
@@ -446,27 +540,95 @@
         document.getElementById('newClientContact').value = '';
     });
 
-    // --- MODULE: AGENT NETWORK ---
+    // --- CORE AGENT LOGIC (Handles standard save and dynamic UI updates) ---
+    function registerAgentCore(name, tier) {
+        appState.agents.push({ name, tier });
+        
+        // Update Agent Ledger Table
+        const tbody = document.getElementById('agentTableBody');
+        if(appState.agents.length === 1) tbody.innerHTML = '';
+        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${tier}</td><td><span class="status-badge">Active</span></td></tr>`;
+        
+        // Update Invoice Dropdown
+        const select = document.getElementById('invoiceAgentSelect');
+        if(appState.agents.length === 1) select.innerHTML = '<option value="">-- Select Existing Agent --</option>';
+        select.innerHTML += `<option value="${name}">${name} (${tier})</option>`;
+        
+        document.getElementById('kpiAgents').textContent = appState.agents.length;
+    }
+
+    // Standard Save Agent Button
     document.getElementById('saveAgentBtn').addEventListener('click', () => {
         const name = document.getElementById('newAgentName').value.trim();
         const tier = document.getElementById('newAgentTier').value;
         if(!name) return alert("Agent name is required.");
         
-        appState.agents.push({ name, tier });
-        
-        const tbody = document.getElementById('agentTableBody');
-        if(appState.agents.length === 1) tbody.innerHTML = '';
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${tier}</td><td><span class="status-badge">Active</span></td></tr>`;
-        
-        const select = document.getElementById('invoiceAgentSelect');
-        if(appState.agents.length === 1) select.innerHTML = '';
-        select.innerHTML += `<option value="${name}">${name} (${tier})</option>`;
-        
-        document.getElementById('kpiAgents').textContent = appState.agents.length;
+        registerAgentCore(name, tier);
         document.getElementById('newAgentName').value = '';
     });
 
-    // --- MODULE: INVOICE GENERATOR ---
+    // --- ON-THE-SPOT AGENT ASSIGNMENT (INVOICE VIEW) ---
+    const invoiceAgentSelect = document.getElementById('invoiceAgentSelect');
+    const agentSpotDetails = document.getElementById('agentSpotDetails');
+    const agentRateDropdown = document.getElementById('agentRate');
+    
+    // When an agent is selected from dropdown
+    invoiceAgentSelect.addEventListener('change', (e) => {
+        const selectedName = e.target.value;
+        if(!selectedName) {
+            agentSpotDetails.style.display = 'none';
+            return;
+        }
+        
+        // Find agent details
+        const agent = appState.agents.find(a => a.name === selectedName);
+        if(agent) {
+            agentSpotDetails.style.display = 'block';
+            document.getElementById('spotAgentName').innerHTML = `<i class="fa-solid fa-user-check"></i> Assigned: <strong>${agent.name}</strong>`;
+            document.getElementById('spotAgentTier').textContent = `Commission Profile: ${agent.tier}`;
+            
+            // AUTOMATICALLY snap the totals dropdown to match this agent's tier!
+            const numericalRate = parseFloat(agent.tier) / 100; // e.g., "15%" -> 0.15
+            Array.from(agentRateDropdown.options).forEach(opt => {
+                if(parseFloat(opt.value) === numericalRate) {
+                    opt.selected = true;
+                }
+            });
+            updateInvoiceUI(); // Recalculate totals immediately
+        }
+    });
+
+    // Quick Add UI Toggles
+    const quickAddPanel = document.getElementById('agentQuickAdd');
+    document.getElementById('showQuickAddAgentBtn').addEventListener('click', () => {
+        quickAddPanel.style.display = 'block';
+        agentSpotDetails.style.display = 'none';
+    });
+    document.getElementById('cancelQuickAgentBtn').addEventListener('click', () => {
+        quickAddPanel.style.display = 'none';
+        document.getElementById('quickAgentName').value = '';
+    });
+
+    // Save Quick Add Agent
+    document.getElementById('saveQuickAgentBtn').addEventListener('click', () => {
+        const name = document.getElementById('quickAgentName').value.trim();
+        const tier = document.getElementById('quickAgentTier').value;
+        if(!name) return alert("Agent name required.");
+        
+        // Register agent to core
+        registerAgentCore(name, tier);
+        
+        // Hide form, clean up
+        quickAddPanel.style.display = 'none';
+        document.getElementById('quickAgentName').value = '';
+        
+        // Automatically select them in the dropdown to trigger the assignment UI
+        invoiceAgentSelect.value = name;
+        invoiceAgentSelect.dispatchEvent(new Event('change'));
+    });
+
+
+    // --- MODULE: INVOICE LINE ITEMS ---
     document.getElementById('addItemBtn').addEventListener('click', () => {
         const task = document.getElementById('itemName').value.trim();
         const qty = parseInt(document.getElementById('itemQty').value);
@@ -484,7 +646,8 @@
         document.getElementById('itemQty').value = '1';
     });
 
-    document.getElementById('agentRate').addEventListener('change', updateInvoiceUI);
+    // Recalculate if standard rate is manually changed
+    agentRateDropdown.addEventListener('change', updateInvoiceUI);
 
     function updateInvoiceUI() {
         const tbody = document.getElementById('invoiceTableBody');
@@ -503,7 +666,7 @@
             `;
         });
 
-        const rate = parseFloat(document.getElementById('agentRate').value);
+        const rate = parseFloat(agentRateDropdown.value);
         const agentCut = subtotal * rate;
 
         document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
@@ -533,14 +696,11 @@
                 timestamp: new Date()
             });
             
-            alert("Invoice Saved & Synced! ID: " + docRef.id);
-            
             // Format ID for UI
             const displayId = "INV-" + docRef.id.slice(0, 5).toUpperCase();
-            const dateStr = new Date().toLocaleDateString();
 
             // Push to Ledger State
-            appState.invoices.push({ id: displayId, date: dateStr, client, agent, total, payout });
+            appState.invoices.push({ id: displayId, client, agent, total, payout });
             
             // Update Invoice List UI
             const ledgerBody = document.getElementById('masterInvoiceListBody');
@@ -548,11 +708,10 @@
             ledgerBody.innerHTML += `
                 <tr>
                     <td><strong>${displayId}</strong></td>
-                    <td>${dateStr}</td>
                     <td>${client}</td>
                     <td>${agent}</td>
                     <td class="col-right">${total.toFixed(2)}</td>
-                    <td style="text-align: center;"><span class="status-badge">Synced</span></td>
+                    <td style="text-align: center;"><span class="status-badge">Synced to Cloud</span></td>
                 </tr>
             `;
 
@@ -567,9 +726,13 @@
             document.getElementById('reportTotalPayouts').textContent = `${appState.metrics.payouts.toFixed(2)} Br`;
             document.getElementById('reportNetProfit').textContent = `${netProfit.toFixed(2)} Br`;
             
-            // Clear current working invoice
+            // Clear current working invoice & UI resets
             appState.currentInvoiceItems = [];
             updateInvoiceUI();
+            agentSpotDetails.style.display = 'none';
+            invoiceAgentSelect.value = '';
+            
+            alert("Invoice Saved & Synced! ID: " + docRef.id);
             
         } catch (error) {
             console.error("Firestore Error:", error);
