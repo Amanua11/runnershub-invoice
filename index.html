@@ -8,62 +8,36 @@
     <style>
         /* --- ZOHO ENTERPRISE CSS --- */
         :root { 
-            --z-blue: #2f78ff;
-            --z-blue-hover: #1e61db;
-            --z-sidebar-bg: #f9fbfd;
-            --z-sidebar-text: #4b5563;
-            --z-bg: #f3f4f6;
-            --z-border: #e5e7eb;
-            --z-text-dark: #111827;
-            --z-text-muted: #6b7280;
+            --z-blue: #2f78ff; --z-blue-hover: #1e61db;
+            --z-sidebar-bg: #f9fbfd; --z-sidebar-text: #4b5563;
+            --z-bg: #f3f4f6; --z-border: #e5e7eb;
+            --z-text-dark: #111827; --z-text-muted: #6b7280;
             --z-card-bg: #ffffff;
-            --z-success: #10b981;
-            --z-danger: #ef4444;
-            --z-warning: #f59e0b;
+            --z-success: #10b981; --z-danger: #ef4444; --z-warning: #f59e0b;
         }
         body { 
-            margin: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--z-bg); 
-            color: var(--z-text-dark);
-            height: 100vh; 
-            overflow: hidden; 
-            font-size: 14px;
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--z-bg); color: var(--z-text-dark); height: 100vh; overflow: hidden; font-size: 14px;
         }
 
         /* --- APP LAYOUT --- */
         #app-screen { width: 100%; height: 100%; display: flex; }
         
-        /* EXACT ZOHO LIGHT SIDEBAR */
-        .sidebar { 
-            width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); 
-            display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border);
-        }
-        .sidebar-brand { 
-            padding: 20px 24px; font-size: 17px; font-weight: 700; color: var(--z-text-dark);
-            display: flex; align-items: center; gap: 10px;
-        }
+        /* SIDEBAR */
+        .sidebar { width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border); }
+        .sidebar-brand { padding: 20px 24px; font-size: 17px; font-weight: 700; color: var(--z-text-dark); display: flex; align-items: center; gap: 10px; }
         .org-icon { background: var(--z-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
         .nav-group { padding: 10px 0; display: flex; flex-direction: column; gap: 2px; }
-        .nav-item { 
-            padding: 10px 16px; margin: 0 12px; cursor: pointer; font-size: 14px; color: var(--z-sidebar-text);
-            display: flex; align-items: center; border-radius: 8px; transition: 0.15s ease-in-out; font-weight: 500;
-        }
+        .nav-item { padding: 10px 16px; margin: 0 12px; cursor: pointer; font-size: 14px; color: var(--z-sidebar-text); display: flex; align-items: center; border-radius: 8px; transition: 0.15s ease-in-out; font-weight: 500; }
         .nav-item:hover { background: #f0f4f8; color: var(--z-text-dark); }
         .nav-item.active { background: var(--z-blue); color: white; }
         .nav-icon { width: 24px; text-align: center; margin-right: 10px; font-size: 15px; }
         .nav-caret { margin-left: auto; font-size: 12px; opacity: 0.6; }
-        
         .nav-divider { border-top: 1px solid var(--z-border); margin: 15px 0; }
 
-        /* MAIN WORKSPACE */
+        /* WORKSPACE & HEADER */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* TOP HEADER */
-        .top-header { 
-            height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0;
-        }
+        .top-header { height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0; }
         .header-title { font-size: 18px; font-weight: 600; color: var(--z-text-dark); }
         .user-actions { display: flex; align-items: center; gap: 16px; }
         .user-email { font-size: 13px; color: var(--z-text-muted); font-weight: 500; }
@@ -71,48 +45,35 @@
         /* SCROLL AREA & VIEWS */
         .scroll-area { flex: 1; overflow-y: auto; padding: 24px; }
         .view-section { display: none; }
-        .view-section.active-view { display: block; animation: fadeIn 0.3s; }
+        .view-section.active-view { display: block; animation: fadeIn 0.2s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* REUSABLE CARDS & FORMS */
-        .card { 
-            background: var(--z-card-bg); border-radius: 8px; border: 1px solid var(--z-border); 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px;
-        }
+        /* CARDS & FORMS */
+        .card { background: var(--z-card-bg); border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px; }
         .card-header { margin-top: 0; margin-bottom: 20px; font-size: 16px; color: var(--z-text-dark); font-weight: 600; padding-bottom: 12px; border-bottom: 1px solid var(--z-border); }
-        
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 16px; }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--z-text-muted); }
-        .input-group input, .input-group select { 
-            padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 14px;
-        }
+        .input-group input, .input-group select { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 14px; }
         .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); outline: none; box-shadow: 0 0 0 2px rgba(47,120,255,0.2); }
         
-        .btn-primary { 
-            background: var(--z-blue); color: white; border: none; padding: 9px 18px; 
-            border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s;
-        }
+        .btn-primary { background: var(--z-blue); color: white; border: none; padding: 9px 18px; border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
         .btn-primary:hover { background: var(--z-blue-hover); }
-        .btn-outline { 
-            background: white; color: var(--z-blue); border: 1px solid var(--z-blue); padding: 9px 18px; 
-            border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s;
-        }
+        .btn-outline { background: white; color: var(--z-blue); border: 1px solid var(--z-blue); padding: 9px 18px; border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
         .btn-outline:hover { background: #f0f4f8; }
+        .btn-danger-outline { background: white; color: var(--z-danger); border: 1px solid var(--z-danger); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-danger-outline:hover { background: #fef2f2; }
+        .btn-edit-outline { background: white; color: var(--z-text-dark); border: 1px solid var(--z-border); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-        /* DATA TABLES */
+        /* TABLES */
         .data-table { width: 100%; border-collapse: collapse; }
-        .data-table th { 
-            background: #f9fafb; padding: 12px 16px; text-align: left; 
-            font-size: 12px; color: var(--z-text-muted); font-weight: 600; border-bottom: 1px solid var(--z-border);
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); font-size: 14px; }
+        .data-table th { background: #f9fafb; padding: 12px 16px; text-align: left; font-size: 12px; color: var(--z-text-muted); font-weight: 600; border-bottom: 1px solid var(--z-border); text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); font-size: 14px; vertical-align: middle; }
         .data-table .col-right { text-align: right; }
         .status-badge { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-        .status-badge-warning { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .status-badge-void { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 
-        /* INVOICE SPECIFIC TOTALS */
+        /* TOTALS & DASHBOARD */
         .totals-section { display: flex; justify-content: flex-end; padding-top: 20px; }
         .totals-box { width: 320px; background: #fdfdfd; border: 1px solid var(--z-border); padding: 20px; border-radius: 6px; }
         .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; }
@@ -120,487 +81,282 @@
         .rate-select { border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 4px; font-size: 12px; margin-left: 8px; font-weight: bold; }
         .tot-row.grand-total { font-size: 18px; font-weight: 600; margin-top: 10px; padding-top: 15px; border-top: 1px solid var(--z-border); }
 
-        /* DASHBOARD METRICS */
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
         .kpi-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .kpi-title { font-size: 12px; color: var(--z-text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
         .kpi-value { font-size: 28px; font-weight: 700; color: var(--z-text-dark); }
+
+        /* --- SECURITY MODAL --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 30px; border-radius: 8px; width: 100%; max-width: 350px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal-box h3 { margin: 0 0 15px 0; color: var(--z-text-dark); font-size: 18px; }
+        .modal-box p { color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px; }
+        .modal-box input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .auth-error { color: var(--z-danger); font-size: 12px; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
 
-<!-- MAIN APP LAYOUT (LOGIN BYPASSED) -->
+<!-- SECURITY AUTHENTICATION MODAL -->
+<div id="authModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Security Verification</h3>
+        <p>A Master Password is required to add, modify, delete, or void records in the ERP.</p>
+        <input type="password" id="authPasswordInput" placeholder="Enter Master Password">
+        <div id="authErrorText" class="auth-error">Incorrect password. Access denied.</div>
+        <div class="modal-actions">
+            <button class="btn-outline" id="cancelAuthBtn">Cancel</button>
+            <button class="btn-primary" id="confirmAuthBtn">Verify & Proceed</button>
+        </div>
+    </div>
+</div>
+
 <div id="app-screen">
     
-    <!-- EXACT ZOHO LIGHT SIDEBAR -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <span class="org-icon">RH</span> RunnersHUB
         </div>
         <div class="nav-group">
-            <div class="nav-item active" data-target="view-dashboard">
-                <i class="fa-solid fa-house nav-icon"></i> Home
-            </div>
-            <div class="nav-item" data-target="view-items">
-                <i class="fa-solid fa-box nav-icon"></i> Items <i class="fa-solid fa-caret-right nav-caret"></i>
-            </div>
-            <div class="nav-item" data-target="view-banking">
-                <i class="fa-solid fa-building-columns nav-icon"></i> Banking
-            </div>
-            <div class="nav-item" data-target="view-invoices">
-                <i class="fa-solid fa-cart-shopping nav-icon"></i> Sales (Invoices) <i class="fa-solid fa-caret-right nav-caret"></i>
-            </div>
-            <!-- FULLY UNLOCKED NOW -->
-            <div class="nav-item" data-target="view-purchases">
-                <i class="fa-solid fa-bag-shopping nav-icon"></i> Purchases <i class="fa-solid fa-caret-right nav-caret"></i>
-            </div>
-            <div class="nav-item" data-target="view-timetracking">
-                <i class="fa-solid fa-clock nav-icon"></i> Time Tracking <i class="fa-solid fa-caret-right nav-caret"></i>
-            </div>
-            <div class="nav-item" data-target="view-agents">
-                <i class="fa-solid fa-user-tie nav-icon"></i> Accountant (Agents) <i class="fa-solid fa-caret-right nav-caret"></i>
-            </div>
-            <div class="nav-item" data-target="view-reports">
-                <i class="fa-solid fa-chart-simple nav-icon"></i> Reports
-            </div>
-            <div class="nav-item" data-target="view-customers">
-                <i class="fa-regular fa-folder nav-icon"></i> Documents (Clients)
-            </div>
+            <div class="nav-item active" data-target="view-dashboard"><i class="fa-solid fa-house nav-icon"></i> Home</div>
+            <div class="nav-item" data-target="view-items"><i class="fa-solid fa-box nav-icon"></i> Items <i class="fa-solid fa-caret-right nav-caret"></i></div>
+            <div class="nav-item" data-target="view-banking"><i class="fa-solid fa-building-columns nav-icon"></i> Banking</div>
+            <div class="nav-divider"></div>
+            
+            <!-- SALES GROUP -->
+            <div style="padding: 0 20px 5px; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Sales</div>
+            <div class="nav-item" data-target="view-quotes" style="margin-left: 20px;"><i class="fa-solid fa-file-signature nav-icon"></i> Quotes (Estimates)</div>
+            <div class="nav-item" data-target="view-invoices" style="margin-left: 20px;"><i class="fa-solid fa-cart-shopping nav-icon"></i> Invoices</div>
+            
+            <div class="nav-divider"></div>
+            <div class="nav-item" data-target="view-purchases"><i class="fa-solid fa-bag-shopping nav-icon"></i> Purchases <i class="fa-solid fa-caret-right nav-caret"></i></div>
+            <div class="nav-item" data-target="view-timetracking"><i class="fa-solid fa-clock nav-icon"></i> Time Tracking <i class="fa-solid fa-caret-right nav-caret"></i></div>
+            <div class="nav-item" data-target="view-agents"><i class="fa-solid fa-user-tie nav-icon"></i> Accountant (Agents) <i class="fa-solid fa-caret-right nav-caret"></i></div>
+            <div class="nav-item" data-target="view-reports"><i class="fa-solid fa-chart-simple nav-icon"></i> Reports</div>
+            <div class="nav-item" data-target="view-customers"><i class="fa-regular fa-folder nav-icon"></i> Documents (Clients)</div>
         </div>
-        
         <div class="nav-group" style="margin-top: auto; border-top: 1px solid var(--z-border);">
-            <div class="nav-item" data-target="view-settings">
-                <i class="fa-solid fa-sliders nav-icon"></i> Configure Features list
-            </div>
+            <div class="nav-item" data-target="view-settings"><i class="fa-solid fa-sliders nav-icon"></i> Settings & Security</div>
         </div>
     </aside>
 
     <!-- WORKSPACE -->
     <main class="workspace">
-        <!-- HEADER -->
         <header class="top-header">
             <div class="header-title" id="mainHeaderTitle">Home</div>
-            <div class="user-actions">
-                <span class="user-email">Active Developer Session</span>
-            </div>
+            <div class="user-actions"><span class="user-email">Active Developer Session</span></div>
         </header>
 
         <!-- SCROLL AREA -->
         <div class="scroll-area">
             
-            <!-- VIEW: DASHBOARD (Home) -->
+            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section active-view">
                 <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-title">Total Active Clients</div>
-                        <div class="kpi-value" id="kpiClients">0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Registered Agents</div>
-                        <div class="kpi-value" id="kpiAgents">0</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Total Invoiced (Br)</div>
-                        <div class="kpi-value" id="kpiRevenue" style="color: var(--z-success);">0.00</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Total Expenses (Br)</div>
-                        <div class="kpi-value" id="kpiExpenses" style="color: var(--z-danger);">0.00</div>
-                    </div>
+                    <div class="kpi-card"><div class="kpi-title">Total Active Clients</div><div class="kpi-value" id="kpiClients">0</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Registered Agents</div><div class="kpi-value" id="kpiAgents">0</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Total Invoiced (Br)</div><div class="kpi-value" id="kpiRevenue" style="color: var(--z-success);">0.00</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Total Expenses (Br)</div><div class="kpi-value" id="kpiExpenses" style="color: var(--z-danger);">0.00</div></div>
                 </div>
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        Your entire workspace is now fully unlocked. Log expenses in <strong>Purchases</strong>, monitor agent hours in <strong>Time Tracking</strong>, and configure your system in <strong>Settings</strong>.
+                        Your workspace is fully unlocked. Adding, modifying, or deleting sensitive records (like Clients, Agents, and Invoices) will now prompt for your Master Security Password.
                     </p>
                 </div>
             </div>
 
-            <!-- VIEW: ITEMS (Services Catalog) -->
+            <!-- ITEMS -->
             <div id="view-items" class="view-section">
                 <div class="card">
-                    <h3 class="card-header">Add New Service Item</h3>
+                    <h3 class="card-header">Service Catalog</h3>
                     <div class="form-grid">
-                        <div class="input-group">
-                            <label>Item Name / Service Type</label>
-                            <input type="text" id="newItemName" placeholder="e.g., Airport Pickup">
-                        </div>
-                        <div class="input-group">
-                            <label>Standard Rate (Br)</label>
-                            <input type="number" id="newItemRate" placeholder="0.00" step="0.01">
-                        </div>
+                        <div class="input-group"><label>Service Type</label><input type="text" id="newItemName" placeholder="e.g., Airport Pickup"></div>
+                        <div class="input-group"><label>Standard Rate (Br)</label><input type="number" id="newItemRate" placeholder="0.00" step="0.01"></div>
                     </div>
-                    <button class="btn-primary" id="saveItemBtn">Save Item</button>
+                    <button class="btn-primary" id="saveItemBtn">Save Item to Catalog</button>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item Details (Service)</th>
-                                <th class="col-right">Standard Rate (Br)</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemsTableBody">
-                            <tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 30px;">No items saved yet.</td></tr>
-                        </tbody>
+                        <thead><tr><th>Service</th><th class="col-right">Rate (Br)</th></tr></thead>
+                        <tbody id="itemsTableBody"><tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VIEW: BANKING -->
+            <!-- BANKING -->
             <div id="view-banking" class="view-section">
                 <div class="kpi-grid">
-                    <div class="kpi-card" style="grid-column: span 2;">
-                        <div class="kpi-title">Available Cash Balance (Br)</div>
-                        <div class="kpi-value" id="kpiBankBalance">0.00</div>
-                    </div>
+                    <div class="kpi-card" style="grid-column: span 2;"><div class="kpi-title">Available Cash Balance (Br)</div><div class="kpi-value" id="kpiBankBalance">0.00</div></div>
                 </div>
-
                 <div class="card">
                     <h3 class="card-header">Record Bank Transaction</h3>
                     <div class="form-grid">
-                        <div class="input-group">
-                            <label>Transaction Type</label>
-                            <select id="bankTxType">
-                                <option value="Deposit">Deposit (Money In)</option>
-                                <option value="Withdrawal">Withdrawal (Money Out)</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Amount (Br)</label>
-                            <input type="number" id="bankTxAmount" placeholder="0.00" step="0.01">
-                        </div>
-                        <div class="input-group" style="flex: 2;">
-                            <label>Reference</label>
-                            <input type="text" id="bankTxDesc" placeholder="Enter transaction details">
-                        </div>
+                        <div class="input-group"><label>Type</label><select id="bankTxType"><option value="Deposit">Deposit</option><option value="Withdrawal">Withdrawal</option></select></div>
+                        <div class="input-group"><label>Amount (Br)</label><input type="number" id="bankTxAmount" placeholder="0.00"></div>
+                        <div class="input-group" style="flex: 2;"><label>Reference</label><input type="text" id="bankTxDesc" placeholder="Details"></div>
                     </div>
                     <button class="btn-primary" id="saveBankTxBtn">Record Transaction</button>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                                <th class="col-right">Amount (Br)</th>
-                                <th class="col-right">Balance (Br)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bankingTableBody">
-                            <tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 30px;">No transactions recorded yet.</td></tr>
-                        </tbody>
+                        <thead><tr><th>Date</th><th>Description</th><th>Type</th><th class="col-right">Amount</th><th class="col-right">Balance</th></tr></thead>
+                        <tbody id="bankingTableBody"><tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VIEW: PURCHASES (EXPENSES) - NEW -->
-            <div id="view-purchases" class="view-section">
+            <!-- QUOTES (ESTIMATES) -->
+            <div id="view-quotes" class="view-section">
                 <div class="card">
-                    <h3 class="card-header">Log Operational Expense</h3>
+                    <h3 class="card-header">Generate Quote (Estimate)</h3>
+                    <p style="font-size: 12px; color: var(--z-text-muted); margin-top: -10px; margin-bottom: 20px;">Quotes are sent to clients for approval and do NOT affect your revenue or profit metrics.</p>
                     <div class="form-grid">
-                        <div class="input-group">
-                            <label>Vendor / Payee Name</label>
-                            <input type="text" id="expenseVendor" placeholder="e.g., Ethio Telecom, AWS">
-                        </div>
-                        <div class="input-group">
-                            <label>Expense Category</label>
-                            <select id="expenseCategory">
-                                <option value="Software/IT">Software & IT</option>
-                                <option value="Office Supplies">Office Supplies</option>
-                                <option value="Travel">Travel & Logistics</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Other">Other Operational</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Amount (Br)</label>
-                            <input type="number" id="expenseAmount" placeholder="0.00" step="0.01">
+                        <div class="input-group"><label>Quote For (Client)</label><select id="quoteClientSelect"><option value="">-- Add a client in Documents tab first --</option></select></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-header">Proposed Services</h3>
+                    <div class="form-grid">
+                        <div class="input-group" style="flex: 2;"><label>Task Description</label><input type="text" id="quoteItemName" placeholder="e.g., Property Verification"></div>
+                        <div class="input-group" style="max-width: 100px;"><label>Qty</label><input type="number" id="quoteItemQty" value="1" min="1"></div>
+                        <div class="input-group" style="max-width: 150px;"><label>Rate (Br)</label><input type="number" id="quoteItemPrice" placeholder="0.00" step="0.01"></div>
+                        <div class="input-group" style="justify-content: flex-end; max-width: 120px;"><button class="btn-outline" id="addQuoteLineBtn">Add Task</button></div>
+                    </div>
+                    <table class="data-table" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
+                        <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
+                        <tbody id="quoteTableBody"></tbody>
+                    </table>
+                    <div class="totals-section">
+                        <div class="totals-box">
+                            <div class="tot-row grand-total"><span>Total Estimate</span><span id="quoteGrandTotalDisplay">0.00 Br</span></div>
+                            <button class="btn-primary" id="saveQuoteBtn" style="width: 100%; margin-top: 16px;">Save Quote Record</button>
                         </div>
                     </div>
-                    <button class="btn-primary" id="saveExpenseBtn">Log Purchase Expense</button>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Saved Quotes</h3></div>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Vendor</th>
-                                <th>Category</th>
-                                <th class="col-right">Amount (Br)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expenseTableBody">
-                            <tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 30px;">No expenses logged yet.</td></tr>
-                        </tbody>
+                        <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th></tr></thead>
+                        <tbody id="masterQuoteListBody"><tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VIEW: TIME TRACKING - NEW -->
-            <div id="view-timetracking" class="view-section">
-                <div class="card">
-                    <h3 class="card-header">Log Agent Hours</h3>
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Select Agent</label>
-                            <select id="timeAgentSelect">
-                                <option value="">-- Register an Agent First --</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Hours Worked</label>
-                            <input type="number" id="timeHours" placeholder="0.0" step="0.5">
-                        </div>
-                        <div class="input-group" style="flex: 2;">
-                            <label>Task / Project Description</label>
-                            <input type="text" id="timeTaskDesc" placeholder="What were they working on?">
-                        </div>
-                    </div>
-                    <button class="btn-primary" id="saveTimeLogBtn">Log Timesheet</button>
-                </div>
-                <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Agent</th>
-                                <th>Task Description</th>
-                                <th class="col-right">Hours Logged</th>
-                            </tr>
-                        </thead>
-                        <tbody id="timeTableBody">
-                            <tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 30px;">No timesheets logged yet.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- VIEW: AGENTS (Accountant) -->
-            <div id="view-agents" class="view-section">
-                <div class="card">
-                    <h3 class="card-header">Register Concierge Agent</h3>
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Agent Name</label>
-                            <input type="text" id="newAgentName" placeholder="Agent Full Name">
-                        </div>
-                        <div class="input-group">
-                            <label>Assigned Commission Tier</label>
-                            <select id="newAgentTier">
-                                <option value="15%">Tier 1 (15%)</option>
-                                <option value="20%">Tier 2 (20%)</option>
-                                <option value="25%">Tier 3 (25%)</option>
-                                <option value="28%">Tier 4 (28%)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-primary" id="saveAgentBtn">Register Agent</button>
-                </div>
-                <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Agent Name</th>
-                                <th>Commission Tier</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="agentTableBody">
-                            <tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 30px;">No agents registered yet.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- VIEW: CUSTOMERS (Documents) -->
-            <div id="view-customers" class="view-section">
-                <div class="card">
-                    <h3 class="card-header">Add New Diaspora Client</h3>
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label>Client Name / Reference</label>
-                            <input type="text" id="newClientName" placeholder="e.g., Abebe Kebede (US)">
-                        </div>
-                        <div class="input-group">
-                            <label>Primary Contact / Email</label>
-                            <input type="text" id="newClientContact" placeholder="Contact Details">
-                        </div>
-                    </div>
-                    <button class="btn-primary" id="saveClientBtn">Save Client</button>
-                </div>
-                <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Client Name</th>
-                                <th>Contact Information</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientTableBody">
-                            <tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 30px;">No clients added yet.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- VIEW: INVOICES (Sales) -->
+            <!-- INVOICES -->
             <div id="view-invoices" class="view-section">
                 <div class="card">
                     <h3 class="card-header">New Concierge Invoice</h3>
                     <div class="form-grid">
-                        <div class="input-group">
-                            <label>Bill To (Client)</label>
-                            <select id="invoiceClientSelect">
-                                <option value="">-- Add a client in Documents tab first --</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Assign Agent</label>
-                            <select id="invoiceAgentSelect">
-                                <option value="">-- Select Existing Agent --</option>
-                            </select>
-                        </div>
+                        <div class="input-group"><label>Bill To (Client)</label><select id="invoiceClientSelect"><option value="">-- Add a client in Documents tab first --</option></select></div>
+                        <div class="input-group"><label>Assign Agent</label><select id="invoiceAgentSelect"><option value="">-- Select Existing Agent --</option></select></div>
                     </div>
                 </div>
-
                 <div class="card">
                     <h3 class="card-header">Service Tasks</h3>
                     <div class="form-grid" style="align-items: end;">
-                        <div class="input-group" style="flex: 2;">
-                            <label>Select Item from Catalog</label>
-                            <select id="catalogSelect">
-                                <option value="">-- Select Saved Service or Type Custom Below --</option>
-                            </select>
-                        </div>
+                        <div class="input-group" style="flex: 2;"><label>Select Item from Catalog</label><select id="catalogSelect"><option value="">-- Custom Task --</option></select></div>
                     </div>
-                    
                     <div class="form-grid">
-                        <div class="input-group" style="flex: 2;">
-                            <label>Task Description</label>
-                            <input type="text" id="invoiceItemName" placeholder="e.g., Property Verification">
-                        </div>
-                        <div class="input-group" style="max-width: 100px;">
-                            <label>Qty</label>
-                            <input type="number" id="invoiceItemQty" value="1" min="1">
-                        </div>
-                        <div class="input-group" style="max-width: 150px;">
-                            <label>Rate (Br)</label>
-                            <input type="number" id="invoiceItemPrice" placeholder="0.00" step="0.01">
-                        </div>
-                        <div class="input-group" style="justify-content: flex-end; max-width: 120px;">
-                            <button class="btn-outline" id="addInvoiceLineBtn">Add Task</button>
-                        </div>
+                        <div class="input-group" style="flex: 2;"><label>Task Description</label><input type="text" id="invoiceItemName" placeholder="e.g., Property Verification"></div>
+                        <div class="input-group" style="max-width: 100px;"><label>Qty</label><input type="number" id="invoiceItemQty" value="1" min="1"></div>
+                        <div class="input-group" style="max-width: 150px;"><label>Rate (Br)</label><input type="number" id="invoiceItemPrice" placeholder="0.00" step="0.01"></div>
+                        <div class="input-group" style="justify-content: flex-end; max-width: 120px;"><button class="btn-outline" id="addInvoiceLineBtn">Add Task</button></div>
                     </div>
-
                     <table class="data-table" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
-                        <thead>
-                            <tr>
-                                <th>Service Task</th>
-                                <th>Qty</th>
-                                <th>Rate</th>
-                                <th class="col-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoiceTableBody">
-                        </tbody>
+                        <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
+                        <tbody id="invoiceTableBody"></tbody>
                     </table>
-
                     <div class="totals-section">
                         <div class="totals-box">
-                            <div class="tot-row">
-                                <span>Sub Total</span>
-                                <span id="subtotalDisplay">0.00 Br</span>
-                            </div>
-                            <div class="tot-row agent-payout">
-                                <span>
-                                    Agent Payment 
-                                    <select id="agentRate" class="rate-select">
-                                        <option value="0.15">15%</option>
-                                        <option value="0.20">20%</option>
-                                        <option value="0.25">25%</option>
-                                        <option value="0.28">28%</option>
-                                    </select>
-                                </span>
-                                <span id="agentPaymentDisplay">0.00 Br</span>
-                            </div>
-                            <div class="tot-row grand-total">
-                                <span>Total Billed to Client</span>
-                                <span id="grandTotalDisplay">0.00 Br</span>
-                            </div>
-                            <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 16px;">Sync Invoice to Cloud</button>
+                            <div class="tot-row"><span>Sub Total</span><span id="subtotalDisplay">0.00 Br</span></div>
+                            <div class="tot-row agent-payout"><span>Agent Payment <select id="agentRate" class="rate-select"><option value="0.15">15%</option><option value="0.20">20%</option><option value="0.25">25%</option><option value="0.28">28%</option></select></span><span id="agentPaymentDisplay">0.00 Br</span></div>
+                            <div class="tot-row grand-total"><span>Total Billed</span><span id="grandTotalDisplay">0.00 Br</span></div>
+                            <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 16px;">Sync Invoice</button>
                         </div>
                     </div>
                 </div>
-
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);">
-                        <h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3>
-                    </div>
+                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3></div>
                     <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Invoice ID</th>
-                                <th>Client</th>
-                                <th>Assigned Agent</th>
-                                <th class="col-right">Total (Br)</th>
-                                <th style="text-align: center;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="masterInvoiceListBody">
-                            <tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 30px;">No invoices synced yet.</td></tr>
-                        </tbody>
+                        <thead><tr><th>Invoice ID</th><th>Client</th><th>Assigned Agent</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
+                        <tbody id="masterInvoiceListBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No invoices synced yet.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VIEW: REPORTS -->
-            <div id="view-reports" class="view-section">
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-title">Gross Client Revenue</div>
-                        <div class="kpi-value" id="reportGrossRevenue">0.00 Br</div>
+            <!-- PURCHASES, TIME TRACKING (Minified for space, kept functional) -->
+            <div id="view-purchases" class="view-section"><div class="card"><h3 class="card-header">Log Expense</h3><div class="form-grid"><div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div><div class="input-group"><label>Amount</label><input type="number" id="expenseAmount"></div></div><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div></div>
+            <div id="view-timetracking" class="view-section"><div class="card"><h3 class="card-header">Log Time</h3><div class="form-grid"><div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div><div class="input-group"><label>Hours</label><input type="number" id="timeHours"></div><div class="input-group"><label>Task</label><input type="text" id="timeTaskDesc"></div></div><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div></div>
+
+            <!-- AGENTS (Accountant) - EXPANDED PROFILE -->
+            <div id="view-agents" class="view-section">
+                <div class="card">
+                    <h3 class="card-header" id="agentFormHeader">Register Concierge Agent</h3>
+                    <div class="form-grid">
+                        <div class="input-group"><label>Agent Full Name</label><input type="text" id="newAgentName" placeholder="Required"></div>
+                        <div class="input-group"><label>Commission Tier</label>
+                            <select id="newAgentTier"><option value="15%">Tier 1 (15%)</option><option value="20%">Tier 2 (20%)</option><option value="25%">Tier 3 (25%)</option><option value="28%">Tier 4 (28%)</option></select>
+                        </div>
+                        <div class="input-group"><label>Phone Number</label><input type="text" id="newAgentPhone" placeholder="Optional"></div>
+                        <div class="input-group"><label>Location / Demographics</label><input type="text" id="newAgentDemo" placeholder="Area or Assignment Details"></div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title" style="color: var(--z-danger);">Total Agent Payouts</div>
-                        <div class="kpi-value" id="reportTotalPayouts" style="color: var(--z-danger);">0.00 Br</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title" style="color: var(--z-danger);">Total Operational Expenses</div>
-                        <div class="kpi-value" id="reportTotalExpenses" style="color: var(--z-danger);">0.00 Br</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">Net Company Profit</div>
-                        <div class="kpi-value" id="reportNetProfit" style="color: var(--z-success);">0.00 Br</div>
-                    </div>
+                    <input type="hidden" id="editAgentIndex" value="-1">
+                    <button class="btn-primary" id="saveAgentBtn">Save Agent Profile</button>
+                    <button class="btn-outline" id="cancelEditAgentBtn" style="display:none; margin-left:10px;">Cancel Edit</button>
+                </div>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <table class="data-table">
+                        <thead><tr><th>Agent Details</th><th>Contact & Location</th><th>Commission Tier</th><th>Actions</th></tr></thead>
+                        <tbody id="agentTableBody"><tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 20px;">No agents registered.</td></tr></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- VIEW: SETTINGS (CONFIGURE FEATURES) - NEW -->
-            <div id="view-settings" class="view-section">
-                <div class="card" style="max-width: 600px;">
-                    <h3 class="card-header">Organization Profile</h3>
-                    <div class="form-grid" style="grid-template-columns: 1fr;">
-                        <div class="input-group">
-                            <label>Organization Name</label>
-                            <input type="text" id="settingOrgName" value="RunnersHUB Concierge">
-                        </div>
-                        <div class="input-group">
-                            <label>Primary Business Email</label>
-                            <input type="email" id="settingOrgEmail" value="admin@runnershub.com">
-                        </div>
-                        <div class="input-group">
-                            <label>Base Currency</label>
-                            <select id="settingCurrency" disabled>
-                                <option value="Br">Ethiopian Birr (Br) - Locked for Trial</option>
-                            </select>
-                        </div>
+            <!-- CUSTOMERS - EXPANDED PROFILE -->
+            <div id="view-customers" class="view-section">
+                <div class="card">
+                    <h3 class="card-header" id="clientFormHeader">Add Diaspora Client</h3>
+                    <div class="form-grid">
+                        <div class="input-group"><label>Client Name / Reference</label><input type="text" id="newClientName" placeholder="Required"></div>
+                        <div class="input-group"><label>Primary Email</label><input type="text" id="newClientEmail" placeholder="Required"></div>
+                        <div class="input-group"><label>Phone Number (Intl)</label><input type="text" id="newClientPhone" placeholder="Optional"></div>
+                        <div class="input-group"><label>Demographics / Address</label><input type="text" id="newClientDemo" placeholder="e.g., Washington DC / Addis Property"></div>
                     </div>
-                    <button class="btn-primary" id="saveSettingsBtn" style="margin-top: 10px;">Save Preferences</button>
-                    <p id="settingsSuccessMsg" style="color: var(--z-success); font-size: 13px; display: none; margin-top: 10px;">Organization profile updated successfully.</p>
+                    <input type="hidden" id="editClientIndex" value="-1">
+                    <button class="btn-primary" id="saveClientBtn">Save Client Profile</button>
+                    <button class="btn-outline" id="cancelEditClientBtn" style="display:none; margin-left:10px;">Cancel Edit</button>
+                </div>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <table class="data-table">
+                        <thead><tr><th>Client Details</th><th>Demographics & Contact</th><th>Actions</th></tr></thead>
+                        <tbody id="clientTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No clients added yet.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- REPORTS -->
+            <div id="view-reports" class="view-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card"><div class="kpi-title">Gross Client Revenue</div><div class="kpi-value" id="reportGrossRevenue">0.00 Br</div></div>
+                    <div class="kpi-card"><div class="kpi-title" style="color: var(--z-danger);">Total Agent Payouts</div><div class="kpi-value" id="reportTotalPayouts" style="color: var(--z-danger);">0.00 Br</div></div>
+                    <div class="kpi-card"><div class="kpi-title" style="color: var(--z-danger);">Operational Expenses</div><div class="kpi-value" id="reportTotalExpenses" style="color: var(--z-danger);">0.00 Br</div></div>
+                    <div class="kpi-card"><div class="kpi-title">Net RunnersHUB Profit</div><div class="kpi-value" id="reportNetProfit" style="color: var(--z-success);">0.00 Br</div></div>
+                </div>
+            </div>
+
+            <!-- SETTINGS & SECURITY -->
+            <div id="view-settings" class="view-section">
+                <div class="card" style="max-width: 500px;">
+                    <h3 class="card-header">Security Preferences</h3>
+                    <p style="color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px;">Update the Master Password required to modify sensitive records.</p>
+                    <div class="form-grid" style="grid-template-columns: 1fr;">
+                        <div class="input-group"><label>New Master Password</label><input type="password" id="newMasterPassword" placeholder="Enter new password"></div>
+                    </div>
+                    <button class="btn-primary" id="saveSettingsBtn">Update Security</button>
+                    <p id="settingsSuccessMsg" style="color: var(--z-success); font-size: 13px; display: none; margin-top: 10px;">Password updated successfully.</p>
                 </div>
             </div>
 
@@ -608,311 +364,381 @@
     </main>
 </div>
 
-<!-- 3. JAVASCRIPT LOGIC & FIREBASE -->
+<!-- LOGIC -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
-        authDomain: "runnershuberp.firebaseapp.com",
-        projectId: "runnershuberp",
-        storageBucket: "runnershuberp.firebasestorage.app",
-        messagingSenderId: "867809864192",
-        appId: "1:867809864192:web:f1b28454491128780046e5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // --- STATE MANAGEMENT ---
+    // --- STATE MANAGEMENT & SECURITY ---
     const appState = {
+        masterPassword: "admin", // Default
         catalogItems: [],
-        customers: [],
-        agents: [],
-        currentInvoiceItems: [],
-        invoices: [],
-        purchases: [],
-        timeLogs: [],
+        customers: [], agents: [],
+        currentInvoiceItems: [], currentQuoteItems: [],
+        invoices: [], quotes: [], purchases: [], timeLogs: [],
         metrics: { revenue: 0, payouts: 0, expenses: 0 },
         bank: { balance: 0, deposits: 0, withdrawals: 0, ledger: [] }
     };
 
-    // --- NAVIGATION LOGIC ---
-    const navItems = document.querySelectorAll('.nav-item');
-    const viewSections = document.querySelectorAll('.view-section');
-    const mainHeaderTitle = document.getElementById('mainHeaderTitle');
-
-    navItems.forEach(item => {
+    // --- NAVIGATION ---
+    document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
-            navItems.forEach(nav => nav.classList.remove('active'));
-            viewSections.forEach(section => section.classList.remove('active-view'));
-            
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active-view'));
             item.classList.add('active');
-            const targetId = item.getAttribute('data-target');
-            document.getElementById(targetId).classList.add('active-view');
+            document.getElementById(item.getAttribute('data-target')).classList.add('active-view');
             
-            let titleText = item.textContent.trim();
-            if(titleText.includes("Sales")) titleText = "Invoices";
-            if(titleText.includes("Accountant")) titleText = "Agent Network";
-            if(titleText.includes("Documents")) titleText = "Customers";
-            mainHeaderTitle.textContent = titleText;
+            let title = item.textContent.trim();
+            if(title.includes("Sales")) title = "Invoices";
+            if(title.includes("Accountant")) title = "Agent Network";
+            if(title.includes("Documents")) title = "Customers";
+            document.getElementById('mainHeaderTitle').textContent = title;
         });
     });
 
-    // --- MODULE: SETTINGS ---
-    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-        document.getElementById('settingsSuccessMsg').style.display = 'block';
-        setTimeout(() => { document.getElementById('settingsSuccessMsg').style.display = 'none'; }, 3000);
-    });
-
-    // --- MODULE: PURCHASES (EXPENSES) ---
-    document.getElementById('saveExpenseBtn').addEventListener('click', async () => {
-        const vendor = document.getElementById('expenseVendor').value.trim();
-        const category = document.getElementById('expenseCategory').value;
-        const amount = parseFloat(document.getElementById('expenseAmount').value);
-
-        if(!vendor || isNaN(amount) || amount <= 0) return alert("Valid vendor and amount required.");
-
-        const dateStr = new Date().toLocaleDateString();
-        appState.purchases.push({ date: dateStr, vendor, category, amount });
-
-        // Update Table
-        const tbody = document.getElementById('expenseTableBody');
-        if(appState.purchases.length === 1) tbody.innerHTML = '';
-        tbody.innerHTML += `<tr><td>${dateStr}</td><td><strong>${vendor}</strong></td><td>${category}</td><td class="col-right">${amount.toFixed(2)}</td></tr>`;
-
-        // Update Dashboard KPI & Reports
-        appState.metrics.expenses += amount;
-        document.getElementById('kpiExpenses').textContent = appState.metrics.expenses.toFixed(2);
-        document.getElementById('reportTotalExpenses').textContent = `${appState.metrics.expenses.toFixed(2)} Br`;
-        updateNetProfit();
-
-        // Reset Form
-        document.getElementById('expenseVendor').value = '';
-        document.getElementById('expenseAmount').value = '';
-
-        // Sync to Cloud
-        try {
-            await addDoc(collection(db, "purchases_expenses"), { date: dateStr, vendor, category, amount, timestamp: new Date() });
-        } catch(e) { console.error("Cloud Error", e); }
-    });
-
-    // --- MODULE: TIME TRACKING ---
-    document.getElementById('saveTimeLogBtn').addEventListener('click', async () => {
-        const agent = document.getElementById('timeAgentSelect').value;
-        const hours = parseFloat(document.getElementById('timeHours').value);
-        const task = document.getElementById('timeTaskDesc').value.trim();
-
-        if(!agent || isNaN(hours) || !task) return alert("All fields are required.");
-
-        const dateStr = new Date().toLocaleDateString();
-        appState.timeLogs.push({ date: dateStr, agent, hours, task });
-
-        const tbody = document.getElementById('timeTableBody');
-        if(appState.timeLogs.length === 1) tbody.innerHTML = '';
-        tbody.innerHTML += `<tr><td>${dateStr}</td><td><strong>${agent}</strong></td><td>${task}</td><td class="col-right"><span class="status-badge-warning">${hours} hrs</span></td></tr>`;
-
-        document.getElementById('timeHours').value = '';
-        document.getElementById('timeTaskDesc').value = '';
-
-        try {
-            await addDoc(collection(db, "time_logs"), { date: dateStr, agent, hours, task, timestamp: new Date() });
-        } catch(e) { console.error("Cloud Error", e); }
-    });
-
-    // --- RECALCULATE GLOBAL PROFIT ---
-    function updateNetProfit() {
-        const net = appState.metrics.revenue - appState.metrics.payouts - appState.metrics.expenses;
-        document.getElementById('reportNetProfit').textContent = `${net.toFixed(2)} Br`;
+    // --- SECURITY AUTHENTICATION SYSTEM ---
+    let pendingAuthCallback = null;
+    
+    window.requireAuth = function(callback) {
+        document.getElementById('authModal').style.display = 'flex';
+        document.getElementById('authPasswordInput').value = '';
+        document.getElementById('authErrorText').style.display = 'none';
+        pendingAuthCallback = callback;
     }
 
-    // --- MODULE: BANKING ---
-    document.getElementById('saveBankTxBtn').addEventListener('click', async () => {
-        const type = document.getElementById('bankTxType').value;
-        const amount = parseFloat(document.getElementById('bankTxAmount').value);
-        const desc = document.getElementById('bankTxDesc').value.trim();
-        if (isNaN(amount) || amount <= 0 || !desc) return alert("Valid amount and description are required.");
-
-        if (type === 'Deposit') { appState.bank.balance += amount; appState.bank.deposits += amount; } 
-        else { appState.bank.balance -= amount; appState.bank.withdrawals += amount; }
-
-        const dateStr = new Date().toLocaleDateString();
-        appState.bank.ledger.push({ date: dateStr, type, amount, desc, balanceAfter: appState.bank.balance });
-
-        const tbody = document.getElementById('bankingTableBody');
-        if (appState.bank.ledger.length === 1) tbody.innerHTML = ''; 
-        const typeColor = type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
-        const prefix = type === 'Deposit' ? '+' : '-';
-        
-        tbody.innerHTML += `<tr><td>${dateStr}</td><td>${desc}</td><td><span style="${typeColor} font-weight: 600;">${type}</span></td><td class="col-right" style="${typeColor}">${prefix}${amount.toFixed(2)}</td><td class="col-right"><strong>${appState.bank.balance.toFixed(2)}</strong></td></tr>`;
-
-        document.getElementById('kpiBankBalance').textContent = appState.bank.balance.toFixed(2);
-        
-        document.getElementById('bankTxAmount').value = '';
-        document.getElementById('bankTxDesc').value = '';
-
-        try { await addDoc(collection(db, "banking_transactions"), { date: dateStr, type, amount, desc, timestamp: new Date() }); } catch(e) {}
-    });
-
-    // --- MODULE: ITEMS ---
-    document.getElementById('saveItemBtn').addEventListener('click', () => {
-        const name = document.getElementById('newItemName').value.trim();
-        const rate = parseFloat(document.getElementById('newItemRate').value);
-        if(!name || isNaN(rate)) return alert("Item name and rate are required.");
-        appState.catalogItems.push({ name, rate });
-        
-        const tbody = document.getElementById('itemsTableBody');
-        if(appState.catalogItems.length === 1) tbody.innerHTML = ''; 
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td class="col-right">${rate.toFixed(2)}</td><td><span class="status-badge">Active</span></td></tr>`;
-        
-        const catalogSelect = document.getElementById('catalogSelect');
-        if(appState.catalogItems.length === 1) catalogSelect.innerHTML = '<option value="">-- Custom Task (Type Below) --</option>';
-        catalogSelect.innerHTML += `<option value="${name}" data-rate="${rate}">${name} - ${rate} Br</option>`;
-        
-        document.getElementById('newItemName').value = '';
-        document.getElementById('newItemRate').value = '';
-    });
-
-    document.getElementById('catalogSelect').addEventListener('change', (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        if (selectedOption.value !== "") {
-            document.getElementById('invoiceItemName').value = selectedOption.value;
-            document.getElementById('invoiceItemPrice').value = selectedOption.getAttribute('data-rate');
-            document.getElementById('invoiceItemQty').value = 1;
+    document.getElementById('confirmAuthBtn').addEventListener('click', () => {
+        const input = document.getElementById('authPasswordInput').value;
+        if(input === appState.masterPassword) {
+            document.getElementById('authModal').style.display = 'none';
+            if(pendingAuthCallback) pendingAuthCallback();
+            pendingAuthCallback = null;
         } else {
-            document.getElementById('invoiceItemName').value = '';
-            document.getElementById('invoiceItemPrice').value = '';
+            document.getElementById('authErrorText').style.display = 'block';
         }
     });
 
-    // --- MODULE: CUSTOMERS ---
-    document.getElementById('saveClientBtn').addEventListener('click', () => {
-        const name = document.getElementById('newClientName').value.trim();
-        const contact = document.getElementById('newClientContact').value.trim();
-        if(!name) return alert("Client name is required.");
-        appState.customers.push({ name, contact });
-        
-        const tbody = document.getElementById('clientTableBody');
-        if(appState.customers.length === 1) tbody.innerHTML = ''; 
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${contact}</td><td><span class="status-badge">Active</span></td></tr>`;
-        
-        const select = document.getElementById('invoiceClientSelect');
-        if(appState.customers.length === 1) select.innerHTML = '';
-        select.innerHTML += `<option value="${name}">${name}</option>`;
-        
-        document.getElementById('kpiClients').textContent = appState.customers.length;
-        document.getElementById('newClientName').value = '';
-        document.getElementById('newClientContact').value = '';
+    document.getElementById('cancelAuthBtn').addEventListener('click', () => {
+        document.getElementById('authModal').style.display = 'none';
+        pendingAuthCallback = null;
     });
 
-    // --- MODULE: AGENTS ---
-    document.getElementById('saveAgentBtn').addEventListener('click', () => {
-        const name = document.getElementById('newAgentName').value.trim();
-        const tier = document.getElementById('newAgentTier').value;
-        if(!name) return alert("Agent name is required.");
-        appState.agents.push({ name, tier });
+    // --- SETTINGS (Change Password) ---
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+        const newPass = document.getElementById('newMasterPassword').value;
+        if(newPass) {
+            appState.masterPassword = newPass;
+            document.getElementById('settingsSuccessMsg').style.display = 'block';
+            document.getElementById('newMasterPassword').value = '';
+            setTimeout(() => { document.getElementById('settingsSuccessMsg').style.display = 'none'; }, 3000);
+        }
+    });
+
+    // --- RENDER FUNCTIONS FOR CRM & AGENTS ---
+    function renderClients() {
+        const tbody = document.getElementById('clientTableBody');
+        tbody.innerHTML = appState.customers.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#9ca3af;">No clients.</td></tr>` : '';
+        appState.customers.forEach((c, i) => {
+            tbody.innerHTML += `<tr>
+                <td><strong>${c.name}</strong><br><span style="font-size:12px;color:var(--z-text-muted);">${c.email}</span></td>
+                <td>${c.phone || 'N/A'}<br><span style="font-size:12px;color:var(--z-text-muted);">${c.demo || 'N/A'}</span></td>
+                <td>
+                    <button class="btn-edit-outline" onclick="loadClientForEdit(${i})">Edit</button>
+                    <button class="btn-danger-outline" onclick="deleteClientAuth(${i})" style="margin-left:5px;">Delete</button>
+                </td>
+            </tr>`;
+        });
         
+        // Update Dropdowns
+        const invSelect = document.getElementById('invoiceClientSelect');
+        const qtSelect = document.getElementById('quoteClientSelect');
+        invSelect.innerHTML = '<option value="">-- Select Client --</option>';
+        qtSelect.innerHTML = '<option value="">-- Select Client --</option>';
+        appState.customers.forEach(c => {
+            invSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+            qtSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+        });
+        document.getElementById('kpiClients').textContent = appState.customers.length;
+    }
+
+    function renderAgents() {
         const tbody = document.getElementById('agentTableBody');
-        if(appState.agents.length === 1) tbody.innerHTML = '';
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${tier}</td><td><span class="status-badge">Active</span></td></tr>`;
+        tbody.innerHTML = appState.agents.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:#9ca3af;">No agents.</td></tr>` : '';
+        appState.agents.forEach((a, i) => {
+            tbody.innerHTML += `<tr>
+                <td><strong>${a.name}</strong></td>
+                <td>${a.phone || 'N/A'}<br><span style="font-size:12px;color:var(--z-text-muted);">${a.demo || 'N/A'}</span></td>
+                <td><span class="status-badge">${a.tier}</span></td>
+                <td>
+                    <button class="btn-edit-outline" onclick="loadAgentForEdit(${i})">Edit</button>
+                    <button class="btn-danger-outline" onclick="deleteAgentAuth(${i})" style="margin-left:5px;">Delete</button>
+                </td>
+            </tr>`;
+        });
         
         const invSelect = document.getElementById('invoiceAgentSelect');
-        if(appState.agents.length === 1) invSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
-        invSelect.innerHTML += `<option value="${name}">${name} (${tier})</option>`;
-
         const timeSelect = document.getElementById('timeAgentSelect');
-        if(appState.agents.length === 1) timeSelect.innerHTML = '<option value="">-- Select Assigned Agent --</option>';
-        timeSelect.innerHTML += `<option value="${name}">${name}</option>`;
-        
+        invSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
+        timeSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
+        appState.agents.forEach(a => {
+            invSelect.innerHTML += `<option value="${a.name}">${a.name} (${a.tier})</option>`;
+            timeSelect.innerHTML += `<option value="${a.name}">${a.name}</option>`;
+        });
         document.getElementById('kpiAgents').textContent = appState.agents.length;
-        document.getElementById('newAgentName').value = '';
+    }
+
+    // --- CLIENT OPERATIONS (Protected by Auth) ---
+    document.getElementById('saveClientBtn').addEventListener('click', () => {
+        requireAuth(() => {
+            const name = document.getElementById('newClientName').value.trim();
+            const email = document.getElementById('newClientEmail').value.trim();
+            const phone = document.getElementById('newClientPhone').value.trim();
+            const demo = document.getElementById('newClientDemo').value.trim();
+            const editIndex = parseInt(document.getElementById('editClientIndex').value);
+
+            if(!name || !email) return alert("Name and Email required.");
+
+            if(editIndex > -1) {
+                appState.customers[editIndex] = { name, email, phone, demo };
+                document.getElementById('editClientIndex').value = "-1";
+                document.getElementById('clientFormHeader').textContent = "Add Diaspora Client";
+                document.getElementById('saveClientBtn').textContent = "Save Client Profile";
+                document.getElementById('cancelEditClientBtn').style.display = 'none';
+            } else {
+                appState.customers.push({ name, email, phone, demo });
+            }
+            
+            document.getElementById('newClientName').value = ''; document.getElementById('newClientEmail').value = '';
+            document.getElementById('newClientPhone').value = ''; document.getElementById('newClientDemo').value = '';
+            renderClients();
+        });
     });
 
-    document.getElementById('invoiceAgentSelect').addEventListener('change', (e) => {
-        const selectedName = e.target.value;
-        const agent = appState.agents.find(a => a.name === selectedName);
-        if(agent) {
-            const numericalRate = parseFloat(agent.tier) / 100;
-            Array.from(document.getElementById('agentRate').options).forEach(opt => {
-                if(parseFloat(opt.value) === numericalRate) opt.selected = true;
-            });
-            updateInvoiceUI();
-        }
+    window.loadClientForEdit = function(index) {
+        const c = appState.customers[index];
+        document.getElementById('newClientName').value = c.name;
+        document.getElementById('newClientEmail').value = c.email;
+        document.getElementById('newClientPhone').value = c.phone || '';
+        document.getElementById('newClientDemo').value = c.demo || '';
+        
+        document.getElementById('editClientIndex').value = index;
+        document.getElementById('clientFormHeader').textContent = "Edit Client Profile";
+        document.getElementById('saveClientBtn').textContent = "Update Client";
+        document.getElementById('cancelEditClientBtn').style.display = 'inline-block';
+        
+        // Scroll to form
+        document.querySelector('.scroll-area').scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    document.getElementById('cancelEditClientBtn').addEventListener('click', () => {
+        document.getElementById('editClientIndex').value = "-1";
+        document.getElementById('clientFormHeader').textContent = "Add Diaspora Client";
+        document.getElementById('saveClientBtn').textContent = "Save Client Profile";
+        document.getElementById('cancelEditClientBtn').style.display = 'none';
+        document.getElementById('newClientName').value = ''; document.getElementById('newClientEmail').value = '';
+        document.getElementById('newClientPhone').value = ''; document.getElementById('newClientDemo').value = '';
     });
 
-    // --- MODULE: INVOICE GENERATOR ---
+    window.deleteClientAuth = function(index) {
+        requireAuth(() => {
+            appState.customers.splice(index, 1);
+            renderClients();
+        });
+    };
+
+    // --- AGENT OPERATIONS (Protected by Auth) ---
+    document.getElementById('saveAgentBtn').addEventListener('click', () => {
+        requireAuth(() => {
+            const name = document.getElementById('newAgentName').value.trim();
+            const tier = document.getElementById('newAgentTier').value;
+            const phone = document.getElementById('newAgentPhone').value.trim();
+            const demo = document.getElementById('newAgentDemo').value.trim();
+            const editIndex = parseInt(document.getElementById('editAgentIndex').value);
+
+            if(!name) return alert("Agent name is required.");
+
+            if(editIndex > -1) {
+                appState.agents[editIndex] = { name, tier, phone, demo };
+                document.getElementById('editAgentIndex').value = "-1";
+                document.getElementById('agentFormHeader').textContent = "Register Concierge Agent";
+                document.getElementById('saveAgentBtn').textContent = "Save Agent Profile";
+                document.getElementById('cancelEditAgentBtn').style.display = 'none';
+            } else {
+                appState.agents.push({ name, tier, phone, demo });
+            }
+            
+            document.getElementById('newAgentName').value = ''; document.getElementById('newAgentPhone').value = ''; document.getElementById('newAgentDemo').value = '';
+            renderAgents();
+        });
+    });
+
+    window.loadAgentForEdit = function(index) {
+        const a = appState.agents[index];
+        document.getElementById('newAgentName').value = a.name;
+        document.getElementById('newAgentTier').value = a.tier;
+        document.getElementById('newAgentPhone').value = a.phone || '';
+        document.getElementById('newAgentDemo').value = a.demo || '';
+        
+        document.getElementById('editAgentIndex').value = index;
+        document.getElementById('agentFormHeader').textContent = "Edit Agent Profile";
+        document.getElementById('saveAgentBtn').textContent = "Update Agent";
+        document.getElementById('cancelEditAgentBtn').style.display = 'inline-block';
+        document.querySelector('.scroll-area').scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    document.getElementById('cancelEditAgentBtn').addEventListener('click', () => {
+        document.getElementById('editAgentIndex').value = "-1";
+        document.getElementById('agentFormHeader').textContent = "Register Concierge Agent";
+        document.getElementById('saveAgentBtn').textContent = "Save Agent Profile";
+        document.getElementById('cancelEditAgentBtn').style.display = 'none';
+        document.getElementById('newAgentName').value = ''; document.getElementById('newAgentPhone').value = ''; document.getElementById('newAgentDemo').value = '';
+    });
+
+    window.deleteAgentAuth = function(index) {
+        requireAuth(() => {
+            appState.agents.splice(index, 1);
+            renderAgents();
+        });
+    };
+
+    // --- QUOTES MODULE ---
+    document.getElementById('addQuoteLineBtn').addEventListener('click', () => {
+        const task = document.getElementById('quoteItemName').value.trim();
+        const qty = parseInt(document.getElementById('quoteItemQty').value);
+        const price = parseFloat(document.getElementById('quoteItemPrice').value);
+        if (!task || isNaN(price)) return alert("Invalid data.");
+        
+        appState.currentQuoteItems.push({ task, qty, price, lineTotal: price * qty });
+        updateQuoteUI();
+        
+        document.getElementById('quoteItemName').value = '';
+        document.getElementById('quoteItemPrice').value = '';
+    });
+
+    function updateQuoteUI() {
+        const tbody = document.getElementById('quoteTableBody');
+        tbody.innerHTML = '';
+        let total = 0;
+        appState.currentQuoteItems.forEach(item => {
+            total += item.lineTotal;
+            tbody.innerHTML += `<tr><td>${item.task}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td class="col-right">${item.lineTotal.toFixed(2)}</td></tr>`;
+        });
+        document.getElementById('quoteGrandTotalDisplay').textContent = `${total.toFixed(2)} Br`;
+    }
+
+    document.getElementById('saveQuoteBtn').addEventListener('click', () => {
+        if(appState.currentQuoteItems.length === 0) return alert("Add items to quote.");
+        const client = document.getElementById('quoteClientSelect').value;
+        if(!client) return alert("Select a client.");
+        
+        const total = parseFloat(document.getElementById('quoteGrandTotalDisplay').textContent);
+        const id = "EST-" + Math.floor(1000 + Math.random() * 9000);
+        
+        appState.quotes.push({ id, client, total });
+        
+        const ledger = document.getElementById('masterQuoteListBody');
+        if(appState.quotes.length === 1) ledger.innerHTML = '';
+        ledger.innerHTML += `<tr><td><strong>${id}</strong></td><td>${client}</td><td class="col-right">${total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge" style="background:#e0f2fe; color:#0284c7;">Draft Saved</span></td></tr>`;
+        
+        appState.currentQuoteItems = [];
+        updateQuoteUI();
+        alert(`Quote ${id} generated successfully.`);
+    });
+
+    // --- INVOICE GENERATOR & VOID LOGIC ---
     document.getElementById('addInvoiceLineBtn').addEventListener('click', () => {
         const task = document.getElementById('invoiceItemName').value.trim();
         const qty = parseInt(document.getElementById('invoiceItemQty').value);
         const price = parseFloat(document.getElementById('invoiceItemPrice').value);
-        if (!task || isNaN(price) || isNaN(qty)) return alert("Invalid item data.");
-
-        const lineTotal = price * qty;
-        appState.currentInvoiceItems.push({ task, qty, price, lineTotal });
+        if (!task || isNaN(price)) return;
+        appState.currentInvoiceItems.push({ task, qty, price, lineTotal: price * qty });
         updateInvoiceUI();
-        
-        document.getElementById('invoiceItemName').value = '';
-        document.getElementById('invoiceItemPrice').value = '';
-        document.getElementById('invoiceItemQty').value = '1';
-        document.getElementById('catalogSelect').value = ''; 
+        document.getElementById('invoiceItemName').value = ''; document.getElementById('invoiceItemPrice').value = '';
     });
 
     document.getElementById('agentRate').addEventListener('change', updateInvoiceUI);
 
     function updateInvoiceUI() {
         const tbody = document.getElementById('invoiceTableBody');
-        tbody.innerHTML = '';
-        let subtotal = 0;
-
+        tbody.innerHTML = ''; let subtotal = 0;
         appState.currentInvoiceItems.forEach(item => {
             subtotal += item.lineTotal;
             tbody.innerHTML += `<tr><td>${item.task}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td class="col-right">${item.lineTotal.toFixed(2)}</td></tr>`;
         });
-
-        const rate = parseFloat(document.getElementById('agentRate').value);
-        const agentCut = subtotal * rate;
-
+        const agentCut = subtotal * parseFloat(document.getElementById('agentRate').value);
         document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
         document.getElementById('agentPaymentDisplay').textContent = `${agentCut.toFixed(2)} Br`;
         document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
     }
 
-    // --- CLOUD SYNC & MASTER LEDGER ---
-    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
-        if (appState.currentInvoiceItems.length === 0) return alert("Add items to invoice first.");
+    document.getElementById('saveInvoiceBtn').addEventListener('click', () => {
+        if (appState.currentInvoiceItems.length === 0) return alert("Add items first.");
         const client = document.getElementById('invoiceClientSelect').value;
         const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned";
+        if(!client) return alert("Select a client.");
+        
         const total = parseFloat(document.getElementById('subtotalDisplay').textContent);
         const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent);
-        if(!client) return alert("Please select a client to bill.");
+        const id = "INV-" + Math.floor(10000 + Math.random() * 90000);
 
-        try {
-            const docRef = await addDoc(collection(db, "concierge_invoices"), {
-                issuer: "Active Developer Session", client, assignedAgent: agent, items: appState.currentInvoiceItems, totalAmount: total, agentPayment: payout, timestamp: new Date()
-            });
-            
-            const displayId = "INV-" + docRef.id.slice(0, 5).toUpperCase();
-            appState.invoices.push({ id: displayId, client, agent, total, payout });
-            
-            const ledgerBody = document.getElementById('masterInvoiceListBody');
-            if(appState.invoices.length === 1) ledgerBody.innerHTML = '';
-            ledgerBody.innerHTML += `<tr><td><strong>${displayId}</strong></td><td>${client}</td><td>${agent}</td><td class="col-right">${total.toFixed(2)}</td><td style="text-align: center;"><span class="status-badge">Synced to Cloud</span></td></tr>`;
-
-            appState.metrics.revenue += total;
-            appState.metrics.payouts += payout;
-            
-            document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2);
-            document.getElementById('reportGrossRevenue').textContent = `${appState.metrics.revenue.toFixed(2)} Br`;
-            document.getElementById('reportTotalPayouts').textContent = `${appState.metrics.payouts.toFixed(2)} Br`;
-            updateNetProfit();
-            
-            appState.currentInvoiceItems = [];
-            updateInvoiceUI();
-            alert("Invoice Saved & Synced! ID: " + docRef.id);
-            
-        } catch (error) { console.error("Firestore Error:", error); alert("Failed to save to cloud."); }
+        appState.invoices.push({ id, client, agent, total, payout, status: 'Active' });
+        renderInvoiceLedger();
+        
+        appState.metrics.revenue += total; appState.metrics.payouts += payout;
+        updateDashboards();
+        
+        appState.currentInvoiceItems = []; updateInvoiceUI();
+        alert(`Invoice ${id} generated!`);
     });
+
+    function renderInvoiceLedger() {
+        const tbody = document.getElementById('masterInvoiceListBody');
+        tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af;">No invoices.</td></tr>` : '';
+        appState.invoices.forEach((inv, i) => {
+            const badge = inv.status === 'Active' ? `<span class="status-badge">Active</span>` : `<span class="status-badge-void">Voided</span>`;
+            const actionBtn = inv.status === 'Active' ? `<button class="btn-danger-outline" onclick="voidInvoiceAuth(${i})">Void</button>` : '-';
+            
+            tbody.innerHTML += `<tr>
+                <td><strong>${inv.id}</strong></td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td>
+                <td style="text-align: center;">${badge}</td>
+                <td>${actionBtn}</td>
+            </tr>`;
+        });
+    }
+
+    // VOID INVOICE LOGIC (Protected by Auth)
+    window.voidInvoiceAuth = function(index) {
+        requireAuth(() => {
+            const inv = appState.invoices[index];
+            inv.status = 'Voided';
+            
+            // Reverse Metrics
+            appState.metrics.revenue -= inv.total;
+            appState.metrics.payouts -= inv.payout;
+            
+            renderInvoiceLedger();
+            updateDashboards();
+            alert(`Invoice ${inv.id} has been voided. Revenue and payouts reversed.`);
+        });
+    }
+
+    // --- SHARED DASHBOARD UPDATER ---
+    function updateDashboards() {
+        const net = appState.metrics.revenue - appState.metrics.payouts - appState.metrics.expenses;
+        document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2);
+        document.getElementById('reportGrossRevenue').textContent = `${appState.metrics.revenue.toFixed(2)} Br`;
+        document.getElementById('reportTotalPayouts').textContent = `${appState.metrics.payouts.toFixed(2)} Br`;
+        document.getElementById('kpiExpenses').textContent = appState.metrics.expenses.toFixed(2);
+        document.getElementById('reportTotalExpenses').textContent = `${appState.metrics.expenses.toFixed(2)} Br`;
+        document.getElementById('reportNetProfit').textContent = `${net.toFixed(2)} Br`;
+    }
+
+    // Agent dropdown auto-update logic
+    document.getElementById('invoiceAgentSelect').addEventListener('change', (e) => {
+        const agent = appState.agents.find(a => a.name === e.target.value);
+        if(agent) {
+            const r = parseFloat(agent.tier) / 100;
+            Array.from(document.getElementById('agentRate').options).forEach(opt => { if(parseFloat(opt.value) === r) opt.selected = true; });
+            updateInvoiceUI();
+        }
+    });
+
 </script>
 </body>
 </html>
