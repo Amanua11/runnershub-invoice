@@ -37,8 +37,15 @@
 
         /* WORKSPACE & HEADER */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-header { height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0; }
-        .header-title { font-size: 18px; font-weight: 600; color: var(--z-text-dark); }
+        .top-header { height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0; gap: 20px; }
+        .header-title { font-size: 18px; font-weight: 600; color: var(--z-text-dark); white-space: nowrap; }
+        
+        /* SEARCH BAR */
+        .search-container { flex: 1; max-width: 400px; position: relative; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--z-text-muted); font-size: 13px; }
+        .search-container input { width: 100%; padding: 8px 12px 8px 35px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; background: #f9fafb; outline: none; transition: 0.2s; box-sizing: border-box; }
+        .search-container input:focus { background: white; border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(47,120,255,0.1); }
+
         .user-actions { display: flex; align-items: center; gap: 16px; }
         .user-email { font-size: 13px; color: var(--z-text-muted); font-weight: 500; }
 
@@ -98,7 +105,6 @@
 </head>
 <body>
 
-<!-- SECURITY AUTHENTICATION MODAL -->
 <div id="authModal" class="modal-overlay">
     <div class="modal-box">
         <h3>Security Verification</h3>
@@ -114,7 +120,6 @@
 
 <div id="app-screen">
     
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <span class="org-icon">RH</span> RunnersHUB
@@ -125,7 +130,6 @@
             <div class="nav-item" data-target="view-banking"><i class="fa-solid fa-building-columns nav-icon"></i> Banking</div>
             <div class="nav-divider"></div>
             
-            <!-- SALES GROUP -->
             <div style="padding: 0 20px 5px; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Sales</div>
             <div class="nav-item" data-target="view-quotes" style="margin-left: 20px;"><i class="fa-solid fa-file-signature nav-icon"></i> Quotes (Estimates)</div>
             <div class="nav-item" data-target="view-invoices" style="margin-left: 20px;"><i class="fa-solid fa-cart-shopping nav-icon"></i> Invoices</div>
@@ -142,17 +146,18 @@
         </div>
     </aside>
 
-    <!-- WORKSPACE -->
     <main class="workspace">
         <header class="top-header">
             <div class="header-title" id="mainHeaderTitle">Home</div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="globalSearchInput" placeholder="Search the active module...">
+            </div>
             <div class="user-actions"><span class="user-email">Active Developer Session</span></div>
         </header>
 
-        <!-- SCROLL AREA -->
         <div class="scroll-area">
             
-            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section active-view">
                 <div class="kpi-grid">
                     <div class="kpi-card"><div class="kpi-title">Total Active Clients</div><div class="kpi-value" id="kpiClients">0</div></div>
@@ -163,12 +168,11 @@
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        Your workspace is fully unlocked. Adding, modifying, or deleting sensitive records (like Clients, Agents, and Invoices) will now prompt for your Master Security Password.
+                        <strong>New Features:</strong> Your data now saves instantly to your browser's persistent storage. Use the search bar at the top to filter tables, and update your Master Security Password in Settings.
                     </p>
                 </div>
             </div>
 
-            <!-- ITEMS -->
             <div id="view-items" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Service Catalog</h3>
@@ -180,13 +184,12 @@
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
-                        <thead><tr><th>Service</th><th class="col-right">Rate (Br)</th></tr></thead>
-                        <tbody id="itemsTableBody"><tr><td colspan="2" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr></tbody>
+                        <thead><tr><th>Service</th><th class="col-right">Rate (Br)</th><th>Actions</th></tr></thead>
+                        <tbody id="itemsTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- BANKING -->
             <div id="view-banking" class="view-section">
                 <div class="kpi-grid">
                     <div class="kpi-card" style="grid-column: span 2;"><div class="kpi-title">Available Cash Balance (Br)</div><div class="kpi-value" id="kpiBankBalance">0.00</div></div>
@@ -208,7 +211,6 @@
                 </div>
             </div>
 
-            <!-- QUOTES (ESTIMATES) -->
             <div id="view-quotes" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Generate Quote (Estimate)</h3>
@@ -239,13 +241,12 @@
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Saved Quotes</h3></div>
                     <table class="data-table">
-                        <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th></tr></thead>
-                        <tbody id="masterQuoteListBody"><tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr></tbody>
+                        <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
+                        <tbody id="masterQuoteListBody"><tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- INVOICES -->
             <div id="view-invoices" class="view-section">
                 <div class="card">
                     <h3 class="card-header">New Concierge Invoice</h3>
@@ -274,7 +275,7 @@
                             <div class="tot-row"><span>Sub Total</span><span id="subtotalDisplay">0.00 Br</span></div>
                             <div class="tot-row agent-payout"><span>Agent Payment <select id="agentRate" class="rate-select"><option value="0.15">15%</option><option value="0.20">20%</option><option value="0.25">25%</option><option value="0.28">28%</option></select></span><span id="agentPaymentDisplay">0.00 Br</span></div>
                             <div class="tot-row grand-total"><span>Total Billed</span><span id="grandTotalDisplay">0.00 Br</span></div>
-                            <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 16px;">Sync Invoice</button>
+                            <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 16px;">Issue & Save Invoice</button>
                         </div>
                     </div>
                 </div>
@@ -282,16 +283,17 @@
                     <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3></div>
                     <table class="data-table">
                         <thead><tr><th>Invoice ID</th><th>Client</th><th>Assigned Agent</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
-                        <tbody id="masterInvoiceListBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No invoices synced yet.</td></tr></tbody>
+                        <tbody id="masterInvoiceListBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No invoices yet.</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- PURCHASES, TIME TRACKING (Minified for space, kept functional) -->
-            <div id="view-purchases" class="view-section"><div class="card"><h3 class="card-header">Log Expense</h3><div class="form-grid"><div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div><div class="input-group"><label>Amount</label><input type="number" id="expenseAmount"></div></div><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div></div>
-            <div id="view-timetracking" class="view-section"><div class="card"><h3 class="card-header">Log Time</h3><div class="form-grid"><div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div><div class="input-group"><label>Hours</label><input type="number" id="timeHours"></div><div class="input-group"><label>Task</label><input type="text" id="timeTaskDesc"></div></div><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div></div>
+            <div id="view-purchases" class="view-section"><div class="card"><h3 class="card-header">Log Expense</h3><div class="form-grid"><div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div><div class="input-group"><label>Amount</label><input type="number" id="expenseAmount"></div></div><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div>
+            <div class="card" style="padding:0; overflow:hidden;"><table class="data-table"><thead><tr><th>Vendor</th><th class="col-right">Amount</th></tr></thead><tbody id="expenseTableBody"><tr><td colspan="2" style="text-align:center; padding: 20px;">No expenses.</td></tr></tbody></table></div></div>
+            
+            <div id="view-timetracking" class="view-section"><div class="card"><h3 class="card-header">Log Time</h3><div class="form-grid"><div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div><div class="input-group"><label>Hours</label><input type="number" id="timeHours"></div><div class="input-group"><label>Task</label><input type="text" id="timeTaskDesc"></div></div><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div>
+            <div class="card" style="padding:0; overflow:hidden;"><table class="data-table"><thead><tr><th>Date</th><th>Agent</th><th>Task</th><th class="col-right">Hours</th></tr></thead><tbody id="timeTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr></tbody></table></div></div>
 
-            <!-- AGENTS (Accountant) - EXPANDED PROFILE -->
             <div id="view-agents" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="agentFormHeader">Register Concierge Agent</h3>
@@ -315,7 +317,6 @@
                 </div>
             </div>
 
-            <!-- CUSTOMERS - EXPANDED PROFILE -->
             <div id="view-customers" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="clientFormHeader">Add Diaspora Client</h3>
@@ -337,7 +338,6 @@
                 </div>
             </div>
 
-            <!-- REPORTS -->
             <div id="view-reports" class="view-section">
                 <div class="kpi-grid">
                     <div class="kpi-card"><div class="kpi-title">Gross Client Revenue</div><div class="kpi-value" id="reportGrossRevenue">0.00 Br</div></div>
@@ -347,11 +347,10 @@
                 </div>
             </div>
 
-            <!-- SETTINGS & SECURITY -->
             <div id="view-settings" class="view-section">
                 <div class="card" style="max-width: 500px;">
                     <h3 class="card-header">Security Preferences</h3>
-                    <p style="color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px;">Update the Master Password required to modify sensitive records.</p>
+                    <p style="color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px;">Update the Master Password required to modify sensitive records. Default is <code>admin</code>.</p>
                     <div class="form-grid" style="grid-template-columns: 1fr;">
                         <div class="input-group"><label>New Master Password</label><input type="password" id="newMasterPassword" placeholder="Enter new password"></div>
                     </div>
@@ -364,18 +363,58 @@
     </main>
 </div>
 
-<!-- LOGIC -->
 <script type="module">
-    // --- STATE MANAGEMENT & SECURITY ---
-    const appState = {
-        masterPassword: "admin", // Default
-        catalogItems: [],
-        customers: [], agents: [],
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
+        authDomain: "runnershuberp.firebaseapp.com",
+        projectId: "runnershuberp",
+        storageBucket: "runnershuberp.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- DATA PERSISTENCE ENGINE ---
+    let appState = {
+        masterPassword: "admin",
+        catalogItems: [], customers: [], agents: [],
         currentInvoiceItems: [], currentQuoteItems: [],
         invoices: [], quotes: [], purchases: [], timeLogs: [],
         metrics: { revenue: 0, payouts: 0, expenses: 0 },
         bank: { balance: 0, deposits: 0, withdrawals: 0, ledger: [] }
     };
+
+    function saveStateLocally() {
+        localStorage.setItem('runnersHubStateData', JSON.stringify(appState));
+    }
+
+    function loadStateLocally() {
+        const saved = localStorage.getItem('runnersHubStateData');
+        if (saved) {
+            appState = JSON.parse(saved);
+            rebuildAllUI();
+        }
+    }
+
+    // --- SEARCH BAR LOGIC ---
+    document.getElementById('globalSearchInput').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const activeView = document.querySelector('.view-section.active-view');
+        if (!activeView) return;
+        
+        // Find all data rows in the active tab
+        const rows = activeView.querySelectorAll('.data-table tbody tr');
+        rows.forEach(row => {
+            // Ignore empty state placeholders
+            if(row.children.length === 1 && row.children[0].colSpan > 1) return;
+            
+            const textContent = row.textContent.toLowerCase();
+            row.style.display = textContent.includes(searchTerm) ? '' : 'none';
+        });
+    });
 
     // --- NAVIGATION ---
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -390,6 +429,10 @@
             if(title.includes("Accountant")) title = "Agent Network";
             if(title.includes("Documents")) title = "Customers";
             document.getElementById('mainHeaderTitle').textContent = title;
+            
+            // Clear search bar on tab switch
+            document.getElementById('globalSearchInput').value = '';
+            document.querySelectorAll('.data-table tbody tr').forEach(row => row.style.display = '');
         });
     });
 
@@ -400,10 +443,11 @@
         document.getElementById('authModal').style.display = 'flex';
         document.getElementById('authPasswordInput').value = '';
         document.getElementById('authErrorText').style.display = 'none';
+        document.getElementById('authPasswordInput').focus();
         pendingAuthCallback = callback;
     }
 
-    document.getElementById('confirmAuthBtn').addEventListener('click', () => {
+    function processAuth() {
         const input = document.getElementById('authPasswordInput').value;
         if(input === appState.masterPassword) {
             document.getElementById('authModal').style.display = 'none';
@@ -412,6 +456,11 @@
         } else {
             document.getElementById('authErrorText').style.display = 'block';
         }
+    }
+
+    document.getElementById('confirmAuthBtn').addEventListener('click', processAuth);
+    document.getElementById('authPasswordInput').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') processAuth();
     });
 
     document.getElementById('cancelAuthBtn').addEventListener('click', () => {
@@ -424,16 +473,37 @@
         const newPass = document.getElementById('newMasterPassword').value;
         if(newPass) {
             appState.masterPassword = newPass;
+            saveStateLocally();
             document.getElementById('settingsSuccessMsg').style.display = 'block';
             document.getElementById('newMasterPassword').value = '';
             setTimeout(() => { document.getElementById('settingsSuccessMsg').style.display = 'none'; }, 3000);
         }
     });
 
-    // --- RENDER FUNCTIONS FOR CRM & AGENTS ---
+    // --- REBUILD UI FROM STATE ---
+    function rebuildAllUI() {
+        renderClients();
+        renderAgents();
+        renderItems();
+        renderBankLedger();
+        updateInvoiceUI();
+        updateQuoteUI();
+        renderInvoiceLedger();
+        renderQuoteLedger();
+        renderPurchases();
+        renderTimeLogs();
+        updateDashboards();
+    }
+
+    // --- CRM & AGENT RENDERERS ---
     function renderClients() {
         const tbody = document.getElementById('clientTableBody');
         tbody.innerHTML = appState.customers.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#9ca3af;">No clients.</td></tr>` : '';
+        const invSelect = document.getElementById('invoiceClientSelect');
+        const qtSelect = document.getElementById('quoteClientSelect');
+        invSelect.innerHTML = '<option value="">-- Select Client --</option>';
+        qtSelect.innerHTML = '<option value="">-- Select Client --</option>';
+
         appState.customers.forEach((c, i) => {
             tbody.innerHTML += `<tr>
                 <td><strong>${c.name}</strong><br><span style="font-size:12px;color:var(--z-text-muted);">${c.email}</span></td>
@@ -443,14 +513,6 @@
                     <button class="btn-danger-outline" onclick="deleteClientAuth(${i})" style="margin-left:5px;">Delete</button>
                 </td>
             </tr>`;
-        });
-        
-        // Update Dropdowns
-        const invSelect = document.getElementById('invoiceClientSelect');
-        const qtSelect = document.getElementById('quoteClientSelect');
-        invSelect.innerHTML = '<option value="">-- Select Client --</option>';
-        qtSelect.innerHTML = '<option value="">-- Select Client --</option>';
-        appState.customers.forEach(c => {
             invSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
             qtSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
         });
@@ -460,6 +522,11 @@
     function renderAgents() {
         const tbody = document.getElementById('agentTableBody');
         tbody.innerHTML = appState.agents.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:#9ca3af;">No agents.</td></tr>` : '';
+        const invSelect = document.getElementById('invoiceAgentSelect');
+        const timeSelect = document.getElementById('timeAgentSelect');
+        invSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
+        timeSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
+
         appState.agents.forEach((a, i) => {
             tbody.innerHTML += `<tr>
                 <td><strong>${a.name}</strong></td>
@@ -470,20 +537,13 @@
                     <button class="btn-danger-outline" onclick="deleteAgentAuth(${i})" style="margin-left:5px;">Delete</button>
                 </td>
             </tr>`;
-        });
-        
-        const invSelect = document.getElementById('invoiceAgentSelect');
-        const timeSelect = document.getElementById('timeAgentSelect');
-        invSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
-        timeSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
-        appState.agents.forEach(a => {
             invSelect.innerHTML += `<option value="${a.name}">${a.name} (${a.tier})</option>`;
             timeSelect.innerHTML += `<option value="${a.name}">${a.name}</option>`;
         });
         document.getElementById('kpiAgents').textContent = appState.agents.length;
     }
 
-    // --- CLIENT OPERATIONS (Protected by Auth) ---
+    // --- CLIENT OPERATIONS ---
     document.getElementById('saveClientBtn').addEventListener('click', () => {
         requireAuth(() => {
             const name = document.getElementById('newClientName').value.trim();
@@ -504,6 +564,7 @@
                 appState.customers.push({ name, email, phone, demo });
             }
             
+            saveStateLocally();
             document.getElementById('newClientName').value = ''; document.getElementById('newClientEmail').value = '';
             document.getElementById('newClientPhone').value = ''; document.getElementById('newClientDemo').value = '';
             renderClients();
@@ -516,13 +577,10 @@
         document.getElementById('newClientEmail').value = c.email;
         document.getElementById('newClientPhone').value = c.phone || '';
         document.getElementById('newClientDemo').value = c.demo || '';
-        
         document.getElementById('editClientIndex').value = index;
         document.getElementById('clientFormHeader').textContent = "Edit Client Profile";
         document.getElementById('saveClientBtn').textContent = "Update Client";
         document.getElementById('cancelEditClientBtn').style.display = 'inline-block';
-        
-        // Scroll to form
         document.querySelector('.scroll-area').scrollTo({top: 0, behavior: 'smooth'});
     };
 
@@ -538,11 +596,12 @@
     window.deleteClientAuth = function(index) {
         requireAuth(() => {
             appState.customers.splice(index, 1);
+            saveStateLocally();
             renderClients();
         });
     };
 
-    // --- AGENT OPERATIONS (Protected by Auth) ---
+    // --- AGENT OPERATIONS ---
     document.getElementById('saveAgentBtn').addEventListener('click', () => {
         requireAuth(() => {
             const name = document.getElementById('newAgentName').value.trim();
@@ -563,6 +622,7 @@
                 appState.agents.push({ name, tier, phone, demo });
             }
             
+            saveStateLocally();
             document.getElementById('newAgentName').value = ''; document.getElementById('newAgentPhone').value = ''; document.getElementById('newAgentDemo').value = '';
             renderAgents();
         });
@@ -574,7 +634,6 @@
         document.getElementById('newAgentTier').value = a.tier;
         document.getElementById('newAgentPhone').value = a.phone || '';
         document.getElementById('newAgentDemo').value = a.demo || '';
-        
         document.getElementById('editAgentIndex').value = index;
         document.getElementById('agentFormHeader').textContent = "Edit Agent Profile";
         document.getElementById('saveAgentBtn').textContent = "Update Agent";
@@ -593,9 +652,51 @@
     window.deleteAgentAuth = function(index) {
         requireAuth(() => {
             appState.agents.splice(index, 1);
+            saveStateLocally();
             renderAgents();
         });
     };
+
+    // --- SERVICE CATALOG ---
+    document.getElementById('saveItemBtn').addEventListener('click', () => {
+        const name = document.getElementById('newItemName').value.trim();
+        const rate = parseFloat(document.getElementById('newItemRate').value);
+        if(!name || isNaN(rate)) return alert("Item name and rate are required.");
+        
+        appState.catalogItems.push({ name, rate });
+        saveStateLocally();
+        renderItems();
+        document.getElementById('newItemName').value = ''; document.getElementById('newItemRate').value = '';
+    });
+
+    function renderItems() {
+        const tbody = document.getElementById('itemsTableBody');
+        tbody.innerHTML = appState.catalogItems.length === 0 ? `<tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr>` : '';
+        const catalogSelect = document.getElementById('catalogSelect');
+        catalogSelect.innerHTML = '<option value="">-- Custom Task --</option>';
+
+        appState.catalogItems.forEach((item, i) => {
+            tbody.innerHTML += `<tr><td><strong>${item.name}</strong></td><td class="col-right">${item.rate.toFixed(2)}</td><td><span class="status-badge" style="cursor:pointer;" onclick="deleteItemAuth(${i})">Delete</span></td></tr>`;
+            catalogSelect.innerHTML += `<option value="${item.name}" data-rate="${item.rate}">${item.name} - ${item.rate} Br</option>`;
+        });
+    }
+
+    window.deleteItemAuth = function(index) {
+        requireAuth(() => {
+            appState.catalogItems.splice(index, 1);
+            saveStateLocally();
+            renderItems();
+        });
+    };
+
+    document.getElementById('catalogSelect').addEventListener('change', (e) => {
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        if (selectedOption.value !== "") {
+            document.getElementById('invoiceItemName').value = selectedOption.value;
+            document.getElementById('invoiceItemPrice').value = selectedOption.getAttribute('data-rate');
+            document.getElementById('invoiceItemQty').value = 1;
+        }
+    });
 
     // --- QUOTES MODULE ---
     document.getElementById('addQuoteLineBtn').addEventListener('click', () => {
@@ -605,16 +706,14 @@
         if (!task || isNaN(price)) return alert("Invalid data.");
         
         appState.currentQuoteItems.push({ task, qty, price, lineTotal: price * qty });
+        saveStateLocally();
         updateQuoteUI();
-        
-        document.getElementById('quoteItemName').value = '';
-        document.getElementById('quoteItemPrice').value = '';
+        document.getElementById('quoteItemName').value = ''; document.getElementById('quoteItemPrice').value = '';
     });
 
     function updateQuoteUI() {
         const tbody = document.getElementById('quoteTableBody');
-        tbody.innerHTML = '';
-        let total = 0;
+        tbody.innerHTML = ''; let total = 0;
         appState.currentQuoteItems.forEach(item => {
             total += item.lineTotal;
             tbody.innerHTML += `<tr><td>${item.task}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td class="col-right">${item.lineTotal.toFixed(2)}</td></tr>`;
@@ -631,15 +730,29 @@
         const id = "EST-" + Math.floor(1000 + Math.random() * 9000);
         
         appState.quotes.push({ id, client, total });
-        
-        const ledger = document.getElementById('masterQuoteListBody');
-        if(appState.quotes.length === 1) ledger.innerHTML = '';
-        ledger.innerHTML += `<tr><td><strong>${id}</strong></td><td>${client}</td><td class="col-right">${total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge" style="background:#e0f2fe; color:#0284c7;">Draft Saved</span></td></tr>`;
-        
         appState.currentQuoteItems = [];
+        saveStateLocally();
+        
         updateQuoteUI();
+        renderQuoteLedger();
         alert(`Quote ${id} generated successfully.`);
     });
+
+    function renderQuoteLedger() {
+        const ledger = document.getElementById('masterQuoteListBody');
+        ledger.innerHTML = appState.quotes.length === 0 ? `<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr>` : '';
+        appState.quotes.forEach((q, i) => {
+            ledger.innerHTML += `<tr><td><strong>${q.id}</strong></td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge" style="background:#e0f2fe; color:#0284c7;">Draft Saved</span></td><td><button class="btn-danger-outline" onclick="deleteQuoteAuth(${i})">Delete</button></td></tr>`;
+        });
+    }
+
+    window.deleteQuoteAuth = function(index) {
+        requireAuth(() => {
+            appState.quotes.splice(index, 1);
+            saveStateLocally();
+            renderQuoteLedger();
+        });
+    };
 
     // --- INVOICE GENERATOR & VOID LOGIC ---
     document.getElementById('addInvoiceLineBtn').addEventListener('click', () => {
@@ -648,6 +761,7 @@
         const price = parseFloat(document.getElementById('invoiceItemPrice').value);
         if (!task || isNaN(price)) return;
         appState.currentInvoiceItems.push({ task, qty, price, lineTotal: price * qty });
+        saveStateLocally();
         updateInvoiceUI();
         document.getElementById('invoiceItemName').value = ''; document.getElementById('invoiceItemPrice').value = '';
     });
@@ -667,7 +781,7 @@
         document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
     }
 
-    document.getElementById('saveInvoiceBtn').addEventListener('click', () => {
+    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
         if (appState.currentInvoiceItems.length === 0) return alert("Add items first.");
         const client = document.getElementById('invoiceClientSelect').value;
         const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned";
@@ -678,43 +792,112 @@
         const id = "INV-" + Math.floor(10000 + Math.random() * 90000);
 
         appState.invoices.push({ id, client, agent, total, payout, status: 'Active' });
-        renderInvoiceLedger();
-        
         appState.metrics.revenue += total; appState.metrics.payouts += payout;
-        updateDashboards();
         
-        appState.currentInvoiceItems = []; updateInvoiceUI();
+        // Push to Firebase (Silent Sync)
+        try { addDoc(collection(db, "concierge_invoices"), { id, client, agent, totalAmount: total, agentPayment: payout, timestamp: new Date() }); } catch(e) { console.error(e); }
+
+        appState.currentInvoiceItems = [];
+        saveStateLocally();
+        
+        updateInvoiceUI();
+        renderInvoiceLedger();
+        updateDashboards();
         alert(`Invoice ${id} generated!`);
     });
 
     function renderInvoiceLedger() {
         const tbody = document.getElementById('masterInvoiceListBody');
-        tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af;">No invoices.</td></tr>` : '';
+        tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af; padding: 20px;">No invoices.</td></tr>` : '';
         appState.invoices.forEach((inv, i) => {
             const badge = inv.status === 'Active' ? `<span class="status-badge">Active</span>` : `<span class="status-badge-void">Voided</span>`;
             const actionBtn = inv.status === 'Active' ? `<button class="btn-danger-outline" onclick="voidInvoiceAuth(${i})">Void</button>` : '-';
             
             tbody.innerHTML += `<tr>
                 <td><strong>${inv.id}</strong></td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td>
-                <td style="text-align: center;">${badge}</td>
-                <td>${actionBtn}</td>
+                <td style="text-align: center;">${badge}</td><td>${actionBtn}</td>
             </tr>`;
         });
     }
 
-    // VOID INVOICE LOGIC (Protected by Auth)
     window.voidInvoiceAuth = function(index) {
         requireAuth(() => {
             const inv = appState.invoices[index];
             inv.status = 'Voided';
-            
-            // Reverse Metrics
             appState.metrics.revenue -= inv.total;
             appState.metrics.payouts -= inv.payout;
-            
+            saveStateLocally();
             renderInvoiceLedger();
             updateDashboards();
             alert(`Invoice ${inv.id} has been voided. Revenue and payouts reversed.`);
+        });
+    }
+
+    // --- BANKING ---
+    document.getElementById('saveBankTxBtn').addEventListener('click', () => {
+        const type = document.getElementById('bankTxType').value;
+        const amount = parseFloat(document.getElementById('bankTxAmount').value);
+        const desc = document.getElementById('bankTxDesc').value.trim();
+        if (isNaN(amount) || amount <= 0 || !desc) return alert("Valid amount and description required.");
+
+        if (type === 'Deposit') { appState.bank.balance += amount; appState.bank.deposits += amount; } 
+        else { appState.bank.balance -= amount; appState.bank.withdrawals += amount; }
+
+        const dateStr = new Date().toLocaleDateString();
+        appState.bank.ledger.push({ date: dateStr, type, amount, desc, balanceAfter: appState.bank.balance });
+        
+        saveStateLocally();
+        renderBankLedger();
+        
+        document.getElementById('bankTxAmount').value = ''; document.getElementById('bankTxDesc').value = '';
+    });
+
+    function renderBankLedger() {
+        const tbody = document.getElementById('bankingTableBody');
+        tbody.innerHTML = appState.bank.ledger.length === 0 ? `<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions.</td></tr>` : '';
+        appState.bank.ledger.forEach(tx => {
+            const typeColor = tx.type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
+            const prefix = tx.type === 'Deposit' ? '+' : '-';
+            tbody.innerHTML += `<tr><td>${tx.date}</td><td>${tx.desc}</td><td><span style="${typeColor} font-weight: 600;">${tx.type}</span></td><td class="col-right" style="${typeColor}">${prefix}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td></tr>`;
+        });
+        document.getElementById('kpiBankBalance').textContent = appState.bank.balance.toFixed(2);
+    }
+
+    // --- PURCHASES & TIME LOGS ---
+    document.getElementById('saveExpenseBtn').addEventListener('click', () => {
+        const vendor = document.getElementById('expenseVendor').value;
+        const amount = parseFloat(document.getElementById('expenseAmount').value);
+        if(!vendor || isNaN(amount)) return;
+        appState.purchases.push({ vendor, amount });
+        appState.metrics.expenses += amount;
+        saveStateLocally();
+        renderPurchases();
+        updateDashboards();
+    });
+
+    function renderPurchases() {
+        const tbody = document.getElementById('expenseTableBody');
+        tbody.innerHTML = appState.purchases.length === 0 ? `<tr><td colspan="2" style="text-align:center; padding: 20px;">No expenses.</td></tr>` : '';
+        appState.purchases.forEach(p => {
+            tbody.innerHTML += `<tr><td><strong>${p.vendor}</strong></td><td class="col-right">${p.amount.toFixed(2)}</td></tr>`;
+        });
+    }
+
+    document.getElementById('saveTimeLogBtn').addEventListener('click', () => {
+        const agent = document.getElementById('timeAgentSelect').value;
+        const hours = parseFloat(document.getElementById('timeHours').value);
+        const task = document.getElementById('timeTaskDesc').value;
+        if(!agent || isNaN(hours)) return;
+        appState.timeLogs.push({ date: new Date().toLocaleDateString(), agent, hours, task });
+        saveStateLocally();
+        renderTimeLogs();
+    });
+
+    function renderTimeLogs() {
+        const tbody = document.getElementById('timeTableBody');
+        tbody.innerHTML = appState.timeLogs.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr>` : '';
+        appState.timeLogs.forEach(t => {
+            tbody.innerHTML += `<tr><td>${t.date}</td><td><strong>${t.agent}</strong></td><td>${t.task}</td><td class="col-right"><span class="status-badge">${t.hours} hrs</span></td></tr>`;
         });
     }
 
@@ -729,15 +912,8 @@
         document.getElementById('reportNetProfit').textContent = `${net.toFixed(2)} Br`;
     }
 
-    // Agent dropdown auto-update logic
-    document.getElementById('invoiceAgentSelect').addEventListener('change', (e) => {
-        const agent = appState.agents.find(a => a.name === e.target.value);
-        if(agent) {
-            const r = parseFloat(agent.tier) / 100;
-            Array.from(document.getElementById('agentRate').options).forEach(opt => { if(parseFloat(opt.value) === r) opt.selected = true; });
-            updateInvoiceUI();
-        }
-    });
+    // --- INITIALIZE APPLICATION ---
+    loadStateLocally();
 
 </script>
 </body>
