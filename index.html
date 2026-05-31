@@ -3,270 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RunnersHUB Concierge ERP</title>
+    <title>RunnersHUB ERP - Zoho Style</title>
     <style>
-        /* --- GLOBAL CSS RESET & VARIABLES --- */
+        /* --- ZOHO-STYLE CSS RESET & VARIABLES --- */
         :root { 
-            --primary-color: #2a5298; 
-            --secondary-color: #1e3c72; 
-            --bg-color: #f4f6f8;
-            --text-main: #333;
-            --text-light: #777;
+            --zoho-blue: #0063d1;
+            --zoho-blue-hover: #0054b3;
+            --sidebar-bg: #1e222d;
+            --sidebar-hover: #2a2f3c;
+            --bg-canvas: #f4f5f7;
+            --border-light: #e5e7eb;
+            --text-main: #222;
+            --text-muted: #6b7280;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
         body { 
             margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--bg-color); 
+            font-family: var(--font-family); 
+            background: var(--bg-canvas); 
+            color: var(--text-main);
             height: 100vh; 
             overflow: hidden; 
         }
 
-        /* --- FIREBASE AUTH SCREEN --- */
+        /* --- AUTHENTICATION SCREEN --- */
         #auth-screen { 
-            position: absolute; 
+            position: fixed; 
             top: 0; left: 0; 
             width: 100%; height: 100%; 
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color)); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
+            background: #f9fafb; 
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 9999; 
         }
-        .auth-box { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 10px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-            width: 100%; 
-            max-width: 350px; 
-            text-align: center; 
+        .login-box { 
+            background: white; padding: 40px; border-radius: 8px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 380px; 
+            border: 1px solid var(--border-light);
         }
-        .auth-box h2 { margin-top: 0; color: var(--primary-color); }
-        .auth-box input { 
-            width: 100%; padding: 12px; margin: 10px 0; 
-            border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+        .login-box h2 { margin: 0 0 10px 0; color: var(--text-main); font-weight: 600; text-align: center; }
+        .login-box p { text-align: center; color: var(--text-muted); font-size: 0.9em; margin-bottom: 30px; }
+        .login-box input { 
+            width: 100%; padding: 12px; margin-bottom: 15px; 
+            border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;
         }
-        .auth-box button { 
-            width: 100%; padding: 12px; margin-top: 15px;
-            background: var(--primary-color); color: white; 
-            border: none; border-radius: 5px; cursor: pointer; 
-            font-weight: bold; font-size: 1em; transition: background 0.3s;
+        .login-box input:focus { border-color: var(--zoho-blue); outline: none; }
+        .login-box button { 
+            width: 100%; padding: 12px; background: var(--zoho-blue); color: white; 
+            border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 15px; transition: 0.2s;
         }
-        .auth-box button:hover { background: var(--secondary-color); }
-        #auth-error { color: #d32f2f; font-size: 0.9em; margin-top: 10px; display: none; }
+        .login-box button:hover { background: var(--zoho-blue-hover); }
+        #auth-error { color: #d32f2f; font-size: 13px; margin-top: 15px; display: none; text-align: center; }
 
-        /* --- ZOHO-LIKE APP LAYOUT --- */
+        /* --- ZOHO APP LAYOUT --- */
         #app-screen { 
-            /* Hidden until authenticated normally, set to flex for Dev Mode */
+            display: none; 
             width: 100%; height: 100%; 
             display: flex; 
         }
         
-        /* Sidebar */
+        /* SIDEBAR */
         .sidebar { 
-            width: 250px; 
-            background: var(--secondary-color); 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            width: 240px; background: var(--sidebar-bg); color: white; 
+            display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .sidebar-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .sidebar-brand { 
+            padding: 20px; font-size: 18px; font-weight: 600; letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px;
         }
-        .sidebar-header h2 { margin: 0; font-size: 1.2em; letter-spacing: 1px; }
-        .sidebar-header p { margin: 5px 0 0; font-size: 0.8em; color: #a9c2ed; }
-        
-        .nav-menu { flex: 1; padding-top: 20px; }
+        .nav-group { padding: 15px 0; }
+        .nav-label { padding: 0 20px 10px; font-size: 11px; text-transform: uppercase; color: #8a92a5; font-weight: 600; letter-spacing: 1px; }
         .nav-item { 
-            padding: 15px 25px; cursor: pointer; 
-            border-left: 4px solid transparent; transition: 0.2s; 
-            display: flex; align-items: center; gap: 10px;
+            padding: 10px 20px; cursor: pointer; font-size: 14px; color: #d1d5db;
+            display: flex; align-items: center; gap: 12px; transition: 0.2s; border-left: 3px solid transparent;
         }
-        .nav-item:hover, .nav-item.active { 
-            background: rgba(255,255,255,0.1); 
-            border-left-color: #fff; 
-        }
+        .nav-item:hover { background: var(--sidebar-hover); color: white; }
+        .nav-item.active { background: var(--sidebar-hover); color: white; border-left-color: var(--zoho-blue); font-weight: 500; }
 
-        /* Main Content Area */
-        .main-content { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-y: auto; 
-        }
-        .header { 
-            background: white; padding: 15px 30px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        }
-        .user-profile { display: flex; align-items: center; gap: 15px; }
-        .logout-btn { 
-            background: none; border: 1px solid #ccc; padding: 5px 15px; 
-            border-radius: 4px; cursor: pointer; color: var(--text-main);
-        }
-        .logout-btn:hover { background: #f0f0f0; }
+        /* WORKSPACE */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        .content-area { padding: 30px; }
-        
-        /* --- INVOICE MODULE UI --- */
-        .card { 
-            background: white; padding: 25px; border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; 
+        /* TOP HEADER */
+        .top-header { 
+            height: 60px; background: white; border-bottom: 1px solid var(--border-light);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 25px; flex-shrink: 0;
         }
-        .card h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; color: var(--primary-color); }
-        
-        .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
-        .form-group { flex: 1; display: flex; flex-direction: column; }
-        .form-group label { font-size: 0.9em; margin-bottom: 5px; color: var(--text-light); }
-        .form-group input, .form-group select { 
-            padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;
+        .breadcrumbs { font-size: 18px; font-weight: 500; color: var(--text-main); }
+        .breadcrumbs span { color: var(--text-muted); font-size: 14px; margin-right: 8px; font-weight: normal; }
+        .user-actions { display: flex; align-items: center; gap: 20px; }
+        .user-email { font-size: 13px; color: var(--text-muted); }
+        .btn-outline { 
+            border: 1px solid var(--border-light); background: white; padding: 6px 15px; 
+            border-radius: 4px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 500;
         }
+        .btn-outline:hover { background: #f9fafb; }
+
+        /* MAIN CONTENT SCROLL AREA */
+        .scroll-area { flex: 1; overflow-y: auto; padding: 30px; }
+        
+        /* DOCUMENT CANVAS */
+        .document-canvas { 
+            background: white; max-width: 1000px; margin: 0 auto; 
+            border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-light);
+        }
+        
+        /* FORM SECTIONS */
+        .doc-section { padding: 30px; border-bottom: 1px solid var(--border-light); }
+        .doc-section:last-child { border-bottom: none; }
+        
+        .grid-row { display: grid; grid-template-columns: 2fr 1fr 1fr 150px; gap: 15px; align-items: end; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-main); }
+        .input-group input, .input-group select { 
+            padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 4px; 
+            font-family: inherit; font-size: 14px; width: 100%; box-sizing: border-box;
+        }
+        .input-group input:focus { border-color: var(--zoho-blue); outline: none; }
         
         .btn-primary { 
-            padding: 10px 20px; background: var(--primary-color); 
-            color: white; border: none; border-radius: 4px; cursor: pointer; 
+            background: var(--zoho-blue); color: white; border: none; padding: 10px 20px; 
+            border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 14px;
         }
-        .btn-primary:hover { background: var(--secondary-color); }
+        .btn-primary:hover { background: var(--zoho-blue-hover); }
+
+        /* ZOHO ITEM TABLE */
+        .item-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .item-table th { 
+            background: #f9fafb; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+            padding: 12px 15px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text-muted);
+        }
+        .item-table td { padding: 15px; border-bottom: 1px solid var(--border-light); font-size: 14px; color: var(--text-main); }
+        .item-table td.col-amount { font-weight: 500; text-align: right; }
+        .item-table th.col-amount { text-align: right; }
+
+        /* TOTALS BLOCK */
+        .totals-container { display: flex; justify-content: flex-end; padding: 25px 30px; background: #fdfdfd; border-radius: 0 0 4px 4px; }
+        .totals-box { width: 350px; }
+        .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; color: var(--text-main); }
         
-        /* Data Table */
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        .data-table th { background: #f9fafb; font-weight: 600; color: var(--text-light); }
+        /* Agent Payment Styling inside Totals */
+        .tot-row.agent-payout { color: #d84315; }
+        .rate-select { 
+            border: 1px solid var(--border-light); border-radius: 4px; padding: 2px 5px; 
+            font-size: 12px; margin-left: 8px; cursor: pointer; background: white;
+        }
         
-        /* Calculation Section */
-        .totals-section { 
-            width: 350px; margin-left: auto; margin-top: 20px; 
-            background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #eee;
+        .tot-row.grand-total { 
+            font-size: 18px; font-weight: 600; margin-top: 10px; padding-top: 15px; 
+            border-top: 1px solid var(--border-light); color: var(--text-main);
         }
-        .totals-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-main); }
-        .totals-row.agent-payment { color: #d84315; } 
-        .totals-row.grand-total { 
-            font-weight: bold; font-size: 1.2em; 
-            border-top: 2px solid #ddd; padding-top: 10px; color: var(--primary-color); 
-        }
+        
+        .actions-footer { padding: 20px 30px; background: #f9fafb; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; border-radius: 0 0 4px 4px; }
     </style>
 </head>
 <body>
 
-<!-- AUTHENTICATION SCREEN (HIDDEN FOR DEV MODE) -->
-<div id="auth-screen" style="display: none;">
-    <div class="auth-box">
-        <h2>RunnersHUB Login</h2>
-        <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Concierge Portal Access</p>
-        <input type="email" id="loginEmail" placeholder="Admin Email" />
+<!-- AUTHENTICATION GATEWAY -->
+<div id="auth-screen">
+    <div class="login-box">
+        <h2>RunnersHUB</h2>
+        <p>Sign in to access your Concierge ERP</p>
+        <input type="email" id="loginEmail" placeholder="Email Address" />
         <input type="password" id="loginPassword" placeholder="Password" />
-        <button id="loginBtn">Secure Login</button>
+        <button id="loginBtn">Sign In</button>
         <p id="auth-error">Invalid credentials. Please try again.</p>
     </div>
 </div>
 
-<!-- MAIN APPLICATION SCREEN (UNLOCKED FOR DEV MODE) -->
-<div id="app-screen" style="display: flex;">
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>RunnersHUB</h2>
-            <p>ERP System - Trial</p>
+<!-- ZOHO-STYLE APP LAYOUT -->
+<div id="app-screen">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span style="background: var(--zoho-blue); padding: 4px 8px; border-radius: 4px; font-size: 14px;">RH</span> 
+            RunnersHUB
         </div>
-        <div class="nav-menu">
-            <div class="nav-item">Dashboard</div>
-            <div class="nav-item active">Invoicing & Billing</div>
-            <div class="nav-item">Agent Management</div>
-            <div class="nav-item">Client CRM</div>
+        <div class="nav-group">
+            <div class="nav-label">Sales & Billing</div>
+            <div class="nav-item">Customers</div>
+            <div class="nav-item active">Invoices</div>
+            <div class="nav-item">Payments Received</div>
         </div>
-    </div>
+        <div class="nav-group">
+            <div class="nav-label">Concierge</div>
+            <div class="nav-item">Agent Network</div>
+            <div class="nav-item">Service Tasks</div>
+        </div>
+    </aside>
 
-    <!-- Main Workspace -->
-    <div class="main-content">
-        <!-- Top Header -->
-        <div class="header">
-            <h3 style="margin: 0; color: var(--text-main);">Create Concierge Invoice</h3>
-            <div class="user-profile">
-                <span id="userDisplay" style="font-size: 0.9em; color: var(--text-light);">Developer Mode Active</span>
-                <button class="logout-btn" id="logoutBtn">Logout</button>
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace">
+        
+        <!-- TOP NAVIGATION -->
+        <header class="top-header">
+            <div class="breadcrumbs">
+                <span>Sales / Invoices / </span> New Invoice
             </div>
-        </div>
+            <div class="user-actions">
+                <span class="user-email" id="userDisplay">Loading...</span>
+                <button class="btn-outline" id="logoutBtn">Sign Out</button>
+            </div>
+        </header>
 
-        <!-- Content Area -->
-        <div class="content-area">
-            
-            <!-- Item Entry Card -->
-            <div class="card">
-                <h3>Add Service Item</h3>
-                <div class="form-row">
-                    <div class="form-group" style="flex: 2;">
-                        <label>Service Description</label>
-                        <input type="text" id="itemName" placeholder="e.g., Property Management, Errand Running">
-                    </div>
-                    <div class="form-group">
-                        <label>Unit Price (Br)</label>
-                        <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="number" id="itemQty" value="1" min="1">
+        <!-- SCROLLABLE CANVAS -->
+        <div class="scroll-area">
+            <div class="document-canvas">
+                
+                <!-- Input Section -->
+                <div class="doc-section">
+                    <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--zoho-blue);">Item Details</h3>
+                    <div class="grid-row">
+                        <div class="input-group">
+                            <label>Service Description</label>
+                            <input type="text" id="itemName" placeholder="e.g., Property Verification, Errand Logistics">
+                        </div>
+                        <div class="input-group">
+                            <label>Rate (Br)</label>
+                            <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label>Quantity</label>
+                            <input type="number" id="itemQty" value="1" min="1">
+                        </div>
+                        <button class="btn-primary" id="addItemBtn" style="margin-bottom: 2px;">Add Line Item</button>
                     </div>
                 </div>
-                <button class="btn-primary" id="addItemBtn">+ Add to Line Items</button>
-            </div>
 
-            <!-- Invoice Details Card -->
-            <div class="card">
-                <h3>Invoice Details</h3>
-                <table class="data-table">
+                <!-- Document Table Section -->
+                <table class="item-table">
                     <thead>
                         <tr>
-                            <th>Description</th>
+                            <th style="padding-left: 30px;">Item Details</th>
                             <th>Qty</th>
-                            <th>Unit Price</th>
-                            <th>Line Total</th>
+                            <th>Rate</th>
+                            <th class="col-amount" style="padding-right: 30px;">Amount</th>
                         </tr>
                     </thead>
                     <tbody id="invoiceTableBody">
-                        <!-- Items inject here -->
+                        <!-- Dynamic items injected here -->
                     </tbody>
                 </table>
 
-                <div class="totals-section">
-                    <div class="totals-row">
-                        <span>Subtotal:</span>
-                        <span id="subtotalDisplay">0.00 Br</span>
-                    </div>
-                    <!-- AGENT PAYMENT CALCULATION -->
-                    <div class="totals-row agent-payment">
-                        <span>
-                            Agent Payment 
-                            <select id="agentRate" style="padding: 2px; margin-left: 5px;">
-                                <option value="0.15">15%</option>
-                                <option value="0.20">20%</option>
-                                <option value="0.25">25%</option>
-                                <option value="0.28">28%</option>
-                            </select>
-                        </span>
-                        <span id="agentPaymentDisplay">0.00 Br</span>
-                    </div>
-                    <div class="totals-row grand-total">
-                        <span>Total Billed to Client:</span>
-                        <span id="grandTotalDisplay">0.00 Br</span>
-                    </div>
-                    <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 15px;">Save to Cloud Database</button>
-                </div>
-            </div>
+                <!-- Totals Section -->
+                <div class="totals-container">
+                    <div class="totals-box">
+                        <div class="tot-row">
+                            <span>Subtotal</span>
+                            <span id="subtotalDisplay">0.00 Br</span>
+                        </div>
+                        
+                        <!-- Zoho-Style Integrated Agent Commission -->
+                        <div class="tot-row agent-payout">
+                            <span>
+                                Agent Payment 
+                                <select id="agentRate" class="rate-select">
+                                    <option value="0.15">15%</option>
+                                    <option value="0.20">20%</option>
+                                    <option value="0.25">25%</option>
+                                    <option value="0.28">28%</option>
+                                </select>
+                            </span>
+                            <span id="agentPaymentDisplay">0.00 Br</span>
+                        </div>
 
+                        <div class="tot-row grand-total">
+                            <span>Total (Br)</span>
+                            <span id="grandTotalDisplay">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="actions-footer">
+                    <button class="btn-primary" id="saveInvoiceBtn">Save & Sync to Database</button>
+                </div>
+
+            </div>
         </div>
-    </div>
+    </main>
 </div>
 
-<!-- FIREBASE INTEGRATION -->
+<!-- LOGIC & FIREBASE SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // LIVE KEYS INJECTED DIRECTLY FROM YOUR FIREBASE CONSOLE
+    // LIVE RUNNERSHUB FIREBASE KEYS
     const firebaseConfig = {
         apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
         authDomain: "runnershuberp.firebaseapp.com",
@@ -281,145 +304,146 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // UI ELEMENTS MAP
-    const authScreen = document.getElementById('auth-screen');
-    const appScreen = document.getElementById('app-screen');
-    const authError = document.getElementById('auth-error');
-    
-    // AUTHENTICATION STATE OBSERVER
-    // Modified for Dev Mode: Won't force you back to login screen if unauthenticated.
+    // DOM Elements
+    const ui = {
+        auth: document.getElementById('auth-screen'),
+        app: document.getElementById('app-screen'),
+        error: document.getElementById('auth-error'),
+        user: document.getElementById('userDisplay'),
+        name: document.getElementById('itemName'),
+        price: document.getElementById('itemPrice'),
+        qty: document.getElementById('itemQty'),
+        table: document.getElementById('invoiceTableBody'),
+        subtotal: document.getElementById('subtotalDisplay'),
+        agentPayout: document.getElementById('agentPaymentDisplay'),
+        grandTotal: document.getElementById('grandTotalDisplay'),
+        rate: document.getElementById('agentRate')
+    };
+
+    // --- AUTHENTICATION MODULE ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            document.getElementById('userDisplay').textContent = user.email;
+            ui.auth.style.display = 'none';
+            ui.app.style.display = 'flex';
+            ui.user.textContent = user.email;
         }
     });
 
-    // LOGIN / LOGOUT LOGIC WITH MASTER BYPASS
     document.getElementById('loginBtn').addEventListener('click', () => {
-        const email = document.getElementById('loginEmail').value;
+        const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPassword').value;
-        authError.style.display = 'none';
+        ui.error.style.display = 'none';
         
-        // ---------------------------------------------------------
-        // MASTER ADMIN BYPASS (Ignores Firebase Auth Error)
-        // ---------------------------------------------------------
+        // MASTER ADMIN BYPASS
         if (email === 'admin@runnershub.com' && pass === 'Runners2026!') {
-            authScreen.style.display = 'none';
-            appScreen.style.display = 'flex';
-            document.getElementById('userDisplay').textContent = 'MASTER ADMIN';
-            return; // Stops here, instantly letting you in.
+            ui.auth.style.display = 'none';
+            ui.app.style.display = 'flex';
+            ui.user.textContent = 'Administrator';
+            return; 
         }
-        // ---------------------------------------------------------
         
-        // Regular Firebase Auth Attempt
         signInWithEmailAndPassword(auth, email, pass)
             .then(() => {
-                authScreen.style.display = 'none';
-                appScreen.style.display = 'flex';
+                ui.auth.style.display = 'none';
+                ui.app.style.display = 'flex';
             })
             .catch((error) => {
-                console.error(error.code, error.message);
-                authError.style.display = 'block';
+                console.error("Login Reject:", error.code);
+                ui.error.style.display = 'block';
             });
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
         signOut(auth).then(() => {
-            // Force reset UI for logout
-            authScreen.style.display = 'flex';
-            appScreen.style.display = 'none';
+            ui.auth.style.display = 'flex';
+            ui.app.style.display = 'none';
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
         });
     });
 
-    // INVOICE MODULE LOGIC
-    let invoiceItems = [];
+    // --- INVOICE BUILDER MODULE ---
+    let invoiceLedger = [];
     
     document.getElementById('addItemBtn').addEventListener('click', () => {
-        const name = document.getElementById('itemName').value.trim();
-        const price = parseFloat(document.getElementById('itemPrice').value);
-        const qty = parseInt(document.getElementById('itemQty').value);
+        const nameVal = ui.name.value.trim();
+        const priceVal = parseFloat(ui.price.value);
+        const qtyVal = parseInt(ui.qty.value);
 
-        if (!name || isNaN(price) || isNaN(qty)) {
-            alert("Please enter valid service details.");
+        if (!nameVal || isNaN(priceVal) || isNaN(qtyVal)) {
+            alert("Please enter a valid service description and rate.");
             return;
         }
 
-        const lineTotal = price * qty;
-        invoiceItems.push({ name, price, qty, lineTotal });
+        const calculatedTotal = priceVal * qtyVal;
+        invoiceLedger.push({ task: nameVal, price: priceVal, qty: qtyVal, lineTotal: calculatedTotal });
         
-        updateInvoiceUI();
+        refreshDashboard();
         
-        // Reset inputs
-        document.getElementById('itemName').value = '';
-        document.getElementById('itemPrice').value = '';
-        document.getElementById('itemQty').value = '1';
-        document.getElementById('itemName').focus();
+        ui.name.value = '';
+        ui.price.value = '';
+        ui.qty.value = '1';
+        ui.name.focus();
     });
 
-    // Recalculate if agent rate changes
-    document.getElementById('agentRate').addEventListener('change', updateInvoiceUI);
+    ui.rate.addEventListener('change', refreshDashboard);
 
-    function updateInvoiceUI() {
-        const tbody = document.getElementById('invoiceTableBody');
-        tbody.innerHTML = '';
-        let subtotal = 0;
+    function refreshDashboard() {
+        ui.table.innerHTML = '';
+        let currentSubtotal = 0;
 
-        invoiceItems.forEach((item) => {
-            subtotal += item.lineTotal;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${item.name}</td>
-                <td>${item.qty}</td>
-                <td>${item.price.toFixed(2)} Br</td>
-                <td>${item.lineTotal.toFixed(2)} Br</td>
+        invoiceLedger.forEach((entry) => {
+            currentSubtotal += entry.lineTotal;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding-left: 30px;"><strong>${entry.task}</strong></td>
+                <td>${entry.qty}</td>
+                <td>${entry.price.toFixed(2)}</td>
+                <td class="col-amount" style="padding-right: 30px;">${entry.lineTotal.toFixed(2)}</td>
             `;
-            tbody.appendChild(tr);
+            ui.table.appendChild(row);
         });
 
-        // Agent Payment Logic
-        const agentRate = parseFloat(document.getElementById('agentRate').value);
-        const agentPayment = subtotal * agentRate;
+        // Agent Commission Crunching
+        const activeRate = parseFloat(ui.rate.value);
+        const agentCut = currentSubtotal * activeRate;
 
-        // Update Displays
-        document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
-        document.getElementById('agentPaymentDisplay').textContent = `${agentPayment.toFixed(2)} Br`;
-        document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
+        // Render Math
+        ui.subtotal.textContent = `${currentSubtotal.toFixed(2)} Br`;
+        ui.agentPayout.textContent = `${agentCut.toFixed(2)} Br`;
+        ui.grandTotal.textContent = `${currentSubtotal.toFixed(2)}`;
     }
 
-    // CLOUD SYNC (FIRESTORE)
+    // --- CLOUD SYNC MODULE ---
     document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
-        if (invoiceItems.length === 0) {
-            alert("Please add service items before saving.");
+        if (invoiceLedger.length === 0) {
+            alert("Please add service tasks before saving the invoice.");
             return;
         }
 
-        const subtotal = parseFloat(document.getElementById('subtotalDisplay').textContent);
-        const agentPayment = parseFloat(document.getElementById('agentPaymentDisplay').textContent);
-        const agentRate = document.getElementById('agentRate').options[document.getElementById('agentRate').selectedIndex].text;
+        const finalSub = parseFloat(ui.subtotal.textContent);
+        const finalAgent = parseFloat(ui.agentPayout.textContent);
+        const finalRateStr = ui.rate.options[ui.rate.selectedIndex].text;
 
-        // Safely determine who is saving the invoice (Firebase Auth vs Master Bypass/Dev Mode)
-        const currentUserEmail = auth.currentUser ? auth.currentUser.email : "Dev Mode / Master Admin";
+        const sessionUser = auth.currentUser ? auth.currentUser.email : "Master Admin";
 
         try {
             const docRef = await addDoc(collection(db, "concierge_invoices"), {
-                createdBy: currentUserEmail,
-                items: invoiceItems,
-                clientTotal: subtotal,
-                agentPaymentAllocated: agentPayment,
-                agentRateApplied: agentRate,
+                issuer: sessionUser,
+                lineItems: invoiceLedger,
+                totalCharged: finalSub,
+                agentOwed: finalAgent,
+                commissionBracket: finalRateStr,
                 currency: "Br",
                 timestamp: new Date()
             });
-            alert("Invoice securely synced! ID: " + docRef.id);
+            alert("Invoice securely synced to RunnersHUB! Document ID: " + docRef.id);
             
-            // Clear for next invoice
-            invoiceItems = [];
-            updateInvoiceUI();
+            invoiceLedger = [];
+            refreshDashboard();
         } catch (error) {
-            console.error("Cloud Error: ", error);
-            alert("Error saving to cloud. Ensure your Firebase configuration is correct.");
+            console.error("Firestore Reject:", error);
+            alert("Cloud write failed. Check console network tab.");
         }
     });
 </script>
