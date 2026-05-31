@@ -3,165 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RunnersHUB ERP - Zoho Style</title>
+    <title>RunnersHUB ERP</title>
     <style>
-        /* --- ZOHO-STYLE CSS RESET & VARIABLES --- */
+        /* --- ZOHO EXACT CSS RESET & VARIABLES --- */
         :root { 
-            --zoho-blue: #0063d1;
-            --zoho-blue-hover: #0054b3;
-            --sidebar-bg: #1e222d;
-            --sidebar-hover: #2a2f3c;
-            --bg-canvas: #f4f5f7;
-            --border-light: #e5e7eb;
-            --text-main: #222;
-            --text-muted: #6b7280;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --z-blue: #0073e6;
+            --z-blue-hover: #005bb5;
+            --z-sidebar: #1e222d;
+            --z-sidebar-active: #171a23;
+            --z-bg: #f3f4f5;
+            --z-border: #e0e0e0;
+            --z-text-dark: #222222;
+            --z-text-muted: #777777;
+            --z-table-header: #f9f9f9;
         }
         body { 
             margin: 0; 
-            font-family: var(--font-family); 
-            background: var(--bg-canvas); 
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background: var(--z-bg); 
+            color: var(--z-text-dark);
             height: 100vh; 
             overflow: hidden; 
+            font-size: 14px;
         }
 
         /* --- AUTHENTICATION SCREEN --- */
         #auth-screen { 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background: #f9fafb; 
-            display: flex; justify-content: center; align-items: center; 
-            z-index: 9999; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #f9fafb; display: flex; justify-content: center; align-items: center; z-index: 9999; 
         }
         .login-box { 
-            background: white; padding: 40px; border-radius: 8px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 380px; 
-            border: 1px solid var(--border-light);
+            background: white; padding: 40px; border-radius: 6px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 360px; 
+            border: 1px solid var(--z-border);
         }
-        .login-box h2 { margin: 0 0 10px 0; color: var(--text-main); font-weight: 600; text-align: center; }
-        .login-box p { text-align: center; color: var(--text-muted); font-size: 0.9em; margin-bottom: 30px; }
+        .login-box h2 { margin: 0 0 5px 0; font-weight: 600; text-align: center; color: var(--z-text-dark); }
+        .login-box p { text-align: center; color: var(--z-text-muted); font-size: 13px; margin-bottom: 25px; }
         .login-box input { 
-            width: 100%; padding: 12px; margin-bottom: 15px; 
+            width: 100%; padding: 10px 12px; margin-bottom: 15px; 
             border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;
         }
-        .login-box input:focus { border-color: var(--zoho-blue); outline: none; }
+        .login-box input:focus { border-color: var(--z-blue); outline: none; }
         .login-box button { 
-            width: 100%; padding: 12px; background: var(--zoho-blue); color: white; 
-            border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 15px; transition: 0.2s;
+            width: 100%; padding: 12px; background: var(--z-blue); color: white; 
+            border: none; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 15px;
         }
-        .login-box button:hover { background: var(--zoho-blue-hover); }
+        .login-box button:hover { background: var(--z-blue-hover); }
         #auth-error { color: #d32f2f; font-size: 13px; margin-top: 15px; display: none; text-align: center; }
 
-        /* --- ZOHO APP LAYOUT --- */
-        #app-screen { 
-            display: none; 
-            width: 100%; height: 100%; 
-            display: flex; 
-        }
+        /* --- APP LAYOUT --- */
+        #app-screen { display: none; width: 100%; height: 100%; display: flex; }
         
         /* SIDEBAR */
         .sidebar { 
-            width: 240px; background: var(--sidebar-bg); color: white; 
+            width: 220px; background: var(--z-sidebar); color: white; 
             display: flex; flex-direction: column; flex-shrink: 0;
         }
         .sidebar-brand { 
-            padding: 20px; font-size: 18px; font-weight: 600; letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px;
+            padding: 18px 20px; font-size: 16px; font-weight: 600; 
+            border-bottom: 1px solid #2a2e39; display: flex; align-items: center; gap: 10px;
         }
+        .org-icon { background: var(--z-blue); color: white; padding: 3px 6px; border-radius: 3px; font-size: 12px; }
         .nav-group { padding: 15px 0; }
-        .nav-label { padding: 0 20px 10px; font-size: 11px; text-transform: uppercase; color: #8a92a5; font-weight: 600; letter-spacing: 1px; }
         .nav-item { 
-            padding: 10px 20px; cursor: pointer; font-size: 14px; color: #d1d5db;
-            display: flex; align-items: center; gap: 12px; transition: 0.2s; border-left: 3px solid transparent;
+            padding: 8px 20px; cursor: pointer; font-size: 13px; color: #a1a5b5;
+            display: flex; align-items: center; gap: 10px; border-left: 3px solid transparent;
         }
-        .nav-item:hover { background: var(--sidebar-hover); color: white; }
-        .nav-item.active { background: var(--sidebar-hover); color: white; border-left-color: var(--zoho-blue); font-weight: 500; }
+        .nav-item:hover { color: white; }
+        .nav-item.active { background: var(--z-sidebar-active); color: white; border-left-color: var(--z-blue); }
 
-        /* WORKSPACE */
+        /* MAIN WORKSPACE */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
         /* TOP HEADER */
         .top-header { 
-            height: 60px; background: white; border-bottom: 1px solid var(--border-light);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 25px; flex-shrink: 0;
+            height: 55px; background: white; border-bottom: 1px solid var(--z-border);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; flex-shrink: 0;
         }
-        .breadcrumbs { font-size: 18px; font-weight: 500; color: var(--text-main); }
-        .breadcrumbs span { color: var(--text-muted); font-size: 14px; margin-right: 8px; font-weight: normal; }
-        .user-actions { display: flex; align-items: center; gap: 20px; }
-        .user-email { font-size: 13px; color: var(--text-muted); }
-        .btn-outline { 
-            border: 1px solid var(--border-light); background: white; padding: 6px 15px; 
-            border-radius: 4px; cursor: pointer; color: var(--text-main); font-size: 13px; font-weight: 500;
+        .header-title { font-size: 18px; font-weight: 500; color: var(--z-text-dark); }
+        .user-actions { display: flex; align-items: center; gap: 15px; }
+        .user-email { font-size: 13px; color: var(--z-text-muted); }
+        .btn-logout { 
+            background: transparent; border: none; cursor: pointer; color: var(--z-blue); font-size: 13px; font-weight: 500;
         }
-        .btn-outline:hover { background: #f9fafb; }
+        .btn-logout:hover { text-decoration: underline; }
 
-        /* MAIN CONTENT SCROLL AREA */
-        .scroll-area { flex: 1; overflow-y: auto; padding: 30px; }
+        /* SCROLL AREA & VIEW SECTIONS */
+        .scroll-area { flex: 1; overflow-y: auto; padding: 25px; }
         
-        /* DOCUMENT CANVAS */
+        .view-section { display: none; /* All sections hidden by default */ }
+        .view-section.active-view { display: block; /* Only active shows */ }
+
+        /* EMPTY STATE / PLACEHOLDER CARDS */
+        .empty-state-card {
+            background: white; padding: 40px; text-align: center; border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid var(--z-border);
+            max-width: 600px; margin: 40px auto;
+        }
+        .empty-state-card h3 { margin-top: 0; color: var(--z-text-dark); font-weight: 500; }
+        .empty-state-card p { color: var(--z-text-muted); line-height: 1.5; }
+
+        /* DOCUMENT CANVAS (For Invoices) */
         .document-canvas { 
-            background: white; max-width: 1000px; margin: 0 auto; 
-            border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border-light);
+            background: white; max-width: 950px; margin: 0 auto; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--z-border);
         }
         
-        /* FORM SECTIONS */
-        .doc-section { padding: 30px; border-bottom: 1px solid var(--border-light); }
-        .doc-section:last-child { border-bottom: none; }
-        
-        .grid-row { display: grid; grid-template-columns: 2fr 1fr 1fr 150px; gap: 15px; align-items: end; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 12px; font-weight: 600; color: var(--text-main); }
-        .input-group input, .input-group select { 
-            padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 4px; 
-            font-family: inherit; font-size: 14px; width: 100%; box-sizing: border-box;
+        /* DOC HEADER (Customer details) */
+        .doc-header { padding: 30px; border-bottom: 1px dashed var(--z-border); display: flex; gap: 40px; }
+        .input-block { display: flex; flex-direction: column; width: 300px; }
+        .input-block label { font-size: 12px; color: var(--z-text-muted); margin-bottom: 5px; }
+        .input-block input { 
+            padding: 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; color: var(--z-text-dark);
         }
-        .input-group input:focus { border-color: var(--zoho-blue); outline: none; }
-        
-        .btn-primary { 
-            background: var(--zoho-blue); color: white; border: none; padding: 10px 20px; 
-            border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 14px;
-        }
-        .btn-primary:hover { background: var(--zoho-blue-hover); }
+        .input-block input:focus { border-color: var(--z-blue); outline: none; }
 
-        /* ZOHO ITEM TABLE */
-        .item-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .item-table th { 
-            background: #f9fafb; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
-            padding: 12px 15px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text-muted);
+        /* TABLE SECTION */
+        .doc-body { padding: 0; }
+        .z-table { width: 100%; border-collapse: collapse; }
+        .z-table th { 
+            background: var(--z-table-header); padding: 10px 15px; text-align: left; 
+            font-size: 12px; color: var(--z-text-muted); font-weight: normal; border-bottom: 1px solid var(--z-border);
         }
-        .item-table td { padding: 15px; border-bottom: 1px solid var(--border-light); font-size: 14px; color: var(--text-main); }
-        .item-table td.col-amount { font-weight: 500; text-align: right; }
-        .item-table th.col-amount { text-align: right; }
+        .z-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .z-table .col-amount { text-align: right; }
+
+        /* ENTRY ROW (Zoho Style inline entry) */
+        .entry-row { background: #fdfdfd; border-bottom: 1px solid var(--z-border); }
+        .entry-row td { padding: 10px 15px; }
+        .entry-input { 
+            width: 100%; padding: 6px 8px; border: 1px solid transparent; 
+            background: transparent; font-size: 14px; box-sizing: border-box;
+        }
+        .entry-input:hover { border: 1px solid #e0e0e0; background: white; }
+        .entry-input:focus { border: 1px solid var(--z-blue); background: white; outline: none; }
+        .btn-add { 
+            background: var(--z-blue); color: white; border: none; padding: 6px 12px; 
+            border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: 500;
+        }
+        .btn-add:hover { background: var(--z-blue-hover); }
 
         /* TOTALS BLOCK */
-        .totals-container { display: flex; justify-content: flex-end; padding: 25px 30px; background: #fdfdfd; border-radius: 0 0 4px 4px; }
-        .totals-box { width: 350px; }
-        .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; color: var(--text-main); }
+        .totals-section { display: flex; justify-content: flex-end; padding: 20px 30px; background: white; }
+        .totals-box { width: 320px; }
+        .tot-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; color: var(--z-text-dark); font-size: 13px; }
         
-        /* Agent Payment Styling inside Totals */
+        /* Agent Payment Integrations */
         .tot-row.agent-payout { color: #d84315; }
         .rate-select { 
-            border: 1px solid var(--border-light); border-radius: 4px; padding: 2px 5px; 
-            font-size: 12px; margin-left: 8px; cursor: pointer; background: white;
+            border: 1px solid #ccc; border-radius: 3px; padding: 2px; font-size: 12px; margin-left: 5px; background: white;
         }
         
         .tot-row.grand-total { 
-            font-size: 18px; font-weight: 600; margin-top: 10px; padding-top: 15px; 
-            border-top: 1px solid var(--border-light); color: var(--text-main);
+            font-size: 16px; font-weight: 600; margin-top: 5px; padding-top: 10px; border-top: 1px solid var(--z-border); 
         }
-        
-        .actions-footer { padding: 20px 30px; background: #f9fafb; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; border-radius: 0 0 4px 4px; }
+
+        /* ACTIONS FOOTER */
+        .doc-footer { 
+            padding: 15px 30px; background: #fafafa; border-top: 1px solid var(--z-border); 
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .btn-save { 
+            background: var(--z-blue); color: white; border: none; padding: 8px 16px; 
+            border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 13px;
+        }
+        .btn-save:hover { background: var(--z-blue-hover); }
     </style>
 </head>
 <body>
 
-<!-- AUTHENTICATION GATEWAY -->
+<!-- AUTHENTICATION SCREEN -->
 <div id="auth-screen">
     <div class="login-box">
         <h2>RunnersHUB</h2>
-        <p>Sign in to access your Concierge ERP</p>
+        <p>Concierge Trial Portal</p>
         <input type="email" id="loginEmail" placeholder="Email Address" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <button id="loginBtn">Sign In</button>
@@ -169,116 +184,143 @@
     </div>
 </div>
 
-<!-- ZOHO-STYLE APP LAYOUT -->
+<!-- ZOHO APP UI -->
 <div id="app-screen">
     
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <span style="background: var(--zoho-blue); padding: 4px 8px; border-radius: 4px; font-size: 14px;">RH</span> 
-            RunnersHUB
+            <span class="org-icon">RH</span> RunnersHUB
         </div>
         <div class="nav-group">
-            <div class="nav-label">Sales & Billing</div>
-            <div class="nav-item">Customers</div>
-            <div class="nav-item active">Invoices</div>
-            <div class="nav-item">Payments Received</div>
-        </div>
-        <div class="nav-group">
-            <div class="nav-label">Concierge</div>
-            <div class="nav-item">Agent Network</div>
-            <div class="nav-item">Service Tasks</div>
+            <!-- Data targets link to the view IDs below -->
+            <div class="nav-item" data-target="view-dashboard">Dashboard</div>
+            <div class="nav-item" data-target="view-customers">Customers</div>
+            <div class="nav-item active" data-target="view-invoices">Invoices</div>
+            <div class="nav-item" data-target="view-payments">Payments Received</div>
+            <div class="nav-item" data-target="view-agents">Agent Tracking</div>
         </div>
     </aside>
 
-    <!-- MAIN WORKSPACE -->
+    <!-- WORKSPACE -->
     <main class="workspace">
         
-        <!-- TOP NAVIGATION -->
+        <!-- HEADER -->
         <header class="top-header">
-            <div class="breadcrumbs">
-                <span>Sales / Invoices / </span> New Invoice
-            </div>
+            <div class="header-title" id="mainHeaderTitle">New Invoice</div>
             <div class="user-actions">
                 <span class="user-email" id="userDisplay">Loading...</span>
-                <button class="btn-outline" id="logoutBtn">Sign Out</button>
+                <button class="btn-logout" id="logoutBtn">Sign Out</button>
             </div>
         </header>
 
-        <!-- SCROLLABLE CANVAS -->
+        <!-- SCROLL AREA -->
         <div class="scroll-area">
-            <div class="document-canvas">
-                
-                <!-- Input Section -->
-                <div class="doc-section">
-                    <h3 style="margin: 0 0 20px 0; font-size: 16px; color: var(--zoho-blue);">Item Details</h3>
-                    <div class="grid-row">
-                        <div class="input-group">
-                            <label>Service Description</label>
-                            <input type="text" id="itemName" placeholder="e.g., Property Verification, Errand Logistics">
-                        </div>
-                        <div class="input-group">
-                            <label>Rate (Br)</label>
-                            <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
-                        </div>
-                        <div class="input-group">
-                            <label>Quantity</label>
-                            <input type="number" id="itemQty" value="1" min="1">
-                        </div>
-                        <button class="btn-primary" id="addItemBtn" style="margin-bottom: 2px;">Add Line Item</button>
-                    </div>
+            
+            <!-- 1. DASHBOARD VIEW (Placeholder) -->
+            <div id="view-dashboard" class="view-section">
+                <div class="empty-state-card">
+                    <h3 style="color: var(--z-blue);">Dashboard & Analytics</h3>
+                    <p>This module will display financial charts, monthly concierge revenue, and a breakdown of pending vs. paid invoices. Ready to be built in the next phase.</p>
                 </div>
-
-                <!-- Document Table Section -->
-                <table class="item-table">
-                    <thead>
-                        <tr>
-                            <th style="padding-left: 30px;">Item Details</th>
-                            <th>Qty</th>
-                            <th>Rate</th>
-                            <th class="col-amount" style="padding-right: 30px;">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="invoiceTableBody">
-                        <!-- Dynamic items injected here -->
-                    </tbody>
-                </table>
-
-                <!-- Totals Section -->
-                <div class="totals-container">
-                    <div class="totals-box">
-                        <div class="tot-row">
-                            <span>Subtotal</span>
-                            <span id="subtotalDisplay">0.00 Br</span>
-                        </div>
-                        
-                        <!-- Zoho-Style Integrated Agent Commission -->
-                        <div class="tot-row agent-payout">
-                            <span>
-                                Agent Payment 
-                                <select id="agentRate" class="rate-select">
-                                    <option value="0.15">15%</option>
-                                    <option value="0.20">20%</option>
-                                    <option value="0.25">25%</option>
-                                    <option value="0.28">28%</option>
-                                </select>
-                            </span>
-                            <span id="agentPaymentDisplay">0.00 Br</span>
-                        </div>
-
-                        <div class="tot-row grand-total">
-                            <span>Total (Br)</span>
-                            <span id="grandTotalDisplay">0.00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Actions -->
-                <div class="actions-footer">
-                    <button class="btn-primary" id="saveInvoiceBtn">Save & Sync to Database</button>
-                </div>
-
             </div>
+
+            <!-- 2. CUSTOMERS VIEW (Placeholder) -->
+            <div id="view-customers" class="view-section">
+                <div class="empty-state-card">
+                    <h3 style="color: var(--z-blue);">Diaspora Client CRM</h3>
+                    <p>A central database to save client names, international contact info, and property management addresses so you do not have to type them from scratch every time.</p>
+                </div>
+            </div>
+
+            <!-- 3. INVOICES VIEW (Active Working Module) -->
+            <div id="view-invoices" class="view-section active-view">
+                <div class="document-canvas">
+                    <!-- Client Details -->
+                    <div class="doc-header">
+                        <div class="input-block">
+                            <label>Customer Name / Reference</label>
+                            <input type="text" id="clientName" placeholder="Enter Diaspora Client Name">
+                        </div>
+                    </div>
+
+                    <!-- Item Table -->
+                    <div class="doc-body">
+                        <table class="z-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 45%;">Item Details</th>
+                                    <th style="width: 15%;">Quantity</th>
+                                    <th style="width: 20%;">Rate</th>
+                                    <th class="col-amount" style="width: 20%;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceTableBody">
+                                <!-- Injected Line Items go here -->
+                            </tbody>
+                            
+                            <!-- Inline Data Entry Row -->
+                            <tr class="entry-row">
+                                <td><input type="text" id="itemName" class="entry-input" placeholder="Type or click to add a service..."></td>
+                                <td><input type="number" id="itemQty" class="entry-input" value="1" min="1"></td>
+                                <td><input type="number" id="itemPrice" class="entry-input" placeholder="0.00" step="0.01"></td>
+                                <td class="col-amount"><button class="btn-add" id="addItemBtn">Add Line</button></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Math & Totals -->
+                    <div class="totals-section">
+                        <div class="totals-box">
+                            <div class="tot-row">
+                                <span>Sub Total</span>
+                                <span id="subtotalDisplay">0.00 Br</span>
+                            </div>
+                            
+                            <!-- Agent Commission -->
+                            <div class="tot-row agent-payout">
+                                <span>
+                                    Agent Payment 
+                                    <select id="agentRate" class="rate-select">
+                                        <option value="0.15">15%</option>
+                                        <option value="0.20">20%</option>
+                                        <option value="0.25">25%</option>
+                                        <option value="0.28">28%</option>
+                                    </select>
+                                </span>
+                                <span id="agentPaymentDisplay">0.00 Br</span>
+                            </div>
+
+                            <div class="tot-row grand-total">
+                                <span>Total (Br)</span>
+                                <span id="grandTotalDisplay">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer / Save -->
+                    <div class="doc-footer">
+                        <button class="btn-save" id="saveInvoiceBtn">Save to RunnersHUB</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PAYMENTS RECEIVED VIEW (Placeholder) -->
+            <div id="view-payments" class="view-section">
+                <div class="empty-state-card">
+                    <h3 style="color: var(--z-blue);">Payments Received</h3>
+                    <p>Track incoming transfers, record receipts, and mark specific client invoices as "Paid" to keep your ledger accurate.</p>
+                </div>
+            </div>
+
+            <!-- 5. AGENT TRACKING VIEW (Placeholder) -->
+            <div id="view-agents" class="view-section">
+                <div class="empty-state-card">
+                    <h3 style="color: var(--z-blue);">Agent Network Tracking</h3>
+                    <p>Manage your on-the-ground agents. Track how many tasks they've completed and calculate their total pending 15%-28% commission payouts.</p>
+                </div>
+            </div>
+
         </div>
     </main>
 </div>
@@ -310,6 +352,7 @@
         app: document.getElementById('app-screen'),
         error: document.getElementById('auth-error'),
         user: document.getElementById('userDisplay'),
+        client: document.getElementById('clientName'),
         name: document.getElementById('itemName'),
         price: document.getElementById('itemPrice'),
         qty: document.getElementById('itemQty'),
@@ -319,6 +362,38 @@
         grandTotal: document.getElementById('grandTotalDisplay'),
         rate: document.getElementById('agentRate')
     };
+
+    // --- SIDEBAR NAVIGATION LOGIC ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const viewSections = document.querySelectorAll('.view-section');
+    const mainHeaderTitle = document.getElementById('mainHeaderTitle');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove active styling from all buttons
+            navItems.forEach(nav => nav.classList.remove('active'));
+            
+            // Hide all view sections
+            viewSections.forEach(section => section.classList.remove('active-view'));
+            
+            // Add active style to clicked button
+            item.classList.add('active');
+            
+            // Show the specific target view
+            const targetViewId = item.getAttribute('data-target');
+            if (targetViewId) {
+                document.getElementById(targetViewId).classList.add('active-view');
+                
+                // Update Top Header Text
+                if (targetViewId === 'view-invoices') {
+                    mainHeaderTitle.textContent = 'New Invoice';
+                } else {
+                    mainHeaderTitle.textContent = item.textContent;
+                }
+            }
+        });
+    });
+
 
     // --- AUTHENTICATION MODULE ---
     onAuthStateChanged(auth, (user) => {
@@ -338,7 +413,7 @@
         if (email === 'admin@runnershub.com' && pass === 'Runners2026!') {
             ui.auth.style.display = 'none';
             ui.app.style.display = 'flex';
-            ui.user.textContent = 'Administrator';
+            ui.user.textContent = 'admin@runnershub.com';
             return; 
         }
         
@@ -371,7 +446,7 @@
         const qtyVal = parseInt(ui.qty.value);
 
         if (!nameVal || isNaN(priceVal) || isNaN(qtyVal)) {
-            alert("Please enter a valid service description and rate.");
+            alert("Please enter valid item details.");
             return;
         }
 
@@ -380,6 +455,7 @@
         
         refreshDashboard();
         
+        // Reset and refocus
         ui.name.value = '';
         ui.price.value = '';
         ui.qty.value = '1';
@@ -396,10 +472,10 @@
             currentSubtotal += entry.lineTotal;
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td style="padding-left: 30px;"><strong>${entry.task}</strong></td>
+                <td>${entry.task}</td>
                 <td>${entry.qty}</td>
                 <td>${entry.price.toFixed(2)}</td>
-                <td class="col-amount" style="padding-right: 30px;">${entry.lineTotal.toFixed(2)}</td>
+                <td class="col-amount">${entry.lineTotal.toFixed(2)}</td>
             `;
             ui.table.appendChild(row);
         });
@@ -417,19 +493,20 @@
     // --- CLOUD SYNC MODULE ---
     document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
         if (invoiceLedger.length === 0) {
-            alert("Please add service tasks before saving the invoice.");
+            alert("Please add service items before saving.");
             return;
         }
 
+        const clientName = ui.client.value.trim() || "Walk-in Client";
         const finalSub = parseFloat(ui.subtotal.textContent);
         const finalAgent = parseFloat(ui.agentPayout.textContent);
         const finalRateStr = ui.rate.options[ui.rate.selectedIndex].text;
-
         const sessionUser = auth.currentUser ? auth.currentUser.email : "Master Admin";
 
         try {
             const docRef = await addDoc(collection(db, "concierge_invoices"), {
                 issuer: sessionUser,
+                client: clientName,
                 lineItems: invoiceLedger,
                 totalCharged: finalSub,
                 agentOwed: finalAgent,
@@ -437,13 +514,15 @@
                 currency: "Br",
                 timestamp: new Date()
             });
-            alert("Invoice securely synced to RunnersHUB! Document ID: " + docRef.id);
+            alert("Invoice securely synced! Document ID: " + docRef.id);
             
+            // Clear Form
             invoiceLedger = [];
+            ui.client.value = '';
             refreshDashboard();
         } catch (error) {
             console.error("Firestore Reject:", error);
-            alert("Cloud write failed. Check console network tab.");
+            alert("Cloud write failed. Check configuration.");
         }
     });
 </script>
