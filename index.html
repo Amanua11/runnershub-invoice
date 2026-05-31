@@ -255,14 +255,15 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // ACTIVE FIREBASE KEYS INJECTED HERE
+    // ✅ LIVE KEYS INJECTED DIRECTLY FROM YOUR FIREBASE CONSOLE
     const firebaseConfig = {
         apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
         authDomain: "runnershuberp.firebaseapp.com",
         projectId: "runnershuberp",
-        storageBucket: "runnershuberp.appspot.com",
+        storageBucket: "runnershuberp.firebasestorage.app",
         messagingSenderId: "867809864192",
-        appId: "1:867809864192:web:f1b28454491128780046e5"
+        appId: "1:867809864192:web:f1b28454491128780046e5",
+        measurementId: "G-9JEH16E8HQ"
     };
 
     const app = initializeApp(firebaseConfig);
