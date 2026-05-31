@@ -142,7 +142,7 @@
             background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #eee;
         }
         .totals-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-main); }
-        .totals-row.agent-payment { color: #d84315; } /* Highlight for internal tracking */
+        .totals-row.agent-payment { color: #d84315; } 
         .totals-row.grand-total { 
             font-weight: bold; font-size: 1.2em; 
             border-top: 2px solid #ddd; padding-top: 10px; color: var(--primary-color); 
@@ -180,7 +180,7 @@
         <div class="header">
             <h3 style="margin: 0; color: var(--text-main);">Create Concierge Invoice</h3>
             <div class="user-profile">
-                <span id="userDisplay" style="font-size: 0.9em; color: var(--text-light);">admin@runnershub.com</span>
+                <span id="userDisplay" style="font-size: 0.9em; color: var(--text-light);">admin</span>
                 <button class="logout-btn" id="logoutBtn">Logout</button>
             </div>
         </div>
@@ -255,20 +255,15 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // =======================================================================
-    // ⚠️ CRITICAL STEP: REPLACE THESE PLACEHOLDERS WITH YOUR FIREBASE KEYS ⚠️
-    // =======================================================================
+    // ACTIVE FIREBASE KEYS INJECTED HERE
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8",
+        authDomain: "runnershuberp.firebaseapp.com",
+        projectId: "runnershuberp",
+        storageBucket: "runnershuberp.appspot.com",
+        messagingSenderId: "867809864192",
+        appId: "1:867809864192:web:f1b28454491128780046e5"
     };
-    // =======================================================================
-    // END OF FIREBASE KEYS
-    // =======================================================================
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -308,7 +303,7 @@
         signOut(auth);
     });
 
-    // INVOICE MODULE LOGIC (CSP Safe - No Eval)
+    // INVOICE MODULE LOGIC
     let invoiceItems = [];
     
     document.getElementById('addItemBtn').addEventListener('click', () => {
@@ -360,7 +355,7 @@
         // Update Displays
         document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
         document.getElementById('agentPaymentDisplay').textContent = `${agentPayment.toFixed(2)} Br`;
-        document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`; // Total billed to client
+        document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
     }
 
     // CLOUD SYNC (FIRESTORE)
@@ -384,14 +379,14 @@
                 currency: "Br",
                 timestamp: new Date()
             });
-            alert("Invoice and Agent Payment securely synced to RUNNERSHUB Cloud. ID: " + docRef.id);
+            alert("Invoice securely synced! ID: " + docRef.id);
             
             // Clear for next invoice
             invoiceItems = [];
             updateInvoiceUI();
         } catch (error) {
             console.error("Cloud Error: ", error);
-            alert("Error saving to cloud. Ensure your Firebase Config is fully pasted.");
+            alert("Error saving to cloud. Ensure your Firebase configuration is correct.");
         }
     });
 </script>
