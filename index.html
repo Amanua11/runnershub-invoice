@@ -3,123 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RUNNERSHUB ERP - Cloud Invoice Generator</title>
+    <title>RunnersHUB Concierge ERP</title>
     <style>
-        /* Glassmorphism UI */
-        body {
-            margin: 0;
+        /* --- GLOBAL CSS RESET & VARIABLES --- */
+        :root { 
+            --primary-color: #2a5298; 
+            --secondary-color: #1e3c72; 
+            --bg-color: #f4f6f8;
+            --text-main: #333;
+            --text-light: #777;
+        }
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-color); 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        /* --- FIREBASE AUTH SCREEN --- */
+        #auth-screen { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color)); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+        }
+        .auth-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            width: 100%; 
+            max-width: 350px; 
+            text-align: center; 
+        }
+        .auth-box h2 { margin-top: 0; color: var(--primary-color); }
+        .auth-box input { 
+            width: 100%; padding: 12px; margin: 10px 0; 
+            border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+        }
+        .auth-box button { 
+            width: 100%; padding: 12px; margin-top: 15px;
+            background: var(--primary-color); color: white; 
+            border: none; border-radius: 5px; cursor: pointer; 
+            font-weight: bold; font-size: 1em; transition: background 0.3s;
+        }
+        .auth-box button:hover { background: var(--secondary-color); }
+        #auth-error { color: #d32f2f; font-size: 0.9em; margin-top: 10px; display: none; }
+
+        /* --- ZOHO-LIKE APP LAYOUT --- */
+        #app-screen { 
+            display: none; /* Hidden until authenticated */
+            width: 100%; height: 100%; 
+            display: flex; 
+        }
+        
+        /* Sidebar */
+        .sidebar { 
+            width: 250px; 
+            background: var(--secondary-color); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar-header {
             padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        h2 {
             text-align: center;
-            margin-top: 0;
-            letter-spacing: 1px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 8px;
-            border: none;
-            box-sizing: border-box;
-        }
-        input {
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-        }
-        button {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            margin-top: 15px;
-        }
-        button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .invoice-items {
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 8px;
-            min-height: 100px;
-        }
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
         }
-        .total-display {
-            font-size: 1.5em;
-            text-align: right;
-            margin-top: 20px;
-            font-weight: bold;
+        .sidebar-header h2 { margin: 0; font-size: 1.2em; letter-spacing: 1px; }
+        .sidebar-header p { margin: 5px 0 0; font-size: 0.8em; color: #a9c2ed; }
+        
+        .nav-menu { flex: 1; padding-top: 20px; }
+        .nav-item { 
+            padding: 15px 25px; cursor: pointer; 
+            border-left: 4px solid transparent; transition: 0.2s; 
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(255,255,255,0.1); 
+            border-left-color: #fff; 
+        }
+
+        /* Main Content Area */
+        .main-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+        }
+        .header { 
+            background: white; padding: 15px 30px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .logout-btn { 
+            background: none; border: 1px solid #ccc; padding: 5px 15px; 
+            border-radius: 4px; cursor: pointer; color: var(--text-main);
+        }
+        .logout-btn:hover { background: #f0f0f0; }
+        
+        .content-area { padding: 30px; }
+        
+        /* --- INVOICE MODULE UI --- */
+        .card { 
+            background: white; padding: 25px; border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; 
+        }
+        .card h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; color: var(--primary-color); }
+        
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.9em; margin-bottom: 5px; color: var(--text-light); }
+        .form-group input, .form-group select { 
+            padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;
+        }
+        
+        .btn-primary { 
+            padding: 10px 20px; background: var(--primary-color); 
+            color: white; border: none; border-radius: 4px; cursor: pointer; 
+        }
+        .btn-primary:hover { background: var(--secondary-color); }
+        
+        /* Data Table */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .data-table th { background: #f9fafb; font-weight: 600; color: var(--text-light); }
+        
+        /* Calculation Section */
+        .totals-section { 
+            width: 350px; margin-left: auto; margin-top: 20px; 
+            background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #eee;
+        }
+        .totals-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-main); }
+        .totals-row.agent-payment { color: #d84315; } /* Highlight for internal tracking */
+        .totals-row.grand-total { 
+            font-weight: bold; font-size: 1.2em; 
+            border-top: 2px solid #ddd; padding-top: 10px; color: var(--primary-color); 
         }
     </style>
 </head>
 <body>
 
-<div class="glass-panel">
-    <h2>RUNNERSHUB ERP</h2>
-    <p style="text-align: center; font-size: 0.9em; margin-bottom: 20px;">Invoice & Billing Module</p>
-
-    <div class="form-group">
-        <label>Item Description</label>
-        <input type="text" id="itemName" placeholder="e.g., Errand Service, Property Check">
+<!-- AUTHENTICATION SCREEN -->
+<div id="auth-screen">
+    <div class="auth-box">
+        <h2>RunnersHUB Login</h2>
+        <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Concierge Portal Access</p>
+        <input type="email" id="loginEmail" placeholder="Admin Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button id="loginBtn">Secure Login</button>
+        <p id="auth-error">Invalid credentials. Please try again.</p>
     </div>
-    <div style="display: flex; gap: 10px;">
-        <div class="form-group" style="flex: 1;">
-            <label>Price (Br)</label>
-            <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
-        </div>
-        <div class="form-group" style="flex: 1;">
-            <label>Quantity</label>
-            <input type="number" id="itemQty" placeholder="1" value="1">
-        </div>
-    </div>
-    
-    <button id="addItemBtn">Add Item to Invoice</button>
-
-    <div class="invoice-items" id="invoiceList">
-        </div>
-
-    <div class="total-display">
-        Total: <span id="invoiceTotal">0.00</span> Br
-    </div>
-
-    <button id="saveInvoiceBtn">Save Invoice to Cloud</button>
 </div>
 
+<!-- MAIN APPLICATION SCREEN (ZOHO STYLE) -->
+<div id="app-screen" style="display: none;">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>RunnersHUB</h2>
+            <p>ERP System</p>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item">Dashboard</div>
+            <div class="nav-item active">Invoicing & Billing</div>
+            <div class="nav-item">Agent Management</div>
+            <div class="nav-item">Client CRM</div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="header">
+            <h3 style="margin: 0; color: var(--text-main);">Create Concierge Invoice</h3>
+            <div class="user-profile">
+                <span id="userDisplay" style="font-size: 0.9em; color: var(--text-light);">admin@runnershub.com</span>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- Item Entry Card -->
+            <div class="card">
+                <h3>Add Service Item</h3>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Service Description</label>
+                        <input type="text" id="itemName" placeholder="e.g., Property Management, Errand Running">
+                    </div>
+                    <div class="form-group">
+                        <label>Unit Price (Br)</label>
+                        <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="itemQty" value="1" min="1">
+                    </div>
+                </div>
+                <button class="btn-primary" id="addItemBtn">+ Add to Line Items</button>
+            </div>
+
+            <!-- Invoice Details Card -->
+            <div class="card">
+                <h3>Invoice Details</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoiceTableBody">
+                        <!-- Items inject here -->
+                    </tbody>
+                </table>
+
+                <div class="totals-section">
+                    <div class="totals-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalDisplay">0.00 Br</span>
+                    </div>
+                    <!-- AGENT PAYMENT CALCULATION (Replaces Tax) -->
+                    <div class="totals-row agent-payment">
+                        <span>
+                            Agent Payment 
+                            <select id="agentRate" style="padding: 2px; margin-left: 5px;">
+                                <option value="0.15">15%</option>
+                                <option value="0.20">20%</option>
+                                <option value="0.25">25%</option>
+                                <option value="0.28">28%</option>
+                            </select>
+                        </span>
+                        <span id="agentPaymentDisplay">0.00 Br</span>
+                    </div>
+                    <div class="totals-row grand-total">
+                        <span>Total Billed to Client:</span>
+                        <span id="grandTotalDisplay">0.00 Br</span>
+                    </div>
+                    <button class="btn-primary" id="saveInvoiceBtn" style="width: 100%; margin-top: 15px;">Save to Cloud Database</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE INTEGRATION: Auth & Firestore -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // Insert your Firebase configuration keys here
+    // 1. FIREBASE CONFIGURATION
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_AUTH_DOMAIN",
@@ -129,88 +276,128 @@
         appId: "YOUR_APP_ID"
     };
 
-    // Initialize Firebase & Firestore
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Core Logic
-    let invoiceItems = [];
-    let currentTotal = 0;
-
-    const itemNameInput = document.getElementById('itemName');
-    const itemPriceInput = document.getElementById('itemPrice');
-    const itemQtyInput = document.getElementById('itemQty');
-    const invoiceList = document.getElementById('invoiceList');
-    const invoiceTotalDisplay = document.getElementById('invoiceTotal');
-
-    document.getElementById('addItemBtn').addEventListener('click', () => {
-        const name = itemNameInput.value.trim();
-        const price = parseFloat(itemPriceInput.value);
-        const qty = parseInt(itemQtyInput.value);
-
-        if (!name || isNaN(price) || isNaN(qty)) {
-            alert("Please enter valid item details.");
-            return;
+    // 2. UI ELEMENTS MAP
+    const authScreen = document.getElementById('auth-screen');
+    const appScreen = document.getElementById('app-screen');
+    const authError = document.getElementById('auth-error');
+    
+    // 3. AUTHENTICATION STATE OBSERVER
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            document.getElementById('userDisplay').textContent = user.email;
+        } else {
+            authScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
         }
-
-        // FIX IMPLEMENTED: Strict math processing prevents CSP blank screen errors. 
-        // Zero use of eval().
-        const lineTotal = price * qty; 
-        
-        invoiceItems.push({ name, price, qty, lineTotal });
-        
-        updateUI();
-        clearInputs();
     });
 
-    function updateUI() {
-        invoiceList.innerHTML = '';
-        currentTotal = 0;
+    // 4. LOGIN / LOGOUT LOGIC
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        authError.style.display = 'none';
+        
+        signInWithEmailAndPassword(auth, email, pass)
+            .catch((error) => {
+                console.error(error.code, error.message);
+                authError.style.display = 'block';
+            });
+    });
 
-        invoiceItems.forEach((item) => {
-            currentTotal += item.lineTotal;
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        signOut(auth);
+    });
 
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            row.innerHTML = `
-                <span>${item.qty}x ${item.name}</span>
-                <span>${item.lineTotal.toFixed(2)} Br</span>
-            `;
-            invoiceList.appendChild(row);
-        });
+    // 5. INVOICE MODULE LOGIC (CSP Safe - No Eval)
+    let invoiceItems = [];
+    
+    document.getElementById('addItemBtn').addEventListener('click', () => {
+        const name = document.getElementById('itemName').value.trim();
+        const price = parseFloat(document.getElementById('itemPrice').value);
+        const qty = parseInt(document.getElementById('itemQty').value);
 
-        invoiceTotalDisplay.textContent = currentTotal.toFixed(2);
-    }
-
-    function clearInputs() {
-        itemNameInput.value = '';
-        itemPriceInput.value = '';
-        itemQtyInput.value = '1';
-        itemNameInput.focus();
-    }
-
-    // Cloud Database Save Event
-    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
-        if (invoiceItems.length === 0) {
-            alert("Cannot save an empty invoice.");
+        if (!name || isNaN(price) || isNaN(qty)) {
+            alert("Please enter valid service details.");
             return;
         }
 
+        const lineTotal = price * qty;
+        invoiceItems.push({ name, price, qty, lineTotal });
+        
+        updateInvoiceUI();
+        
+        // Reset inputs
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemPrice').value = '';
+        document.getElementById('itemQty').value = '1';
+        document.getElementById('itemName').focus();
+    });
+
+    // Recalculate if agent rate changes
+    document.getElementById('agentRate').addEventListener('change', updateInvoiceUI);
+
+    function updateInvoiceUI() {
+        const tbody = document.getElementById('invoiceTableBody');
+        tbody.innerHTML = '';
+        let subtotal = 0;
+
+        invoiceItems.forEach((item) => {
+            subtotal += item.lineTotal;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.qty}</td>
+                <td>${item.price.toFixed(2)} Br</td>
+                <td>${item.lineTotal.toFixed(2)} Br</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Agent Payment Logic
+        const agentRate = parseFloat(document.getElementById('agentRate').value);
+        const agentPayment = subtotal * agentRate;
+
+        // Update Displays
+        document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
+        document.getElementById('agentPaymentDisplay').textContent = `${agentPayment.toFixed(2)} Br`;
+        document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`; // Total billed to client
+    }
+
+    // 6. CLOUD SYNC (FIRESTORE)
+    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
+        if (invoiceItems.length === 0) {
+            alert("Please add service items before saving.");
+            return;
+        }
+
+        const subtotal = parseFloat(document.getElementById('subtotalDisplay').textContent);
+        const agentPayment = parseFloat(document.getElementById('agentPaymentDisplay').textContent);
+        const agentRate = document.getElementById('agentRate').options[document.getElementById('agentRate').selectedIndex].text;
+
         try {
-            const docRef = await addDoc(collection(db, "invoices"), {
+            const docRef = await addDoc(collection(db, "concierge_invoices"), {
+                createdBy: auth.currentUser.email,
                 items: invoiceItems,
-                totalAmount: currentTotal,
+                clientTotal: subtotal,
+                agentPaymentAllocated: agentPayment,
+                agentRateApplied: agentRate,
                 currency: "Br",
-                createdAt: new Date()
+                timestamp: new Date()
             });
-            alert("Invoice securely synced to RUNNERSHUB Firestore! ID: " + docRef.id);
+            alert("Invoice and Agent Payment securely synced to RUNNERSHUB Cloud. ID: " + docRef.id);
             
-            // Reset for next invoice
+            // Clear for next invoice
             invoiceItems = [];
-            updateUI();
-        } catch (e) {
-            console.error("Cloud synchronization error: ", e);
-            alert("Failed to save invoice to cloud.");
+            updateInvoiceUI();
+        } catch (error) {
+            console.error("Cloud Error: ", error);
+            alert("Error saving to cloud. Ensure your Firebase Config is fully pasted.");
         }
     });
 </script>
