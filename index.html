@@ -16,6 +16,7 @@
             --z-text-dark: #111827;
             --z-text-muted: #6b7280;
             --z-card-bg: #ffffff;
+            --z-success: #10b981;
         }
         body { 
             margin: 0; 
@@ -47,6 +48,7 @@
         }
         .nav-item:hover { color: white; background: var(--z-sidebar-hover); }
         .nav-item.active { background: var(--z-sidebar-hover); color: white; border-left-color: var(--z-blue); font-weight: 500; }
+        .nav-divider { border-top: 1px solid #374151; margin: 10px 0; }
 
         /* MAIN WORKSPACE */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -95,6 +97,7 @@
         }
         .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); font-size: 14px; }
         .data-table .col-right { text-align: right; }
+        .status-badge { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
 
         /* INVOICE SPECIFIC TOTALS */
         .totals-section { display: flex; justify-content: flex-end; padding-top: 16px; }
@@ -109,11 +112,12 @@
         .kpi-card { background: white; padding: 24px; border-radius: 6px; border: 1px solid var(--z-border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .kpi-title { font-size: 13px; color: var(--z-text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
         .kpi-value { font-size: 28px; font-weight: 600; color: var(--z-text-dark); }
+        .kpi-profit { color: var(--z-success); }
     </style>
 </head>
 <body>
 
-<!-- MAIN APP LAYOUT (LOGIN REMOVED) -->
+<!-- MAIN APP LAYOUT -->
 <div id="app-screen">
     
     <!-- SIDEBAR -->
@@ -125,7 +129,12 @@
             <div class="nav-item active" data-target="view-dashboard">Dashboard</div>
             <div class="nav-item" data-target="view-customers">Customers</div>
             <div class="nav-item" data-target="view-agents">Agent Network</div>
+            
+            <div class="nav-divider"></div>
+            
             <div class="nav-item" data-target="view-invoices">New Invoice</div>
+            <div class="nav-item" data-target="view-invoice-list">Invoice List</div>
+            <div class="nav-item" data-target="view-reports">Financial Reports</div>
         </div>
     </aside>
 
@@ -154,14 +163,14 @@
                         <div class="kpi-value" id="kpiAgents">0</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-title">Session Invoiced (Br)</div>
+                        <div class="kpi-title">Session Revenue (Br)</div>
                         <div class="kpi-value" id="kpiRevenue">0.00</div>
                     </div>
                 </div>
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        This is your active proof-of-concept workspace. Navigate through the sidebar to add your Diaspora clients, register your on-the-ground agents, and generate billing invoices. All data generated in this session will update your central dashboard.
+                        This is your active proof-of-concept workspace. Navigate through the sidebar to add your Diaspora clients, register your on-the-ground agents, and generate billing invoices. Check the <strong>Reports</strong> tab to monitor your actual profit margins.
                     </p>
                 </div>
             </div>
@@ -235,10 +244,8 @@
                 </div>
             </div>
 
-            <!-- VIEW: INVOICES -->
+            <!-- VIEW: NEW INVOICE -->
             <div id="view-invoices" class="view-section">
-                
-                <!-- Invoice Setup -->
                 <div class="card">
                     <h3 class="card-header">Invoice Configuration</h3>
                     <div class="form-grid">
@@ -257,7 +264,6 @@
                     </div>
                 </div>
 
-                <!-- Invoice Line Items -->
                 <div class="card">
                     <h3 class="card-header">Service Tasks</h3>
                     <div class="form-grid">
@@ -288,7 +294,6 @@
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody">
-                            <!-- Items go here -->
                         </tbody>
                     </table>
 
@@ -318,7 +323,54 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- VIEW: INVOICE LIST (NEW) -->
+            <div id="view-invoice-list" class="view-section">
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);">
+                        <h3 class="card-header" style="border:none; padding:0; margin:0;">Master Invoice Ledger</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Agent</th>
+                                <th class="col-right">Total (Br)</th>
+                                <th style="text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterInvoiceListBody">
+                            <tr><td colspan="6" style="text-align: center; color: #9ca3af;">No invoices generated yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW: REPORTS (NEW) -->
+            <div id="view-reports" class="view-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Gross Client Revenue</div>
+                        <div class="kpi-value" id="reportGrossRevenue">0.00 Br</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title" style="color: #d84315;">Total Agent Payouts</div>
+                        <div class="kpi-value" id="reportTotalPayouts" style="color: #d84315;">0.00 Br</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Net RunnersHUB Profit</div>
+                        <div class="kpi-value kpi-profit" id="reportNetProfit">0.00 Br</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-header">Margin Analysis</h3>
+                    <p style="color: var(--z-text-muted);">
+                        This reporting module tracks the spread between what Diaspora clients are billed and the 15%-28% commissions paid out to your on-the-ground concierge agents. Your Net Profit represents the capital retained by RunnersHUB.
+                    </p>
+                </div>
             </div>
 
         </div>
@@ -349,7 +401,11 @@
         customers: [],
         agents: [],
         currentInvoiceItems: [],
-        totalRevenue: 0
+        invoices: [],
+        metrics: {
+            revenue: 0,
+            payouts: 0
+        }
     };
 
     // --- UI CONTROLLER: NAVIGATION ---
@@ -377,20 +433,15 @@
         
         appState.customers.push({ name, contact });
         
-        // Update Client Table
         const tbody = document.getElementById('clientTableBody');
-        if(appState.customers.length === 1) tbody.innerHTML = ''; // Clear empty message
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${contact}</td><td><span style="color: green;">Active</span></td></tr>`;
+        if(appState.customers.length === 1) tbody.innerHTML = ''; 
+        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${contact}</td><td><span class="status-badge">Active</span></td></tr>`;
         
-        // Update Invoice Dropdown
         const select = document.getElementById('invoiceClientSelect');
         if(appState.customers.length === 1) select.innerHTML = '';
         select.innerHTML += `<option value="${name}">${name}</option>`;
         
-        // Update Dashboard
         document.getElementById('kpiClients').textContent = appState.customers.length;
-        
-        // Clear form
         document.getElementById('newClientName').value = '';
         document.getElementById('newClientContact').value = '';
     });
@@ -403,20 +454,15 @@
         
         appState.agents.push({ name, tier });
         
-        // Update Agent Table
         const tbody = document.getElementById('agentTableBody');
         if(appState.agents.length === 1) tbody.innerHTML = '';
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${tier}</td><td><span style="color: green;">Active</span></td></tr>`;
+        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${tier}</td><td><span class="status-badge">Active</span></td></tr>`;
         
-        // Update Invoice Dropdown
         const select = document.getElementById('invoiceAgentSelect');
         if(appState.agents.length === 1) select.innerHTML = '';
         select.innerHTML += `<option value="${name}">${name} (${tier})</option>`;
         
-        // Update Dashboard
         document.getElementById('kpiAgents').textContent = appState.agents.length;
-        
-        // Clear form
         document.getElementById('newAgentName').value = '';
     });
 
@@ -465,13 +511,14 @@
         document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`;
     }
 
-    // --- MODULE: CLOUD SYNC ---
+    // --- MODULE: CLOUD SYNC & MASTER LEDGER ---
     document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
         if (appState.currentInvoiceItems.length === 0) return alert("Add items to invoice first.");
 
         const client = document.getElementById('invoiceClientSelect').value;
-        const agent = document.getElementById('invoiceAgentSelect').value;
+        const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned";
         const total = parseFloat(document.getElementById('subtotalDisplay').textContent);
+        const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent);
         
         if(!client) return alert("Please select a client to bill.");
 
@@ -482,17 +529,45 @@
                 assignedAgent: agent,
                 items: appState.currentInvoiceItems,
                 totalAmount: total,
-                agentPayment: parseFloat(document.getElementById('agentPaymentDisplay').textContent),
+                agentPayment: payout,
                 timestamp: new Date()
             });
             
             alert("Invoice Saved & Synced! ID: " + docRef.id);
             
-            // Update Dashboard Revenue
-            appState.totalRevenue += total;
-            document.getElementById('kpiRevenue').textContent = appState.totalRevenue.toFixed(2);
+            // Format ID for UI
+            const displayId = "INV-" + docRef.id.slice(0, 5).toUpperCase();
+            const dateStr = new Date().toLocaleDateString();
+
+            // Push to Ledger State
+            appState.invoices.push({ id: displayId, date: dateStr, client, agent, total, payout });
             
-            // Clear Invoice
+            // Update Invoice List UI
+            const ledgerBody = document.getElementById('masterInvoiceListBody');
+            if(appState.invoices.length === 1) ledgerBody.innerHTML = '';
+            ledgerBody.innerHTML += `
+                <tr>
+                    <td><strong>${displayId}</strong></td>
+                    <td>${dateStr}</td>
+                    <td>${client}</td>
+                    <td>${agent}</td>
+                    <td class="col-right">${total.toFixed(2)}</td>
+                    <td style="text-align: center;"><span class="status-badge">Synced</span></td>
+                </tr>
+            `;
+
+            // Update Metrics
+            appState.metrics.revenue += total;
+            appState.metrics.payouts += payout;
+            const netProfit = appState.metrics.revenue - appState.metrics.payouts;
+
+            // Update Dashboards & Reports
+            document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2);
+            document.getElementById('reportGrossRevenue').textContent = `${appState.metrics.revenue.toFixed(2)} Br`;
+            document.getElementById('reportTotalPayouts').textContent = `${appState.metrics.payouts.toFixed(2)} Br`;
+            document.getElementById('reportNetProfit').textContent = `${netProfit.toFixed(2)} Br`;
+            
+            // Clear current working invoice
             appState.currentInvoiceItems = [];
             updateInvoiceUI();
             
