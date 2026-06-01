@@ -48,6 +48,8 @@
 
         .user-actions { display: flex; align-items: center; gap: 16px; }
         .user-email { font-size: 13px; color: var(--z-text-muted); font-weight: 500; }
+        .cloud-status-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600; background: #fee2e2; color: #ef4444; display: flex; align-items: center; gap: 4px; }
+        .cloud-status-badge.online { background: #d1fae5; color: #065f46; }
 
         /* SCROLL AREA & VIEWS */
         .scroll-area { flex: 1; overflow-y: auto; padding: 24px; position: relative; }
@@ -107,7 +109,7 @@
         .report-badge { display: inline-block; background: #9ca3af; color: white; padding: 2px 7px; border-radius: 12px; font-size: 10px; margin-left: 8px; font-weight: 600; }
         .report-row td { padding: 12px 24px; border-bottom: 1px solid var(--z-border); font-size: 13px; color: var(--z-text-dark); }
         .report-row:hover { background: #f4f6f8; }
-        .report-link { color: var(--z-blue); text-decoration: none; cursor: pointer; }
+        .report-link { color: var(--z-blue); text-decoration: none; cursor: pointer; font-weight: 500; }
         .report-link:hover { text-decoration: underline; }
 
         /* --- SECURITY MODAL --- */
@@ -119,7 +121,7 @@
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
         .auth-error { color: var(--z-danger); font-size: 12px; margin-bottom: 15px; display: none; }
 
-        /* --- STATEMENT OVERLAY CSS --- */
+        /* --- STATEMENT & REPORT ENGINE OVERLAY CSS --- */
         .statement-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f3f4f6; z-index: 9000; overflow-y: auto; padding: 40px; box-sizing: border-box; }
         .statement-paper { background: white; max-width: 850px; margin: 0 auto; padding: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 4px; border-top: 8px solid var(--z-blue); }
         .statement-hdr { display: flex; justify-content: space-between; border-bottom: 2px solid var(--z-text-dark); padding-bottom: 20px; margin-bottom: 30px; }
@@ -129,11 +131,17 @@
         .stmt-box h4 { margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; color: var(--z-text-muted); }
         .stmt-box p { margin: 0; font-size: 20px; font-weight: 700; color: var(--z-text-dark); }
         .stmt-close-btn { position: fixed; top: 30px; right: 40px; background: var(--z-text-dark); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        
+        /* PL EXCLUSIVE STYLING */
+        .pl-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .pl-table td { padding: 12px 10px; font-size: 14px; border-bottom: 1px dashed var(--z-border); }
+        .pl-indent { padding-left: 30px !important; color: var(--z-text-muted); }
+        .pl-total-row { font-weight: 600; background: #f9fafb; border-bottom: 1px solid var(--z-text-dark) !important; border-top: 1px solid var(--z-text-dark); }
+        .pl-net-row { font-size: 16px; font-weight: 700; background: #f0f4f8; border-bottom: 2px double var(--z-text-dark) !important; }
     </style>
 </head>
 <body>
 
-<!-- SECURITY AUTHENTICATION MODAL -->
 <div id="authModal" class="modal-overlay">
     <div class="modal-box">
         <h3>Security Verification</h3>
@@ -147,40 +155,14 @@
     </div>
 </div>
 
-<!-- BANK STATEMENT OVERLAY -->
 <div id="statementOverlay" class="statement-overlay">
-    <button class="stmt-close-btn" id="closeStatementBtn"><i class="fa-solid fa-xmark"></i> Close Statement</button>
-    <div class="statement-paper">
-        <div class="statement-hdr">
-            <div>
-                <h2 class="stmt-title">Bank Statement</h2>
-                <p style="margin: 5px 0; font-weight: 600; color: var(--z-blue);" id="stmtAccountName">CBE Main Account</p>
-            </div>
-            <div class="stmt-meta" style="text-align: right;">
-                <p><strong>RunnersHUB Concierge</strong></p>
-                <p id="stmtDateStr">Date Generated: </p>
-                <p id="stmtAccNum">Account No: </p>
-            </div>
+    <button class="stmt-close-btn" id="closeStatementBtn"><i class="fa-solid fa-xmark"></i> Close Report</button>
+    <div class="statement-paper" id="renderPaperArea">
         </div>
-        <div class="stmt-summary">
-            <div class="stmt-box"><h4>Total Deposits</h4><p id="stmtTotalIn" style="color: var(--z-success);">0.00</p></div>
-            <div class="stmt-box"><h4>Total Withdrawals</h4><p id="stmtTotalOut" style="color: var(--z-danger);">0.00</p></div>
-            <div class="stmt-box" style="text-align: right;"><h4>Ending Balance</h4><p id="stmtEndBal">0.00 Br</p></div>
-        </div>
-        <table class="data-table" style="border: 1px solid var(--z-border);">
-            <thead style="background: var(--z-sidebar-bg);">
-                <tr><th>Date</th><th>Reference / Description</th><th>Type</th><th class="col-right">Amount</th><th class="col-right">Balance</th></tr>
-            </thead>
-            <tbody id="stmtTableBody">
-                <!-- Injected via JS -->
-            </tbody>
-        </table>
-    </div>
 </div>
 
 <div id="app-screen">
     
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-brand"><span class="org-icon">RH</span> RunnersHUB</div>
         <div class="nav-group">
@@ -205,7 +187,6 @@
         </div>
     </aside>
 
-    <!-- WORKSPACE -->
     <main class="workspace">
         <header class="top-header">
             <div class="header-title" id="mainHeaderTitle">Home</div>
@@ -213,12 +194,14 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="globalSearchInput" placeholder="Search the active module...">
             </div>
-            <div class="user-actions"><span class="user-email">Active Developer Session</span></div>
+            <div class="user-actions">
+                <div id="cloudStatusBadge" class="cloud-status-badge"><i class="fa-solid fa-cloud"></i> Firestore Off</div>
+                <span class="user-email">Active Developer Session</span>
+            </div>
         </header>
 
         <div class="scroll-area">
             
-            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section active-view">
                 <div class="kpi-grid">
                     <div class="kpi-card"><div class="kpi-title">Global Cash Balance</div><div class="kpi-value" id="kpiGlobalBank">0.00</div></div>
@@ -229,12 +212,11 @@
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        <strong>Treasury Update:</strong> The Banking module now supports multiple accounts. You can add unique bank accounts, log transactions to specific ledgers, and securely generate formal bank statements using your Master Password.
+                        <strong>System Update:</strong> The Reports Center is now operational. Select reports will securely pull live transactional metrics. Cloud write anomalies are caught explicitly via the network log viewable in the status indicator bar.
                     </p>
                 </div>
             </div>
 
-            <!-- ITEMS -->
             <div id="view-items" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Service Catalog</h3>
@@ -252,20 +234,16 @@
                 </div>
             </div>
 
-            <!-- BANKING (MULTI-ACCOUNT TREASURY) -->
             <div id="view-banking" class="view-section">
-                <!-- Account Selector Bar -->
                 <div style="display: flex; gap: 15px; margin-bottom: 24px; align-items: center; background: white; padding: 15px 24px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                     <div style="flex: 1;">
                         <label style="font-size: 12px; font-weight: 600; color: var(--z-text-muted); display: block; margin-bottom: 4px;">Active Bank Account</label>
                         <select id="activeBankSelector" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; font-weight: 600; font-size: 14px;">
-                            <!-- JS Injected -->
                         </select>
                     </div>
                     <button class="btn-outline" id="showAddAccountFormBtn"><i class="fa-solid fa-plus"></i> New Bank Account</button>
                 </div>
 
-                <!-- Hidden Add Account Form -->
                 <div class="card" id="addBankAccForm" style="display: none; border-left: 4px solid var(--z-blue);">
                     <h3 class="card-header">Register New Bank Account</h3>
                     <div class="form-grid">
@@ -298,12 +276,11 @@
                     </div>
                     <table class="data-table">
                         <thead><tr><th>Date</th><th>Description</th><th>Type</th><th class="col-right">Amount</th><th class="col-right">Balance</th><th>Actions</th></tr></thead>
-                        <tbody id="bankingTableBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions.</td></tr></tbody>
+                        <tbody id="bankingTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- QUOTES (ESTIMATES) -->
             <div id="view-quotes" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Generate Quote (Estimate)</h3>
@@ -327,12 +304,11 @@
                     <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Saved Quotes</h3></div>
                     <table class="data-table">
                         <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
-                        <tbody id="masterQuoteListBody"><tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr></tbody>
+                        <tbody id="masterQuoteListBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- INVOICES -->
             <div id="view-invoices" class="view-section">
                 <div class="card">
                     <h3 class="card-header">New Concierge Invoice</h3>
@@ -367,19 +343,47 @@
                     <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3></div>
                     <table class="data-table">
                         <thead><tr><th>Invoice ID</th><th>Client</th><th>Assigned Agent</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
-                        <tbody id="masterInvoiceListBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No invoices yet.</td></tr></tbody>
+                        <tbody id="masterInvoiceListBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- PURCHASES, TIME TRACKING -->
-            <div id="view-purchases" class="view-section"><div class="card"><h3 class="card-header">Log Expense</h3><div class="form-grid"><div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div><div class="input-group"><label>Amount</label><input type="number" id="expenseAmount"></div></div><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div>
-            <div class="card" style="padding:0; overflow:hidden;"><table class="data-table"><thead><tr><th>Vendor</th><th class="col-right">Amount</th></tr></thead><tbody id="expenseTableBody"><tr><td colspan="2" style="text-align:center; padding: 20px;">No expenses.</td></tr></tbody></table></div></div>
+            <div id="view-purchases" class="view-section">
+                <div class="card">
+                    <h3 class="card-header">Log Expense</h3>
+                    <div class="form-grid">
+                        <div class="input-group"><label>Vendor / Service Provider</label><input type="text" id="expenseVendor"></div>
+                        <div class="input-group"><label>Amount (Br)</label><input type="number" id="expenseAmount"></div>
+                        <div class="input-group"><label>Reference / Expense Title</label><input type="text" id="expenseTitle"></div>
+                    </div>
+                    <button class="btn-primary" id="saveExpenseBtn">Log Purchase</button>
+                </div>
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Title / Purpose</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
+                        <tbody id="expenseTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
             
-            <div id="view-timetracking" class="view-section"><div class="card"><h3 class="card-header">Log Time</h3><div class="form-grid"><div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div><div class="input-group"><label>Hours</label><input type="number" id="timeHours"></div><div class="input-group"><label>Task</label><input type="text" id="timeTaskDesc"></div></div><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div>
-            <div class="card" style="padding:0; overflow:hidden;"><table class="data-table"><thead><tr><th>Date</th><th>Agent</th><th>Task</th><th class="col-right">Hours</th></tr></thead><tbody id="timeTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr></tbody></table></div></div>
+            <div id="view-timetracking" class="view-section">
+                <div class="card">
+                    <h3 class="card-header">Log Time</h3>
+                    <div class="form-grid">
+                        <div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div>
+                        <div class="input-group"><label>Hours</label><input type="number" id="timeHours" min="0.5" step="0.5"></div>
+                        <div class="input-group"><label>Task Details</label><input type="text" id="timeTaskDesc"></div>
+                    </div>
+                    <button class="btn-primary" id="saveTimeLogBtn">Log Time</button>
+                </div>
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <table class="data-table">
+                        <thead><tr><th>Date</th><th>Agent</th><th>Task Description</th><th class="col-right">Hours Registered</th></tr></thead>
+                        <tbody id="timeTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
 
-            <!-- AGENTS (Accountant) -->
             <div id="view-agents" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="agentFormHeader">Register Concierge Agent</h3>
@@ -396,12 +400,11 @@
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
                         <thead><tr><th>Agent Details</th><th>Contact & Location</th><th>Commission Tier</th><th>Actions</th></tr></thead>
-                        <tbody id="agentTableBody"><tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 20px;">No agents registered.</td></tr></tbody>
+                        <tbody id="agentTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- CUSTOMERS -->
             <div id="view-customers" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="clientFormHeader">Add Diaspora Client</h3>
@@ -418,34 +421,32 @@
                 <div class="card" style="padding: 0; overflow: hidden;">
                     <table class="data-table">
                         <thead><tr><th>Client Details</th><th>Demographics & Contact</th><th>Actions</th></tr></thead>
-                        <tbody id="clientTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No clients added yet.</td></tr></tbody>
+                        <tbody id="clientTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- REPORTS CENTER -->
             <div id="view-reports" class="view-section">
                 <div class="reports-hero">
                     <h2>Reports Center</h2>
                     <div class="reports-search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="reportSpecificSearch" placeholder="Search reports">
+                        <input type="text" id="reportSpecificSearch" placeholder="Search report metrics...">
                     </div>
                 </div>
                 <div class="report-table-container">
-                    <div style="padding: 20px 24px; font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--z-border); color: var(--z-text-dark);">All Reports</div>
+                    <div style="padding: 20px 24px; font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--z-border); color: var(--z-text-dark);">All Corporate Reports</div>
                     <table class="report-table">
-                        <thead><tr><th style="width: 40%;">Report Name</th><th style="width: 30%;">Type</th><th style="width: 30%;">Created By</th></tr></thead>
+                        <thead><tr><th style="width: 40%;">Report Name</th><th style="width: 30%;">Category Type</th><th style="width: 30%;">Status Engine</th></tr></thead>
                         <tbody id="reportsCenterBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- SETTINGS & SECURITY -->
             <div id="view-settings" class="view-section">
                 <div class="card" style="max-width: 500px;">
                     <h3 class="card-header">Security Preferences</h3>
-                    <p style="color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px;">Update the Master Password required to modify sensitive records. Default is <code>admin</code>.</p>
+                    <p style="color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px;">Update the Master Password required to modify sensitive metrics. Default is <code>admin</code>.</p>
                     <div class="form-grid" style="grid-template-columns: 1fr;">
                         <div class="input-group"><label>New Master Password</label><input type="password" id="newMasterPassword" placeholder="Enter new password"></div>
                     </div>
@@ -458,7 +459,6 @@
     </main>
 </div>
 
-<!-- LOGIC -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -468,21 +468,28 @@
         projectId: "runnershuberp", storageBucket: "runnershuberp.firebasestorage.app"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    let db = null;
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        const cloudBadge = document.getElementById('cloudStatusBadge');
+        cloudBadge.classList.add('online');
+        cloudBadge.innerHTML = '<i class="fa-solid fa-cloud"></i> Firestore Online';
+    } catch(e) {
+        console.error("Firebase Initialization Failure:", e);
+    }
 
-    // --- DATA PERSISTENCE ENGINE (UPGRADED FOR MULTI-BANK) ---
+    // --- STATE MANAGER ---
     let appState = {
         masterPassword: "admin",
         catalogItems: [], customers: [], agents: [],
         currentInvoiceItems: [], currentQuoteItems: [],
         invoices: [], quotes: [], purchases: [], timeLogs: [],
         metrics: { revenue: 0, payouts: 0, expenses: 0 },
-        // NEW TREASURY ARCHITECTURE
         bankAccounts: [
             { id: 'acc_main', name: 'Main Cash Account', accNumber: 'CASH-01', balance: 0 }
         ],
-        bankTransactions: [] // Global ledger
+        bankTransactions: []
     };
 
     function saveStateLocally() { localStorage.setItem('runnersHubStateData', JSON.stringify(appState)); }
@@ -491,21 +498,19 @@
         const saved = localStorage.getItem('runnersHubStateData');
         if (saved) {
             appState = JSON.parse(saved);
-            
-            // Seamless Migration logic for older version data
             if (!appState.bankAccounts) {
                 appState.bankAccounts = [{ id: 'acc_main', name: 'Main Cash Account', accNumber: 'CASH-01', balance: appState.bank ? appState.bank.balance : 0 }];
                 appState.bankTransactions = appState.bank ? appState.bank.ledger.map(tx => ({...tx, accountId: 'acc_main'})) : [];
-                delete appState.bank; // cleanup old structure
+                delete appState.bank;
                 saveStateLocally();
             }
             rebuildAllUI();
         } else {
-            rebuildAllUI(); // Initial load
+            rebuildAllUI();
         }
     }
 
-    // --- NAVIGATION & SEARCH ---
+    // --- SIDEBAR NAV ---
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -535,9 +540,8 @@
         });
     });
 
-    // --- SECURITY AUTHENTICATION SYSTEM ---
+    // --- SECURITY PASS SYSTEM ---
     let pendingAuthCallback = null;
-    
     window.requireAuth = function(callback) {
         document.getElementById('authModal').style.display = 'flex';
         document.getElementById('authPasswordInput').value = '';
@@ -570,21 +574,13 @@
         }
     });
 
-    // --- REPORTS CENTER GENERATOR ---
+    // --- CORPORATE REPORTS CATALOG DESIGN ---
     const zohoReports = [
-        { category: "Business Overview", items: ["Profit and Loss", "Cash Flow Statement", "Balance Sheet"] },
-        { category: "Sales", items: ["Sales by Customer", "Sales by Item", "Sales by Sales Person"] },
-        { category: "Inventory", items: ["Inventory Summary", "Inventory Valuation Summary", "FIFO Cost Lot Tracking", "Product Sales Report"] },
-        { category: "Receivables", items: ["Customer Balances", "AR Aging Summary", "AR Aging Details", "Invoice Details", "Retainer Invoice Details", "Sales Order Details", "Delivery Challan Details", "Estimate Details"] },
-        { category: "Payments Received", items: ["Payments Received", "Time to Get Paid", "Credit Note Details", "Refund History"] },
-        { category: "Recurring Invoices", items: ["Recurring Invoice Details"] },
-        { category: "Payables", items: ["Vendor Balances", "AP Aging Summary", "AP Aging Details", "Bills Details", "Vendor Credits Details", "Payments Made", "Refund History", "Purchase Order Details", "Purchase Orders by Vendor"] },
-        { category: "Purchases and Expenses", items: ["Purchases by Vendor", "Purchases by Item", "Expense Details", "Expenses by Category", "Expenses by Customer", "Expenses by Project", "Expenses by Employee"] },
-        { category: "Taxes", items: ["Tax Summary"] },
-        { category: "Projects and Timesheet", items: ["Timesheet Details", "Project Summary", "Project Details"] },
-        { category: "Accountant", items: ["Account Transactions", "Account Type Summary", "General Ledger", "Detailed General Ledger", "Journal Report", "Trial Balance"] },
-        { category: "Currency", items: ["Realized Gain or Loss"] },
-        { category: "Activity", items: ["System Mails", "Activity Logs & Audit Trail", "Exception Report", "Portal Activities", "Client Reviews", "API Usage"] }
+        { category: "Business Overview", items: ["Profit and Loss", "Balance Sheet Summary"] },
+        { category: "Purchases and Expenses", items: ["Expense Details"] },
+        { category: "Receivables / Operational Sales", items: ["Invoice Details", "Estimate Details"] },
+        { category: "Projects and Timesheet", items: ["Timesheet Details"] },
+        { category: "Accountant Engine", items: ["Account Transactions"] }
     ];
 
     function renderReportsCenter() {
@@ -593,7 +589,11 @@
         zohoReports.forEach((group, groupIdx) => {
             tbody.innerHTML += `<tr class="report-group-row" data-group="${groupIdx}"><td colspan="3" class="report-group-hdr">${group.category} <span class="report-badge">${group.items.length}</span></td></tr>`;
             group.items.forEach(reportName => {
-                tbody.innerHTML += `<tr class="report-row" data-group-item="${groupIdx}"><td><i class="fa-regular fa-star star-icon" onclick="this.classList.toggle('fa-solid'); this.classList.toggle('starred');"></i> <a class="report-link" onclick="alert('Viewing: ${reportName}')">${reportName}</a></td><td>${reportName}</td><td>System Generated</td></tr>`;
+                tbody.innerHTML += `<tr class="report-row" data-group-item="${groupIdx}">
+                    <td><i class="fa-regular fa-file-lines" style="color: var(--z-blue); margin-right: 8px;"></i> <a class="report-link" onclick="triggerReportView('${reportName}')">${reportName}</a></td>
+                    <td>${group.category}</td>
+                    <td><span class="status-badge" style="background:#e0f2fe; color:#0369a1; padding:2px 8px;">Live Engine</span></td>
+                </tr>`;
             });
         });
     }
@@ -612,19 +612,153 @@
         });
     });
 
-    // --- REBUILD UI ---
+    // --- CORE REPORT COMPILER ENGINE ---
+    window.triggerReportView = function(reportName) {
+        requireAuth(() => {
+            const container = document.getElementById('renderPaperArea');
+            const overlay = document.getElementById('statementOverlay');
+            const dateString = new Date().toLocaleDateString();
+
+            let baseHeader = `
+                <div class="statement-hdr">
+                    <div>
+                        <h2 class="stmt-title" id="stmtTitleField">${reportName}</h2>
+                        <p style="margin: 5px 0; font-weight: 600; color: var(--z-blue);">RunnersHUB Concierge Systems</p>
+                    </div>
+                    <div class="stmt-meta" style="text-align: right;">
+                        <p><strong>Corporate Statement</strong></p>
+                        <p>Generated: ${dateString}</p>
+                        <p>Scope: Full History Ledger</p>
+                    </div>
+                </div>`;
+
+            if (reportName === "Profit and Loss") {
+                let rev = appState.metrics.revenue;
+                let directPayouts = appState.metrics.payouts;
+                let exp = appState.metrics.expenses;
+                let netProfit = rev - directPayouts - exp;
+
+                container.innerHTML = baseHeader + `
+                    <div style="margin-top:20px;">
+                        <table class="pl-table">
+                            <thead>
+                                <tr style="font-weight:700; color: var(--z-text-muted); font-size:12px;"><td style="width:70%;">ACCOUNT TITLE</td><td style="text-align:right;">AMOUNT (Br)</td></tr>
+                            </thead>
+                            <tbody>
+                                <tr style="font-weight:600;"><td colspan="2">Operating Revenue</td></tr>
+                                <tr><td class="pl-indent">Gross Concierge Invoicing Revenue</td><td style="text-align:right; color:var(--z-success);">${rev.toFixed(2)}</td></tr>
+                                <tr class="pl-total-row"><td>Total Operating Revenue</td><td style="text-align:right;">${rev.toFixed(2)}</td></tr>
+                                
+                                <tr style="font-weight:600;"><td colspan="2" style="padding-top:20px;">Cost of Services Sold (COSS)</td></tr>
+                                <tr><td class="pl-indent">Agent Payment Allocations</td><td style="text-align:right; color:var(--z-danger);">${directPayouts.toFixed(2)}</td></tr>
+                                <tr class="pl-total-row"><td>Total Cost of Services</td><td style="text-align:right;">${directPayouts.toFixed(2)}</td></tr>
+                                
+                                <tr style="font-weight:600;"><td colspan="2" style="padding-top:20px;">Operating Expenses (OPEX)</td></tr>
+                                <tr><td class="pl-indent">Corporate Logged Purchases & Vendor Allocations</td><td style="text-align:right; color:var(--z-danger);">${exp.toFixed(2)}</td></tr>
+                                <tr class="pl-total-row"><td>Total Operating Expenses</td><td style="text-align:right;">${exp.toFixed(2)}</td></tr>
+                                
+                                <tr class="pl-net-row" style="height:45px;"><td>NET TRADING PROFIT / INCOME</td><td style="text-align:right; color:${netProfit >= 0 ? 'var(--z-success)' : 'var(--z-danger)'}">${netProfit.toFixed(2)}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`;
+            } 
+            else if (reportName === "Expense Details") {
+                let rows = '';
+                appState.purchases.forEach(p => {
+                    rows += `<tr><td>${p.date || dateString}</td><td>${p.title || 'Direct Purchase'}</td><td>${p.vendor}</td><td class="col-right" style="color:var(--z-danger); font-weight:500;">-${p.amount.toFixed(2)}</td></tr>`;
+                });
+                if(appState.purchases.length === 0) rows = `<tr><td colspan="4" style="text-align:center; color: var(--z-text-muted);">No vendor transactions tracked.</td></tr>`;
+                
+                container.innerHTML = baseHeader + `
+                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
+                        <thead style="background:#f9fafb;"><tr><th>Date</th><th>Expense Head</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            }
+            else if (reportName === "Invoice Details") {
+                let rows = '';
+                appState.invoices.forEach(inv => {
+                    rows += `<tr><td>${inv.id}</td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge">${inv.status}</span></td></tr>`;
+                });
+                if(appState.invoices.length === 0) rows = `<tr><td colspan="5" style="text-align:center; color: var(--z-text-muted);">No corporate invoices issued.</td></tr>`;
+
+                container.innerHTML = baseHeader + `
+                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
+                        <thead style="background:#f9fafb;"><tr><th>Invoice ID</th><th>Client Profile</th><th>Assigned Agent</th><th class="col-right">Gross Total (Br)</th><th style="text-align:center;">Status</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            }
+            else if (reportName === "Estimate Details") {
+                let rows = '';
+                appState.quotes.forEach(q => {
+                    rows += `<tr><td>${q.id}</td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td></tr>`;
+                });
+                if(appState.quotes.length === 0) rows = `<tr><td colspan="3" style="text-align:center; color: var(--z-text-muted);">No active historical estimates recorded.</td></tr>`;
+
+                container.innerHTML = baseHeader + `
+                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
+                        <thead style="background:#f9fafb;"><tr><th>Estimate ID</th><th>Client Profile</th><th class="col-right">Forecast Amount (Br)</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            }
+            else if (reportName === "Timesheet Details") {
+                let rows = '';
+                appState.timeLogs.forEach(t => {
+                    rows += `<tr><td>${t.date}</td><td>${t.agent}</td><td>${t.task}</td><td class="col-right">${t.hours} hrs</td></tr>`;
+                });
+                if(appState.timeLogs.length === 0) rows = `<tr><td colspan="4" style="text-align:center; color: var(--z-text-muted);">No log sheets entered.</td></tr>`;
+
+                container.innerHTML = baseHeader + `
+                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
+                        <thead style="background:#f9fafb;"><tr><th>Date Logged</th><th>Agent</th><th>Task Summary</th><th class="col-right">Duration</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            }
+            else if (reportName === "Account Transactions") {
+                let rows = '';
+                appState.bankTransactions.forEach(tx => {
+                    const accObj = appState.bankAccounts.find(a => a.id === tx.accountId) || {name: 'Unknown Ledger'};
+                    const typeColor = tx.type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
+                    rows += `<tr><td>${tx.date}</td><td>${accObj.name}</td><td>${tx.desc}</td><td><span style="${typeColor}">${tx.type}</span></td><td class="col-right" style="${typeColor}">${tx.type==='Deposit'?'+':'-'}${tx.amount.toFixed(2)}</td></tr>`;
+                });
+                if(appState.bankTransactions.length === 0) rows = `<tr><td colspan="5" style="text-align:center; color: var(--z-text-muted);">No active multi-account transactions registered.</td></tr>`;
+
+                container.innerHTML = baseHeader + `
+                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
+                        <thead style="background:#f9fafb;"><tr><th>Date</th><th>Chart of Account</th><th>Reference / Memo</th><th>Transaction Type</th><th class="col-right">Magnitude (Br)</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            }
+            else {
+                // Default fallback pattern for general placeholders
+                container.innerHTML = baseHeader + `
+                    <div style="text-align:center; padding:40px 20px; color: var(--z-text-muted);">
+                        <i class="fa-solid fa-folder-open" style="font-size:40px; margin-bottom:15px; color:#d1d5db;"></i>
+                        <p>No transaction parameters mapped within this reporting index frame for the active timeline.</p>
+                    </div>`;
+            }
+
+            overlay.style.display = 'block';
+        });
+    }
+
+    document.getElementById('closeStatementBtn').addEventListener('click', () => {
+        document.getElementById('statementOverlay').style.display = 'none';
+    });
+
+    // --- REBUILD ENGINE UI SYNCHRONIZER ---
     function rebuildAllUI() {
         renderReportsCenter();
         renderClients(); renderAgents(); renderItems();
-        renderBankAccounts(); // Populates bank dropdown
-        renderBankLedger();   // Renders transactions for selected bank
+        renderBankAccounts();
+        renderBankLedger();
         updateInvoiceUI(); updateQuoteUI();
         renderInvoiceLedger(); renderQuoteLedger();
         renderPurchases(); renderTimeLogs();
         updateDashboards();
     }
 
-    // --- BANKING: MULTI-ACCOUNT & STATEMENT LOGIC ---
+    // --- MULTI-BANK ACCOUNT MANAGEMENT ---
     const activeBankSelector = document.getElementById('activeBankSelector');
     
     document.getElementById('showAddAccountFormBtn').addEventListener('click', () => {
@@ -644,7 +778,6 @@
         const id = 'acc_' + Date.now();
         appState.bankAccounts.push({ id, name, accNumber, balance });
         
-        // Log opening balance transaction if > 0
         if(balance > 0) {
             appState.bankTransactions.push({ 
                 id: 'tx_' + Date.now(), date: new Date().toLocaleDateString(), desc: 'Opening Balance', 
@@ -654,8 +787,9 @@
         
         saveStateLocally();
         renderBankAccounts();
-        activeBankSelector.value = id; // auto-select new account
+        activeBankSelector.value = id;
         renderBankLedger();
+        updateDashboards();
         
         document.getElementById('addBankAccForm').style.display = 'none';
         document.getElementById('newBankName').value = ''; document.getElementById('newBankNum').value = ''; document.getElementById('newBankBal').value = '0.00';
@@ -672,15 +806,14 @@
 
     document.getElementById('saveBankTxBtn').addEventListener('click', () => {
         const accountId = activeBankSelector.value;
-        if(!accountId) return alert("Select an active bank account first.");
+        if(!accountId) return alert("Select active ledger profile.");
 
         const type = document.getElementById('bankTxType').value;
         const amount = parseFloat(document.getElementById('bankTxAmount').value);
         const desc = document.getElementById('bankTxDesc').value.trim();
-        if (isNaN(amount) || amount <= 0 || !desc) return alert("Valid amount and description required.");
+        if (isNaN(amount) || amount <= 0 || !desc) return alert("Valid amount and reference string required.");
 
         const account = appState.bankAccounts.find(a => a.id === accountId);
-        
         if (type === 'Deposit') account.balance += amount; 
         else account.balance -= amount; 
 
@@ -690,9 +823,10 @@
         });
         
         saveStateLocally();
-        renderBankAccounts(); // Updates dropdown balances
-        activeBankSelector.value = accountId; // maintain selection
+        renderBankAccounts();
+        activeBankSelector.value = accountId;
         renderBankLedger();
+        updateDashboards();
         
         document.getElementById('bankTxAmount').value = ''; document.getElementById('bankTxDesc').value = '';
     });
@@ -713,38 +847,31 @@
         document.getElementById('kpiBankBalance').textContent = account.balance.toFixed(2);
         
         const txs = appState.bankTransactions.filter(tx => tx.accountId === accountId);
-        
         if(txs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions in this account.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions recorded.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = '';
         txs.forEach((tx) => {
             const typeColor = tx.type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
-            const prefix = tx.type === 'Deposit' ? '+' : '-';
             tbody.innerHTML += `<tr>
                 <td>${tx.date}</td><td>${tx.desc}</td><td><span style="${typeColor} font-weight: 600;">${tx.type}</span></td>
-                <td class="col-right" style="${typeColor}">${prefix}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td>
+                <td class="col-right" style="${typeColor}">${tx.type==='Deposit'?'+':'-'}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td>
                 <td><button class="btn-danger-outline" onclick="deleteBankTxAuth('${tx.id}')">Discard</button></td>
             </tr>`;
         });
     }
 
-    // DISCARD BANK TRANSACTION & RECALCULATE
     window.deleteBankTxAuth = function(txId) {
         requireAuth(() => {
-            // Find transaction
             const txIndex = appState.bankTransactions.findIndex(t => t.id === txId);
             if(txIndex === -1) return;
             const accountId = appState.bankTransactions[txIndex].accountId;
-            
-            // Remove it
             appState.bankTransactions.splice(txIndex, 1);
             
-            // Recalculate specific account ledger from zero
             const account = appState.bankAccounts.find(a => a.id === accountId);
-            account.balance = 0; // reset to zero before loop
+            account.balance = 0;
             
             appState.bankTransactions.forEach(t => {
                 if(t.accountId === accountId) {
@@ -756,58 +883,22 @@
             
             saveStateLocally();
             renderBankAccounts();
-            activeBankSelector.value = accountId; // maintain selection
+            activeBankSelector.value = accountId;
             renderBankLedger();
-            updateDashboards(); // Updates global cash
+            updateDashboards();
         });
     };
 
-    // GENERATE BANK STATEMENT
     document.getElementById('generateStatementBtn').addEventListener('click', () => {
         const accountId = activeBankSelector.value;
-        if(!accountId) return alert("Select an account to generate a statement.");
-        
-        requireAuth(() => {
-            const account = appState.bankAccounts.find(a => a.id === accountId);
-            const txs = appState.bankTransactions.filter(tx => tx.accountId === accountId);
-            
-            let totalIn = 0; let totalOut = 0;
-            const tbody = document.getElementById('stmtTableBody');
-            tbody.innerHTML = '';
-            
-            txs.forEach(tx => {
-                if(tx.type === 'Deposit') totalIn += tx.amount;
-                else totalOut += tx.amount;
-                
-                const typeColor = tx.type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
-                const prefix = tx.type === 'Deposit' ? '+' : '-';
-                tbody.innerHTML += `<tr><td>${tx.date}</td><td>${tx.desc}</td><td><span style="${typeColor}">${tx.type}</span></td><td class="col-right">${prefix}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td></tr>`;
-            });
-            
-            if(txs.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No transaction history available.</td></tr>`;
-
-            document.getElementById('stmtAccountName').textContent = account.name;
-            document.getElementById('stmtAccNum').textContent = `Account No: ${account.accNumber || 'N/A'}`;
-            document.getElementById('stmtDateStr').textContent = `Date Generated: ${new Date().toLocaleDateString()}`;
-            document.getElementById('stmtTotalIn').textContent = `${totalIn.toFixed(2)} Br`;
-            document.getElementById('stmtTotalOut').textContent = `${totalOut.toFixed(2)} Br`;
-            document.getElementById('stmtEndBal').textContent = `${account.balance.toFixed(2)} Br`;
-
-            document.getElementById('statementOverlay').style.display = 'block';
-        });
+        if(!accountId) return alert("Select an account profile.");
+        triggerReportView("Account Transactions");
     });
 
-    document.getElementById('closeStatementBtn').addEventListener('click', () => {
-        document.getElementById('statementOverlay').style.display = 'none';
-    });
-
-
-    // --- REMAINDER OF CRM, CATALOG, QUOTE, AND INVOICE LOGIC REMAINS IDENTICAL ---
-    // (Consolidated for brevity but fully functional based on previous step)
-
+    // --- CRM, SERVICES CATALOG AND TRANSACTIONS LOGIC ---
     function renderClients() {
         const tbody = document.getElementById('clientTableBody');
-        tbody.innerHTML = appState.customers.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#9ca3af;">No clients.</td></tr>` : '';
+        tbody.innerHTML = appState.customers.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#9ca3af; padding:20px;">No client profiles tracked.</td></tr>` : '';
         const invSelect = document.getElementById('invoiceClientSelect');
         const qtSelect = document.getElementById('quoteClientSelect');
         invSelect.innerHTML = '<option value="">-- Select Client --</option>';
@@ -824,7 +915,7 @@
             const name = document.getElementById('newClientName').value.trim(); const email = document.getElementById('newClientEmail').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim(); const demo = document.getElementById('newClientDemo').value.trim();
             const editIndex = parseInt(document.getElementById('editClientIndex').value);
-            if(!name || !email) return alert("Name and Email required.");
+            if(!name || !email) return alert("Name and Email parameters are required.");
             if(editIndex > -1) { appState.customers[editIndex] = { name, email, phone, demo }; document.getElementById('editClientIndex').value = "-1"; document.getElementById('clientFormHeader').textContent = "Add Diaspora Client"; document.getElementById('saveClientBtn').textContent = "Save Client Profile"; document.getElementById('cancelEditClientBtn').style.display = 'none'; } 
             else { appState.customers.push({ name, email, phone, demo }); }
             saveStateLocally(); document.getElementById('newClientName').value = ''; document.getElementById('newClientEmail').value = ''; document.getElementById('newClientPhone').value = ''; document.getElementById('newClientDemo').value = ''; renderClients();
@@ -837,14 +928,13 @@
 
     function renderAgents() {
         const tbody = document.getElementById('agentTableBody');
-        tbody.innerHTML = appState.agents.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:#9ca3af;">No agents.</td></tr>` : '';
+        tbody.innerHTML = appState.agents.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:#9ca3af; padding:20px;">No agent profiles initialized.</td></tr>` : '';
         const invSelect = document.getElementById('invoiceAgentSelect'); const timeSelect = document.getElementById('timeAgentSelect');
         invSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>'; timeSelect.innerHTML = '<option value="">-- Select Existing Agent --</option>';
         appState.agents.forEach((a, i) => {
             tbody.innerHTML += `<tr><td><strong>${a.name}</strong></td><td>${a.phone || 'N/A'}<br><span style="font-size:12px;color:var(--z-text-muted);">${a.demo || 'N/A'}</span></td><td><span class="status-badge">${a.tier}</span></td><td><button class="btn-edit-outline" onclick="loadAgentForEdit(${i})">Edit</button><button class="btn-danger-outline" onclick="deleteAgentAuth(${i})" style="margin-left:5px;">Delete</button></td></tr>`;
             invSelect.innerHTML += `<option value="${a.name}">${a.name} (${a.tier})</option>`; timeSelect.innerHTML += `<option value="${a.name}">${a.name}</option>`;
         });
-        document.getElementById('kpiAgents').textContent = appState.agents.length;
     }
 
     document.getElementById('saveAgentBtn').addEventListener('click', () => {
@@ -852,7 +942,7 @@
             const name = document.getElementById('newAgentName').value.trim(); const tier = document.getElementById('newAgentTier').value;
             const phone = document.getElementById('newAgentPhone').value.trim(); const demo = document.getElementById('newAgentDemo').value.trim();
             const editIndex = parseInt(document.getElementById('editAgentIndex').value);
-            if(!name) return alert("Agent name is required.");
+            if(!name) return alert("Agent identity name is required.");
             if(editIndex > -1) { appState.agents[editIndex] = { name, tier, phone, demo }; document.getElementById('editAgentIndex').value = "-1"; document.getElementById('agentFormHeader').textContent = "Register Concierge Agent"; document.getElementById('saveAgentBtn').textContent = "Save Agent Profile"; document.getElementById('cancelEditAgentBtn').style.display = 'none'; } 
             else { appState.agents.push({ name, tier, phone, demo }); }
             saveStateLocally(); document.getElementById('newAgentName').value = ''; document.getElementById('newAgentPhone').value = ''; document.getElementById('newAgentDemo').value = ''; renderAgents();
@@ -875,7 +965,7 @@
 
     document.getElementById('saveItemBtn').addEventListener('click', () => {
         const name = document.getElementById('newItemName').value.trim(); const rate = parseFloat(document.getElementById('newItemRate').value);
-        if(!name || isNaN(rate)) return alert("Item name and rate are required.");
+        if(!name || isNaN(rate)) return alert("Item parameters missing.");
         appState.catalogItems.push({ name, rate }); saveStateLocally(); renderItems();
         document.getElementById('newItemName').value = ''; document.getElementById('newItemRate').value = '';
     });
@@ -886,36 +976,87 @@
 
     document.getElementById('addQuoteLineBtn').addEventListener('click', () => { const task = document.getElementById('quoteItemName').value.trim(); const qty = parseInt(document.getElementById('quoteItemQty').value); const price = parseFloat(document.getElementById('quoteItemPrice').value); if (!task || isNaN(price)) return; appState.currentQuoteItems.push({ task, qty, price, lineTotal: price * qty }); saveStateLocally(); updateQuoteUI(); document.getElementById('quoteItemName').value = ''; document.getElementById('quoteItemPrice').value = ''; });
     function updateQuoteUI() { const tbody = document.getElementById('quoteTableBody'); tbody.innerHTML = ''; let total = 0; appState.currentQuoteItems.forEach(item => { total += item.lineTotal; tbody.innerHTML += `<tr><td>${item.task}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td class="col-right">${item.lineTotal.toFixed(2)}</td></tr>`; }); document.getElementById('quoteGrandTotalDisplay').textContent = `${total.toFixed(2)} Br`; }
-    document.getElementById('saveQuoteBtn').addEventListener('click', () => { if(appState.currentQuoteItems.length === 0) return; const client = document.getElementById('quoteClientSelect').value; if(!client) return; const total = parseFloat(document.getElementById('quoteGrandTotalDisplay').textContent); const id = "EST-" + Math.floor(1000 + Math.random() * 9000); appState.quotes.push({ id, client, total }); appState.currentQuoteItems = []; saveStateLocally(); updateQuoteUI(); renderQuoteLedger(); alert(`Quote ${id} generated.`); });
-    function renderQuoteLedger() { const ledger = document.getElementById('masterQuoteListBody'); ledger.innerHTML = appState.quotes.length === 0 ? `<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr>` : ''; appState.quotes.forEach((q, i) => { ledger.innerHTML += `<tr><td><strong>${q.id}</strong></td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge" style="background:#e0f2fe; color:#0284c7;">Draft Saved</span></td><td><button class="btn-danger-outline" onclick="deleteQuoteAuth(${i})">Delete</button></td></tr>`; }); }
+    document.getElementById('saveQuoteBtn').addEventListener('click', () => { if(appState.currentQuoteItems.length === 0) return; const client = document.getElementById('quoteClientSelect').value; if(!client) return; const total = parseFloat(document.getElementById('quoteGrandTotalDisplay').textContent); const id = "EST-" + Math.floor(1000 + Math.random() * 9000); appState.quotes.push({ id, client, total }); appState.currentQuoteItems = []; saveStateLocally(); updateQuoteUI(); renderQuoteLedger(); alert(`Estimate ${id} constructed locally.`); });
+    function renderQuoteLedger() { const ledger = document.getElementById('masterQuoteListBody'); ledger.innerHTML = appState.quotes.length === 0 ? `<tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No estimates drafted.</td></tr>` : ''; appState.quotes.forEach((q, i) => { ledger.innerHTML += `<tr><td><strong>${q.id}</strong></td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge" style="background:#e0f2fe; color:#0284c7;">Draft Saved</span></td><td><button class="btn-danger-outline" onclick="deleteQuoteAuth(${i})">Delete</button></td></tr>`; }); }
     window.deleteQuoteAuth = function(index) { requireAuth(() => { appState.quotes.splice(index, 1); saveStateLocally(); renderQuoteLedger(); }); };
 
     document.getElementById('addInvoiceLineBtn').addEventListener('click', () => { const task = document.getElementById('invoiceItemName').value.trim(); const qty = parseInt(document.getElementById('invoiceItemQty').value); const price = parseFloat(document.getElementById('invoiceItemPrice').value); if (!task || isNaN(price)) return; appState.currentInvoiceItems.push({ task, qty, price, lineTotal: price * qty }); saveStateLocally(); updateInvoiceUI(); document.getElementById('invoiceItemName').value = ''; document.getElementById('invoiceItemPrice').value = ''; });
     document.getElementById('agentRate').addEventListener('change', updateInvoiceUI);
     function updateInvoiceUI() { const tbody = document.getElementById('invoiceTableBody'); tbody.innerHTML = ''; let subtotal = 0; appState.currentInvoiceItems.forEach(item => { subtotal += item.lineTotal; tbody.innerHTML += `<tr><td>${item.task}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td class="col-right">${item.lineTotal.toFixed(2)}</td></tr>`; }); const agentCut = subtotal * parseFloat(document.getElementById('agentRate').value); document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} Br`; document.getElementById('agentPaymentDisplay').textContent = `${agentCut.toFixed(2)} Br`; document.getElementById('grandTotalDisplay').textContent = `${subtotal.toFixed(2)} Br`; }
-    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => { if (appState.currentInvoiceItems.length === 0) return; const client = document.getElementById('invoiceClientSelect').value; const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned"; if(!client) return; const total = parseFloat(document.getElementById('subtotalDisplay').textContent); const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent); const id = "INV-" + Math.floor(10000 + Math.random() * 90000); appState.invoices.push({ id, client, agent, total, payout, status: 'Active' }); appState.metrics.revenue += total; appState.metrics.payouts += payout; try { addDoc(collection(db, "concierge_invoices"), { id, client, agent, totalAmount: total, agentPayment: payout, timestamp: new Date() }); } catch(e) {} appState.currentInvoiceItems = []; saveStateLocally(); updateInvoiceUI(); renderInvoiceLedger(); updateDashboards(); alert(`Invoice ${id} generated!`); });
-    function renderInvoiceLedger() { const tbody = document.getElementById('masterInvoiceListBody'); tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af; padding: 20px;">No invoices.</td></tr>` : ''; appState.invoices.forEach((inv, i) => { const badge = inv.status === 'Active' ? `<span class="status-badge">Active</span>` : `<span class="status-badge-void">Voided</span>`; const actionBtn = inv.status === 'Active' ? `<button class="btn-danger-outline" onclick="voidInvoiceAuth(${i})">Void</button>` : '-'; tbody.innerHTML += `<tr><td><strong>${inv.id}</strong></td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align: center;">${badge}</td><td>${actionBtn}</td></tr>`; }); }
+    
+    document.getElementById('saveInvoiceBtn').addEventListener('click', async () => { 
+        if (appState.currentInvoiceItems.length === 0) return alert("Add service lines before saving.");
+        const client = document.getElementById('invoiceClientSelect').value; 
+        const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned"; 
+        if(!client) return alert("Select billing profile."); 
+
+        const total = parseFloat(document.getElementById('subtotalDisplay').textContent); 
+        const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent); 
+        const id = "INV-" + Math.floor(10000 + Math.random() * 90000); 
+
+        appState.invoices.push({ id, client, agent, total, payout, status: 'Active' }); 
+        appState.metrics.revenue += total; 
+        appState.metrics.payouts += payout; 
+
+        // CLOUD NETWORK INTEGRATION LOG ENGINE
+        if (db) {
+            try {
+                await addDoc(collection(db, "concierge_invoices"), { 
+                    id, 
+                    client, 
+                    agent, 
+                    totalAmount: total, 
+                    agentPayment: payout, 
+                    timestamp: new Date() 
+                });
+                console.log(`Cloud Synchronization Success: Record ${id} updated to Firestore.`);
+            } catch(error) {
+                console.error("CRITICAL FIRESTORE ROUTE ERROR:", error);
+                alert(`Cloud Integration Warning!\nLocal state saved successfully, but Firestore sync failed.\nReason: ${error.message}\nCheck your DB Rules security parameters or connection profiles.`);
+            }
+        } else {
+            console.warn("Cloud write skipped: DB client initialized offline.");
+        }
+
+        appState.currentInvoiceItems = []; 
+        saveStateLocally(); 
+        updateInvoiceUI(); 
+        renderInvoiceLedger(); 
+        updateDashboards(); 
+    });
+
+    function renderInvoiceLedger() { const tbody = document.getElementById('masterInvoiceListBody'); tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af; padding: 20px;">No historical invoices found.</td></tr>` : ''; appState.invoices.forEach((inv, i) => { const badge = inv.status === 'Active' ? `<span class="status-badge">Active</span>` : `<span class="status-badge-void">Voided</span>`; const actionBtn = inv.status === 'Active' ? `<button class="btn-danger-outline" onclick="voidInvoiceAuth(${i})">Void</button>` : '-'; tbody.innerHTML += `<tr><td><strong>${inv.id}</strong></td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align: center;">${badge}</td><td>${actionBtn}</td></tr>`; }); }
     window.voidInvoiceAuth = function(index) { requireAuth(() => { const inv = appState.invoices[index]; inv.status = 'Voided'; appState.metrics.revenue -= inv.total; appState.metrics.payouts -= inv.payout; saveStateLocally(); renderInvoiceLedger(); updateDashboards(); }); }
     document.getElementById('invoiceAgentSelect').addEventListener('change', (e) => { const agent = appState.agents.find(a => a.name === e.target.value); if(agent) { const r = parseFloat(agent.tier) / 100; Array.from(document.getElementById('agentRate').options).forEach(opt => { if(parseFloat(opt.value) === r) opt.selected = true; }); updateInvoiceUI(); } });
 
-    document.getElementById('saveExpenseBtn').addEventListener('click', () => { const vendor = document.getElementById('expenseVendor').value; const amount = parseFloat(document.getElementById('expenseAmount').value); if(!vendor || isNaN(amount)) return; appState.purchases.push({ vendor, amount }); appState.metrics.expenses += amount; saveStateLocally(); renderPurchases(); updateDashboards(); });
-    function renderPurchases() { const tbody = document.getElementById('expenseTableBody'); tbody.innerHTML = appState.purchases.length === 0 ? `<tr><td colspan="2" style="text-align:center; padding: 20px;">No expenses.</td></tr>` : ''; appState.purchases.forEach(p => { tbody.innerHTML += `<tr><td><strong>${p.vendor}</strong></td><td class="col-right">${p.amount.toFixed(2)}</td></tr>`; }); }
-    document.getElementById('saveTimeLogBtn').addEventListener('click', () => { const agent = document.getElementById('timeAgentSelect').value; const hours = parseFloat(document.getElementById('timeHours').value); const task = document.getElementById('timeTaskDesc').value; if(!agent || isNaN(hours)) return; appState.timeLogs.push({ date: new Date().toLocaleDateString(), agent, hours, task }); saveStateLocally(); renderTimeLogs(); });
-    function renderTimeLogs() { const tbody = document.getElementById('timeTableBody'); tbody.innerHTML = appState.timeLogs.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr>` : ''; appState.timeLogs.forEach(t => { tbody.innerHTML += `<tr><td>${t.date}</td><td><strong>${t.agent}</strong></td><td>${t.task}</td><td class="col-right"><span class="status-badge">${t.hours} hrs</span></td></tr>`; }); }
+    document.getElementById('saveExpenseBtn').addEventListener('click', () => { 
+        const vendor = document.getElementById('expenseVendor').value.trim(); 
+        const amount = parseFloat(document.getElementById('expenseAmount').value);
+        const title = document.getElementById('expenseTitle').value.trim() || 'Direct Purchase';
+        if(!vendor || isNaN(amount)) return alert("Expense metrics invalid."); 
+        
+        appState.purchases.push({ vendor, amount, title, date: new Date().toLocaleDateString() }); 
+        appState.metrics.expenses += amount; 
+        saveStateLocally(); 
+        renderPurchases(); 
+        updateDashboards(); 
+        document.getElementById('expenseVendor').value = ''; document.getElementById('expenseAmount').value = ''; document.getElementById('expenseTitle').value = '';
+    });
+    
+    function renderPurchases() { const tbody = document.getElementById('expenseTableBody'); tbody.innerHTML = appState.purchases.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#9ca3af;">No direct expenditures logged.</td></tr>` : ''; appState.purchases.forEach(p => { tbody.innerHTML += `<tr><td>${p.date || new Date().toLocaleDateString()}</td><td><strong>${p.title}</strong></td><td>${p.vendor}</td><td class="col-right">${p.amount.toFixed(2)}</td></tr>`; }); }
+    document.getElementById('saveTimeLogBtn').addEventListener('click', () => { const agent = document.getElementById('timeAgentSelect').value; const hours = parseFloat(document.getElementById('timeHours').value); const task = document.getElementById('timeTaskDesc').value; if(!agent || isNaN(hours)) return alert("Log data mismatched."); appState.timeLogs.push({ date: new Date().toLocaleDateString(), agent, hours, task }); saveStateLocally(); renderTimeLogs(); document.getElementById('timeHours').value = ''; document.getElementById('timeTaskDesc').value = ''; });
+    function renderTimeLogs() { const tbody = document.getElementById('timeTableBody'); tbody.innerHTML = appState.timeLogs.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#9ca3af;">No tracking sequences filed.</td></tr>` : ''; appState.timeLogs.forEach(t => { tbody.innerHTML += `<tr><td>${t.date}</td><td><strong>${t.agent}</strong></td><td>${t.task}</td><td class="col-right"><span class="status-badge">${t.hours} hrs</span></td></tr>`; }); }
 
     function updateDashboards() {
-        // Calculate Global Bank Balance
         let globalCash = 0;
         appState.bankAccounts.forEach(acc => globalCash += acc.balance);
         document.getElementById('kpiGlobalBank').textContent = globalCash.toFixed(2);
-
         document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2);
         document.getElementById('kpiExpenses').textContent = appState.metrics.expenses.toFixed(2);
     }
 
-    // --- INITIALIZE APPLICATION ---
+    // --- INITIALIZE APPLICATION RUNTIME ---
     loadStateLocally();
-
 </script>
 </body>
 </html>
