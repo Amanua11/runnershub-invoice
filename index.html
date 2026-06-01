@@ -24,9 +24,9 @@
         #app-screen { width: 100%; height: 100%; display: flex; }
         
         /* SIDEBAR */
-        .sidebar { width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border); }
+        .sidebar { width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border); transition: left 0.3s ease; z-index: 10000;}
         .sidebar-brand { padding: 20px 24px; font-size: 17px; font-weight: 700; color: var(--z-text-dark); display: flex; align-items: center; gap: 10px; }
-        .org-icon { background: var(--z-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .org-logo { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--z-border); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .nav-group { padding: 10px 0; display: flex; flex-direction: column; gap: 2px; }
         .nav-item { padding: 10px 16px; margin: 0 12px; cursor: pointer; font-size: 14px; color: var(--z-sidebar-text); display: flex; align-items: center; border-radius: 8px; transition: 0.15s ease-in-out; font-weight: 500; }
         .nav-item:hover { background: #f0f4f8; color: var(--z-text-dark); }
@@ -34,10 +34,13 @@
         .nav-icon { width: 24px; text-align: center; margin-right: 10px; font-size: 15px; }
         .nav-caret { margin-left: auto; font-size: 12px; opacity: 0.6; }
         .nav-divider { border-top: 1px solid var(--z-border); margin: 15px 0; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; }
 
         /* WORKSPACE & HEADER */
-        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-header { height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0; gap: 20px; }
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
+        .top-header { height: 60px; background: var(--z-card-bg); border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; flex-shrink: 0; gap: 15px; }
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .mobile-menu-btn { display: none; background: transparent; border: none; font-size: 20px; color: var(--z-text-dark); cursor: pointer; padding: 0; }
         .header-title { font-size: 18px; font-weight: 600; color: var(--z-text-dark); white-space: nowrap; }
         
         /* SEARCH BAR */
@@ -47,8 +50,7 @@
         .search-container input:focus { background: white; border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(47,120,255,0.1); }
 
         .user-actions { display: flex; align-items: center; gap: 16px; }
-        .user-email { font-size: 13px; color: var(--z-text-muted); font-weight: 500; }
-        .cloud-status-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600; background: #fee2e2; color: #ef4444; display: flex; align-items: center; gap: 4px; }
+        .cloud-status-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600; background: #fee2e2; color: #ef4444; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .cloud-status-badge.online { background: #d1fae5; color: #065f46; }
 
         /* SCROLL AREA & VIEWS */
@@ -60,10 +62,10 @@
         /* CARDS & FORMS */
         .card { background: var(--z-card-bg); border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 24px; padding: 24px; }
         .card-header { margin-top: 0; margin-bottom: 20px; font-size: 16px; color: var(--z-text-dark); font-weight: 600; padding-bottom: 12px; border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 16px; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 16px; align-items: end; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
         .input-group label { font-size: 12px; font-weight: 600; color: var(--z-text-muted); }
-        .input-group input, .input-group select { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 14px; }
+        .input-group input, .input-group select { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 14px; width: 100%; box-sizing: border-box;}
         .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); outline: none; box-shadow: 0 0 0 2px rgba(47,120,255,0.2); }
         
         .btn-primary { background: var(--z-blue); color: white; border: none; padding: 9px 18px; border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; transition: 0.2s; }
@@ -75,12 +77,13 @@
         .btn-edit-outline { background: white; color: var(--z-text-dark); border: 1px solid var(--z-border); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
         /* TABLES */
-        .data-table { width: 100%; border-collapse: collapse; }
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
         .data-table th { background: #f9fafb; padding: 12px 16px; text-align: left; font-size: 12px; color: var(--z-text-muted); font-weight: 600; border-bottom: 1px solid var(--z-border); text-transform: uppercase; letter-spacing: 0.5px; }
         .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); font-size: 14px; vertical-align: middle; }
         .data-table .col-right { text-align: right; }
-        .status-badge { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-        .status-badge-void { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .status-badge { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap;}
+        .status-badge-void { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap;}
 
         /* TOTALS & DASHBOARD */
         .totals-section { display: flex; justify-content: flex-end; padding-top: 20px; }
@@ -103,7 +106,7 @@
         .reports-search-box input { width: 100%; padding: 14px 14px 14px 45px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; box-sizing: border-box; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); outline: none; transition: 0.2s; }
         .reports-search-box input:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(47,120,255,0.1); }
         .report-table-container { background: white; border: 1px solid var(--z-border); border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .report-table { width: 100%; border-collapse: collapse; }
+        .report-table { width: 100%; border-collapse: collapse; min-width: 500px;}
         .report-table th { background: #f9fafb; padding: 14px 24px; text-align: left; font-size: 11px; color: var(--z-text-muted); font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--z-border); }
         .report-group-hdr { background: #f9fafb; padding: 16px 24px; font-size: 13px; font-weight: 700; color: var(--z-text-dark); border-bottom: 1px solid var(--z-border); }
         .report-badge { display: inline-block; background: #9ca3af; color: white; padding: 2px 7px; border-radius: 12px; font-size: 10px; margin-left: 8px; font-weight: 600; }
@@ -113,7 +116,7 @@
         .report-link:hover { text-decoration: underline; }
 
         /* --- SECURITY MODAL --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.6); z-index: 10001; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;}
         .modal-box { background: white; padding: 30px; border-radius: 8px; width: 100%; max-width: 350px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
         .modal-box h3 { margin: 0 0 15px 0; color: var(--z-text-dark); font-size: 18px; }
         .modal-box p { color: var(--z-text-muted); font-size: 13px; margin-bottom: 20px; }
@@ -122,15 +125,13 @@
         .auth-error { color: var(--z-danger); font-size: 12px; margin-bottom: 15px; display: none; }
 
         /* --- STATEMENT & REPORT ENGINE OVERLAY CSS --- */
-        .statement-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f3f4f6; z-index: 9000; overflow-y: auto; padding: 40px; box-sizing: border-box; }
-        .statement-paper { background: white; max-width: 850px; margin: 0 auto; padding: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 4px; border-top: 8px solid var(--z-blue); }
+        .statement-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f3f4f6; z-index: 9000; overflow-y: auto; padding: 40px 20px; box-sizing: border-box; }
+        .export-btn-group { position: fixed; top: 20px; right: 30px; display: flex; gap: 10px; z-index: 9001; }
+        .export-btn-group button { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .statement-paper { background: white; max-width: 850px; margin: 40px auto 0 auto; padding: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 4px; border-top: 8px solid var(--z-blue); }
         .statement-hdr { display: flex; justify-content: space-between; border-bottom: 2px solid var(--z-text-dark); padding-bottom: 20px; margin-bottom: 30px; }
         .stmt-title { font-size: 28px; font-weight: 700; color: var(--z-text-dark); margin: 0; }
         .stmt-meta p { margin: 5px 0; font-size: 13px; color: var(--z-text-muted); }
-        .stmt-summary { display: flex; justify-content: space-between; background: #f9fafb; padding: 20px; border-radius: 6px; margin-bottom: 30px; border: 1px solid var(--z-border); }
-        .stmt-box h4 { margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; color: var(--z-text-muted); }
-        .stmt-box p { margin: 0; font-size: 20px; font-weight: 700; color: var(--z-text-dark); }
-        .stmt-close-btn { position: fixed; top: 30px; right: 40px; background: var(--z-text-dark); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         
         /* PL EXCLUSIVE STYLING */
         .pl-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -138,6 +139,45 @@
         .pl-indent { padding-left: 30px !important; color: var(--z-text-muted); }
         .pl-total-row { font-weight: 600; background: #f9fafb; border-bottom: 1px solid var(--z-text-dark) !important; border-top: 1px solid var(--z-text-dark); }
         .pl-net-row { font-size: 16px; font-weight: 700; background: #f0f4f8; border-bottom: 2px double var(--z-text-dark) !important; }
+
+        /* --- RESPONSIVE MOBILE ADJUSTMENTS --- */
+        @media (max-width: 1024px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .sidebar { position: fixed; left: -240px; top: 0; height: 100%; }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+            
+            .top-header { padding: 0 15px; }
+            .header-title { display: none; } /* Hide title on small screens to save space */
+            .cloud-status-badge span { display: none; } /* Hide text, keep icon */
+            
+            .kpi-grid { grid-template-columns: 1fr; gap: 15px; }
+            .form-grid { grid-template-columns: 1fr; gap: 15px; }
+            .scroll-area { padding: 15px; }
+            .card { padding: 15px; margin-bottom: 15px; }
+            .totals-section { justify-content: center; }
+            .totals-box { width: 100%; }
+            
+            .statement-paper { padding: 20px; margin-top: 60px; }
+            .statement-hdr { flex-direction: column; gap: 15px; }
+            .stmt-meta { text-align: left !important; }
+            .export-btn-group { top: 10px; right: 10px; left: 10px; justify-content: center; flex-wrap: wrap; background: #f3f4f6; padding: 10px; border-radius: 8px;}
+        }
+
+        /* --- PRINT STYLES FOR PDF EXPORT --- */
+        @media print {
+            body * { visibility: hidden; }
+            #statementOverlay, #statementOverlay * { visibility: visible; }
+            #statementOverlay { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; padding: 0; overflow: visible; }
+            .statement-paper { box-shadow: none; border: none; padding: 0; max-width: 100%; margin: 0; border-top: none; }
+            .export-btn-group { display: none !important; }
+            .data-table th { background: #f9fafb !important; -webkit-print-color-adjust: exact; }
+            .pl-total-row { background: #f9fafb !important; -webkit-print-color-adjust: exact; }
+            .pl-net-row { background: #f0f4f8 !important; -webkit-print-color-adjust: exact; }
+        }
     </style>
 </head>
 <body>
@@ -156,15 +196,24 @@
 </div>
 
 <div id="statementOverlay" class="statement-overlay">
-    <button class="stmt-close-btn" id="closeStatementBtn"><i class="fa-solid fa-xmark"></i> Close Report</button>
+    <div class="export-btn-group">
+        <button class="btn-outline" id="exportPdfBtn" style="background: white;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+        <button class="btn-outline" id="exportExcelBtn" style="background: white;"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+        <button class="btn-primary" id="closeStatementBtn"><i class="fa-solid fa-xmark"></i> Close</button>
+    </div>
     <div class="statement-paper" id="renderPaperArea">
         </div>
 </div>
 
 <div id="app-screen">
     
-    <aside class="sidebar">
-        <div class="sidebar-brand"><span class="org-icon">RH</span> RunnersHUB</div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="mainSidebar">
+        <div class="sidebar-brand">
+            <img src="photo_2026-06-01_15-23-43.jpg" alt="RunnersHUB Logo" class="org-logo">
+            RunnersHUB
+        </div>
         <div class="nav-group">
             <div class="nav-item active" data-target="view-dashboard"><i class="fa-solid fa-house nav-icon"></i> Home</div>
             <div class="nav-item" data-target="view-items"><i class="fa-solid fa-box nav-icon"></i> Items <i class="fa-solid fa-caret-right nav-caret"></i></div>
@@ -189,14 +238,16 @@
 
     <main class="workspace">
         <header class="top-header">
-            <div class="header-title" id="mainHeaderTitle">Home</div>
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+                <div class="header-title" id="mainHeaderTitle">Home</div>
+            </div>
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="globalSearchInput" placeholder="Search the active module...">
+                <input type="text" id="globalSearchInput" placeholder="Search module...">
             </div>
             <div class="user-actions">
-                <div id="cloudStatusBadge" class="cloud-status-badge"><i class="fa-solid fa-cloud"></i> Firestore Off</div>
-                <span class="user-email">Active Developer Session</span>
+                <div id="cloudStatusBadge" class="cloud-status-badge"><i class="fa-solid fa-cloud"></i> <span>Firestore Off</span></div>
             </div>
         </header>
 
@@ -212,7 +263,7 @@
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        <strong>System Update:</strong> The Reports Center is now operational. Select reports will securely pull live transactional metrics. Cloud write anomalies are caught explicitly via the network log viewable in the status indicator bar.
+                        <strong>System Update:</strong> Your ERP is now fully mobile-responsive. Additionally, you can now export any report generated in the <strong>Reports Center</strong> directly to PDF or Excel formats. Your official logo has been integrated into the system header.
                     </p>
                 </div>
             </div>
@@ -223,25 +274,26 @@
                     <div class="form-grid">
                         <div class="input-group"><label>Service Type</label><input type="text" id="newItemName" placeholder="e.g., Airport Pickup"></div>
                         <div class="input-group"><label>Standard Rate (Br)</label><input type="number" id="newItemRate" placeholder="0.00" step="0.01"></div>
+                        <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveItemBtn">Save Item</button></div>
                     </div>
-                    <button class="btn-primary" id="saveItemBtn">Save Item to Catalog</button>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead><tr><th>Service</th><th class="col-right">Rate (Br)</th><th>Actions</th></tr></thead>
-                        <tbody id="itemsTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Service</th><th class="col-right">Rate (Br)</th><th>Actions</th></tr></thead>
+                            <tbody id="itemsTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No items saved yet.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="view-banking" class="view-section">
-                <div style="display: flex; gap: 15px; margin-bottom: 24px; align-items: center; background: white; padding: 15px 24px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                    <div style="flex: 1;">
+                <div style="display: flex; gap: 15px; margin-bottom: 24px; align-items: center; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
                         <label style="font-size: 12px; font-weight: 600; color: var(--z-text-muted); display: block; margin-bottom: 4px;">Active Bank Account</label>
-                        <select id="activeBankSelector" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; font-weight: 600; font-size: 14px;">
-                        </select>
+                        <select id="activeBankSelector" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; font-weight: 600; font-size: 14px;"></select>
                     </div>
-                    <button class="btn-outline" id="showAddAccountFormBtn"><i class="fa-solid fa-plus"></i> New Bank Account</button>
+                    <button class="btn-outline" id="showAddAccountFormBtn"><i class="fa-solid fa-plus"></i> New Bank</button>
                 </div>
 
                 <div class="card" id="addBankAccForm" style="display: none; border-left: 4px solid var(--z-blue);">
@@ -251,8 +303,10 @@
                         <div class="input-group"><label>Account Number</label><input type="text" id="newBankNum" placeholder="Optional"></div>
                         <div class="input-group"><label>Opening Balance (Br)</label><input type="number" id="newBankBal" value="0.00" step="0.01"></div>
                     </div>
-                    <button class="btn-primary" id="saveNewBankBtn">Securely Register Account</button>
-                    <button class="btn-outline" id="cancelBankFormBtn" style="margin-left: 10px;">Cancel</button>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn-primary" id="saveNewBankBtn">Securely Register Account</button>
+                        <button class="btn-outline" id="cancelBankFormBtn">Cancel</button>
+                    </div>
                 </div>
 
                 <div class="kpi-grid">
@@ -260,31 +314,33 @@
                 </div>
 
                 <div class="card">
-                    <h3 class="card-header">Record Transaction to Active Account</h3>
+                    <h3 class="card-header">Record Transaction</h3>
                     <div class="form-grid">
                         <div class="input-group"><label>Type</label><select id="bankTxType"><option value="Deposit">Deposit</option><option value="Withdrawal">Withdrawal</option></select></div>
                         <div class="input-group"><label>Amount (Br)</label><input type="number" id="bankTxAmount" placeholder="0.00"></div>
                         <div class="input-group" style="flex: 2;"><label>Reference</label><input type="text" id="bankTxDesc" placeholder="Details"></div>
+                        <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveBankTxBtn">Record</button></div>
                     </div>
-                    <button class="btn-primary" id="saveBankTxBtn">Record Transaction</button>
                 </div>
                 
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <div class="card-header" style="border:none; padding: 24px; margin:0; border-bottom: 1px solid var(--z-border);">
+                    <div class="card-header" style="border:none; padding: 20px; margin:0; border-bottom: 1px solid var(--z-border); display: flex; flex-wrap: wrap; gap: 10px;">
                         <span>Account Ledger</span>
-                        <button class="btn-outline" id="generateStatementBtn" style="font-size: 12px; padding: 6px 12px;"><i class="fa-solid fa-file-invoice"></i> Generate Statement</button>
+                        <button class="btn-outline" id="generateStatementBtn" style="font-size: 12px; padding: 6px 12px;"><i class="fa-solid fa-file-invoice"></i> View Statement</button>
                     </div>
-                    <table class="data-table">
-                        <thead><tr><th>Date</th><th>Description</th><th>Type</th><th class="col-right">Amount</th><th class="col-right">Balance</th><th>Actions</th></tr></thead>
-                        <tbody id="bankingTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th class="col-right">Amount</th><th class="col-right">Balance</th><th>Actions</th></tr></thead>
+                            <tbody id="bankingTableBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="view-quotes" class="view-section">
                 <div class="card">
-                    <h3 class="card-header">Generate Quote (Estimate)</h3>
-                    <div class="form-grid"><div class="input-group"><label>Quote For (Client)</label><select id="quoteClientSelect"><option value="">-- Select Client --</option></select></div></div>
+                    <h3 class="card-header">Generate Quote</h3>
+                    <div class="form-grid"><div class="input-group"><label>Quote For (Client)</label><select id="quoteClientSelect"><option value="">-- Add a client in Documents tab first --</option></select></div></div>
                 </div>
                 <div class="card">
                     <h3 class="card-header">Proposed Services</h3>
@@ -294,18 +350,22 @@
                         <div class="input-group" style="max-width: 150px;"><label>Rate (Br)</label><input type="number" id="quoteItemPrice"></div>
                         <div class="input-group" style="justify-content: flex-end; max-width: 120px;"><button class="btn-outline" id="addQuoteLineBtn">Add Task</button></div>
                     </div>
-                    <table class="data-table" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
-                        <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
-                        <tbody id="quoteTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
+                        <table class="data-table">
+                            <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
+                            <tbody id="quoteTableBody"></tbody>
+                        </table>
+                    </div>
                     <div class="totals-section"><div class="totals-box"><div class="tot-row grand-total"><span>Total Estimate</span><span id="quoteGrandTotalDisplay">0.00 Br</span></div><button class="btn-primary" id="saveQuoteBtn" style="width: 100%; margin-top: 16px;">Save Quote Record</button></div></div>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Saved Quotes</h3></div>
-                    <table class="data-table">
-                        <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
-                        <tbody id="masterQuoteListBody"></tbody>
-                    </table>
+                    <div style="padding: 20px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Saved Quotes</h3></div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Quote ID</th><th>Client</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
+                            <tbody id="masterQuoteListBody"><tr><td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No quotes generated.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -326,10 +386,12 @@
                         <div class="input-group" style="max-width: 150px;"><label>Rate (Br)</label><input type="number" id="invoiceItemPrice"></div>
                         <div class="input-group" style="justify-content: flex-end; max-width: 120px;"><button class="btn-outline" id="addInvoiceLineBtn">Add Task</button></div>
                     </div>
-                    <table class="data-table" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
-                        <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
-                        <tbody id="invoiceTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive" style="margin-top: 16px; border-top: 1px solid var(--z-border);">
+                        <table class="data-table">
+                            <thead><tr><th>Service Task</th><th>Qty</th><th>Rate</th><th class="col-right">Amount</th></tr></thead>
+                            <tbody id="invoiceTableBody"></tbody>
+                        </table>
+                    </div>
                     <div class="totals-section">
                         <div class="totals-box">
                             <div class="tot-row"><span>Sub Total</span><span id="subtotalDisplay">0.00 Br</span></div>
@@ -340,11 +402,13 @@
                     </div>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <div style="padding: 24px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History Ledger</h3></div>
-                    <table class="data-table">
-                        <thead><tr><th>Invoice ID</th><th>Client</th><th>Assigned Agent</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
-                        <tbody id="masterInvoiceListBody"></tbody>
-                    </table>
+                    <div style="padding: 20px; border-bottom: 1px solid var(--z-border);"><h3 class="card-header" style="border:none; padding:0; margin:0;">Invoice History</h3></div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Invoice ID</th><th>Client</th><th>Assigned Agent</th><th class="col-right">Total (Br)</th><th style="text-align: center;">Status</th><th>Actions</th></tr></thead>
+                            <tbody id="masterInvoiceListBody"><tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No invoices yet.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -352,17 +416,19 @@
                 <div class="card">
                     <h3 class="card-header">Log Expense</h3>
                     <div class="form-grid">
-                        <div class="input-group"><label>Vendor / Service Provider</label><input type="text" id="expenseVendor"></div>
+                        <div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div>
                         <div class="input-group"><label>Amount (Br)</label><input type="number" id="expenseAmount"></div>
-                        <div class="input-group"><label>Reference / Expense Title</label><input type="text" id="expenseTitle"></div>
+                        <div class="input-group" style="flex: 2;"><label>Expense Title</label><input type="text" id="expenseTitle"></div>
+                        <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div>
                     </div>
-                    <button class="btn-primary" id="saveExpenseBtn">Log Purchase</button>
                 </div>
                 <div class="card" style="padding:0; overflow:hidden;">
-                    <table class="data-table">
-                        <thead><tr><th>Date</th><th>Title / Purpose</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
-                        <tbody id="expenseTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Title</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
+                            <tbody id="expenseTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No expenses.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             
@@ -372,57 +438,67 @@
                     <div class="form-grid">
                         <div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div>
                         <div class="input-group"><label>Hours</label><input type="number" id="timeHours" min="0.5" step="0.5"></div>
-                        <div class="input-group"><label>Task Details</label><input type="text" id="timeTaskDesc"></div>
+                        <div class="input-group" style="flex: 2;"><label>Task</label><input type="text" id="timeTaskDesc"></div>
+                        <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div>
                     </div>
-                    <button class="btn-primary" id="saveTimeLogBtn">Log Time</button>
                 </div>
                 <div class="card" style="padding:0; overflow:hidden;">
-                    <table class="data-table">
-                        <thead><tr><th>Date</th><th>Agent</th><th>Task Description</th><th class="col-right">Hours Registered</th></tr></thead>
-                        <tbody id="timeTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Agent</th><th>Task</th><th class="col-right">Hours</th></tr></thead>
+                            <tbody id="timeTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="view-agents" class="view-section">
                 <div class="card">
-                    <h3 class="card-header" id="agentFormHeader">Register Concierge Agent</h3>
+                    <h3 class="card-header" id="agentFormHeader">Register Agent</h3>
                     <div class="form-grid">
                         <div class="input-group"><label>Agent Full Name</label><input type="text" id="newAgentName"></div>
                         <div class="input-group"><label>Commission Tier</label><select id="newAgentTier"><option value="15%">Tier 1 (15%)</option><option value="20%">Tier 2 (20%)</option><option value="25%">Tier 3 (25%)</option><option value="28%">Tier 4 (28%)</option></select></div>
                         <div class="input-group"><label>Phone Number</label><input type="text" id="newAgentPhone"></div>
-                        <div class="input-group"><label>Location / Demographics</label><input type="text" id="newAgentDemo"></div>
+                        <div class="input-group"><label>Location</label><input type="text" id="newAgentDemo"></div>
                     </div>
                     <input type="hidden" id="editAgentIndex" value="-1">
-                    <button class="btn-primary" id="saveAgentBtn">Save Agent Profile</button>
-                    <button class="btn-outline" id="cancelEditAgentBtn" style="display:none; margin-left:10px;">Cancel Edit</button>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn-primary" id="saveAgentBtn">Save Agent Profile</button>
+                        <button class="btn-outline" id="cancelEditAgentBtn" style="display:none;">Cancel Edit</button>
+                    </div>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead><tr><th>Agent Details</th><th>Contact & Location</th><th>Commission Tier</th><th>Actions</th></tr></thead>
-                        <tbody id="agentTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Agent Details</th><th>Contact & Location</th><th>Commission Tier</th><th>Actions</th></tr></thead>
+                            <tbody id="agentTableBody"><tr><td colspan="4" style="text-align: center; color: #9ca3af; padding: 20px;">No agents registered.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="view-customers" class="view-section">
                 <div class="card">
-                    <h3 class="card-header" id="clientFormHeader">Add Diaspora Client</h3>
+                    <h3 class="card-header" id="clientFormHeader">Add Client</h3>
                     <div class="form-grid">
-                        <div class="input-group"><label>Client Name / Reference</label><input type="text" id="newClientName"></div>
-                        <div class="input-group"><label>Primary Email</label><input type="text" id="newClientEmail"></div>
-                        <div class="input-group"><label>Phone Number (Intl)</label><input type="text" id="newClientPhone"></div>
-                        <div class="input-group"><label>Demographics / Address</label><input type="text" id="newClientDemo"></div>
+                        <div class="input-group"><label>Client Name</label><input type="text" id="newClientName"></div>
+                        <div class="input-group"><label>Email</label><input type="text" id="newClientEmail"></div>
+                        <div class="input-group"><label>Phone Number</label><input type="text" id="newClientPhone"></div>
+                        <div class="input-group"><label>Address / Demographics</label><input type="text" id="newClientDemo"></div>
                     </div>
                     <input type="hidden" id="editClientIndex" value="-1">
-                    <button class="btn-primary" id="saveClientBtn">Save Client Profile</button>
-                    <button class="btn-outline" id="cancelEditClientBtn" style="display:none; margin-left:10px;">Cancel Edit</button>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn-primary" id="saveClientBtn">Save Client Profile</button>
+                        <button class="btn-outline" id="cancelEditClientBtn" style="display:none;">Cancel Edit</button>
+                    </div>
                 </div>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                    <table class="data-table">
-                        <thead><tr><th>Client Details</th><th>Demographics & Contact</th><th>Actions</th></tr></thead>
-                        <tbody id="clientTableBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Client Details</th><th>Demographics & Contact</th><th>Actions</th></tr></thead>
+                            <tbody id="clientTableBody"><tr><td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">No clients added yet.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -436,10 +512,12 @@
                 </div>
                 <div class="report-table-container">
                     <div style="padding: 20px 24px; font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--z-border); color: var(--z-text-dark);">All Corporate Reports</div>
-                    <table class="report-table">
-                        <thead><tr><th style="width: 40%;">Report Name</th><th style="width: 30%;">Category Type</th><th style="width: 30%;">Status Engine</th></tr></thead>
-                        <tbody id="reportsCenterBody"></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead><tr><th style="width: 40%;">Report Name</th><th style="width: 30%;">Category Type</th><th style="width: 30%;">Status Engine</th></tr></thead>
+                            <tbody id="reportsCenterBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -474,10 +552,24 @@
         db = getFirestore(app);
         const cloudBadge = document.getElementById('cloudStatusBadge');
         cloudBadge.classList.add('online');
-        cloudBadge.innerHTML = '<i class="fa-solid fa-cloud"></i> Firestore Online';
+        cloudBadge.innerHTML = '<i class="fa-solid fa-cloud"></i> <span>Firestore Online</span>';
     } catch(e) {
         console.error("Firebase Initialization Failure:", e);
     }
+
+    // --- MOBILE MENU LOGIC ---
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('mainSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function toggleMenu() {
+        sidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('open');
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMenu);
+    sidebarOverlay.addEventListener('click', toggleMenu);
+
 
     // --- STATE MANAGER ---
     let appState = {
@@ -486,9 +578,7 @@
         currentInvoiceItems: [], currentQuoteItems: [],
         invoices: [], quotes: [], purchases: [], timeLogs: [],
         metrics: { revenue: 0, payouts: 0, expenses: 0 },
-        bankAccounts: [
-            { id: 'acc_main', name: 'Main Cash Account', accNumber: 'CASH-01', balance: 0 }
-        ],
+        bankAccounts: [{ id: 'acc_main', name: 'Main Cash Account', accNumber: 'CASH-01', balance: 0 }],
         bankTransactions: []
     };
 
@@ -526,6 +616,9 @@
             
             document.getElementById('globalSearchInput').value = '';
             document.querySelectorAll('.data-table tbody tr').forEach(row => row.style.display = '');
+
+            // Close mobile menu if open
+            if(sidebar.classList.contains('open')) toggleMenu();
         });
     });
 
@@ -639,7 +732,7 @@
                 let netProfit = rev - directPayouts - exp;
 
                 container.innerHTML = baseHeader + `
-                    <div style="margin-top:20px;">
+                    <div style="margin-top:20px;" class="table-responsive">
                         <table class="pl-table">
                             <thead>
                                 <tr style="font-weight:700; color: var(--z-text-muted); font-size:12px;"><td style="width:70%;">ACCOUNT TITLE</td><td style="text-align:right;">AMOUNT (Br)</td></tr>
@@ -664,55 +757,27 @@
             } 
             else if (reportName === "Expense Details") {
                 let rows = '';
-                appState.purchases.forEach(p => {
-                    rows += `<tr><td>${p.date || dateString}</td><td>${p.title || 'Direct Purchase'}</td><td>${p.vendor}</td><td class="col-right" style="color:var(--z-danger); font-weight:500;">-${p.amount.toFixed(2)}</td></tr>`;
-                });
+                appState.purchases.forEach(p => { rows += `<tr><td>${p.date || dateString}</td><td>${p.title || 'Direct Purchase'}</td><td>${p.vendor}</td><td class="col-right" style="color:var(--z-danger); font-weight:500;">-${p.amount.toFixed(2)}</td></tr>`; });
                 if(appState.purchases.length === 0) rows = `<tr><td colspan="4" style="text-align:center; color: var(--z-text-muted);">No vendor transactions tracked.</td></tr>`;
-                
-                container.innerHTML = baseHeader + `
-                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
-                        <thead style="background:#f9fafb;"><tr><th>Date</th><th>Expense Head</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>`;
+                container.innerHTML = baseHeader + `<div class="table-responsive"><table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);"><thead style="background:#f9fafb;"><tr><th>Date</th><th>Expense Head</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             else if (reportName === "Invoice Details") {
                 let rows = '';
-                appState.invoices.forEach(inv => {
-                    rows += `<tr><td>${inv.id}</td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge">${inv.status}</span></td></tr>`;
-                });
+                appState.invoices.forEach(inv => { rows += `<tr><td>${inv.id}</td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align:center;"><span class="status-badge">${inv.status}</span></td></tr>`; });
                 if(appState.invoices.length === 0) rows = `<tr><td colspan="5" style="text-align:center; color: var(--z-text-muted);">No corporate invoices issued.</td></tr>`;
-
-                container.innerHTML = baseHeader + `
-                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
-                        <thead style="background:#f9fafb;"><tr><th>Invoice ID</th><th>Client Profile</th><th>Assigned Agent</th><th class="col-right">Gross Total (Br)</th><th style="text-align:center;">Status</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>`;
+                container.innerHTML = baseHeader + `<div class="table-responsive"><table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);"><thead style="background:#f9fafb;"><tr><th>Invoice ID</th><th>Client Profile</th><th>Assigned Agent</th><th class="col-right">Gross Total (Br)</th><th style="text-align:center;">Status</th></tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             else if (reportName === "Estimate Details") {
                 let rows = '';
-                appState.quotes.forEach(q => {
-                    rows += `<tr><td>${q.id}</td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td></tr>`;
-                });
+                appState.quotes.forEach(q => { rows += `<tr><td>${q.id}</td><td>${q.client}</td><td class="col-right">${q.total.toFixed(2)}</td></tr>`; });
                 if(appState.quotes.length === 0) rows = `<tr><td colspan="3" style="text-align:center; color: var(--z-text-muted);">No active historical estimates recorded.</td></tr>`;
-
-                container.innerHTML = baseHeader + `
-                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
-                        <thead style="background:#f9fafb;"><tr><th>Estimate ID</th><th>Client Profile</th><th class="col-right">Forecast Amount (Br)</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>`;
+                container.innerHTML = baseHeader + `<div class="table-responsive"><table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);"><thead style="background:#f9fafb;"><tr><th>Estimate ID</th><th>Client Profile</th><th class="col-right">Forecast Amount (Br)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             else if (reportName === "Timesheet Details") {
                 let rows = '';
-                appState.timeLogs.forEach(t => {
-                    rows += `<tr><td>${t.date}</td><td>${t.agent}</td><td>${t.task}</td><td class="col-right">${t.hours} hrs</td></tr>`;
-                });
+                appState.timeLogs.forEach(t => { rows += `<tr><td>${t.date}</td><td>${t.agent}</td><td>${t.task}</td><td class="col-right">${t.hours} hrs</td></tr>`; });
                 if(appState.timeLogs.length === 0) rows = `<tr><td colspan="4" style="text-align:center; color: var(--z-text-muted);">No log sheets entered.</td></tr>`;
-
-                container.innerHTML = baseHeader + `
-                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
-                        <thead style="background:#f9fafb;"><tr><th>Date Logged</th><th>Agent</th><th>Task Summary</th><th class="col-right">Duration</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>`;
+                container.innerHTML = baseHeader + `<div class="table-responsive"><table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);"><thead style="background:#f9fafb;"><tr><th>Date Logged</th><th>Agent</th><th>Task Summary</th><th class="col-right">Duration</th></tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             else if (reportName === "Account Transactions") {
                 let rows = '';
@@ -722,20 +787,10 @@
                     rows += `<tr><td>${tx.date}</td><td>${accObj.name}</td><td>${tx.desc}</td><td><span style="${typeColor}">${tx.type}</span></td><td class="col-right" style="${typeColor}">${tx.type==='Deposit'?'+':'-'}${tx.amount.toFixed(2)}</td></tr>`;
                 });
                 if(appState.bankTransactions.length === 0) rows = `<tr><td colspan="5" style="text-align:center; color: var(--z-text-muted);">No active multi-account transactions registered.</td></tr>`;
-
-                container.innerHTML = baseHeader + `
-                    <table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);">
-                        <thead style="background:#f9fafb;"><tr><th>Date</th><th>Chart of Account</th><th>Reference / Memo</th><th>Transaction Type</th><th class="col-right">Magnitude (Br)</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>`;
+                container.innerHTML = baseHeader + `<div class="table-responsive"><table class="data-table" style="margin-top:20px; border: 1px solid var(--z-border);"><thead style="background:#f9fafb;"><tr><th>Date</th><th>Chart of Account</th><th>Reference / Memo</th><th>Transaction Type</th><th class="col-right">Magnitude (Br)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             else {
-                // Default fallback pattern for general placeholders
-                container.innerHTML = baseHeader + `
-                    <div style="text-align:center; padding:40px 20px; color: var(--z-text-muted);">
-                        <i class="fa-solid fa-folder-open" style="font-size:40px; margin-bottom:15px; color:#d1d5db;"></i>
-                        <p>No transaction parameters mapped within this reporting index frame for the active timeline.</p>
-                    </div>`;
+                container.innerHTML = baseHeader + `<div style="text-align:center; padding:40px 20px; color: var(--z-text-muted);"><i class="fa-solid fa-folder-open" style="font-size:40px; margin-bottom:15px; color:#d1d5db;"></i><p>No transaction parameters mapped within this reporting index frame for the active timeline.</p></div>`;
             }
 
             overlay.style.display = 'block';
@@ -744,6 +799,45 @@
 
     document.getElementById('closeStatementBtn').addEventListener('click', () => {
         document.getElementById('statementOverlay').style.display = 'none';
+    });
+
+    // --- EXPORT LOGIC (PDF & EXCEL) ---
+    document.getElementById('exportPdfBtn').addEventListener('click', () => {
+        window.print();
+    });
+
+    document.getElementById('exportExcelBtn').addEventListener('click', () => {
+        const titleEl = document.getElementById('stmtTitleField');
+        const title = titleEl ? titleEl.innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'report';
+        
+        let csv = [];
+        // Header info
+        csv.push(`"RunnersHUB ERP - ${title.toUpperCase()}"`);
+        csv.push(`"Generated on: ${new Date().toLocaleDateString()}"`);
+        csv.push("");
+
+        // Parse Table Data
+        const rows = document.querySelectorAll("#renderPaperArea table tr");
+        for (let i = 0; i < rows.length; i++) {
+            let rowData = [];
+            let cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) {
+                // Clean data for CSV
+                let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+                rowData.push('"' + data + '"');
+            }
+            csv.push(rowData.join(","));
+        }
+
+        // Trigger Download
+        let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        let downloadLink = document.createElement("a");
+        downloadLink.download = `${title}_export.csv`;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     });
 
     // --- REBUILD ENGINE UI SYNCHRONIZER ---
@@ -761,73 +855,38 @@
     // --- MULTI-BANK ACCOUNT MANAGEMENT ---
     const activeBankSelector = document.getElementById('activeBankSelector');
     
-    document.getElementById('showAddAccountFormBtn').addEventListener('click', () => {
-        requireAuth(() => { document.getElementById('addBankAccForm').style.display = 'block'; });
-    });
-    
-    document.getElementById('cancelBankFormBtn').addEventListener('click', () => {
-        document.getElementById('addBankAccForm').style.display = 'none';
-    });
+    document.getElementById('showAddAccountFormBtn').addEventListener('click', () => { requireAuth(() => { document.getElementById('addBankAccForm').style.display = 'block'; }); });
+    document.getElementById('cancelBankFormBtn').addEventListener('click', () => { document.getElementById('addBankAccForm').style.display = 'none'; });
 
     document.getElementById('saveNewBankBtn').addEventListener('click', () => {
-        const name = document.getElementById('newBankName').value.trim();
-        const accNumber = document.getElementById('newBankNum').value.trim();
-        const balance = parseFloat(document.getElementById('newBankBal').value) || 0;
+        const name = document.getElementById('newBankName').value.trim(); const accNumber = document.getElementById('newBankNum').value.trim(); const balance = parseFloat(document.getElementById('newBankBal').value) || 0;
         if(!name) return alert("Account name required.");
 
         const id = 'acc_' + Date.now();
         appState.bankAccounts.push({ id, name, accNumber, balance });
+        if(balance > 0) { appState.bankTransactions.push({ id: 'tx_' + Date.now(), date: new Date().toLocaleDateString(), desc: 'Opening Balance', type: 'Deposit', amount: balance, accountId: id, balanceAfter: balance }); }
         
-        if(balance > 0) {
-            appState.bankTransactions.push({ 
-                id: 'tx_' + Date.now(), date: new Date().toLocaleDateString(), desc: 'Opening Balance', 
-                type: 'Deposit', amount: balance, accountId: id, balanceAfter: balance 
-            });
-        }
-        
-        saveStateLocally();
-        renderBankAccounts();
-        activeBankSelector.value = id;
-        renderBankLedger();
-        updateDashboards();
-        
-        document.getElementById('addBankAccForm').style.display = 'none';
-        document.getElementById('newBankName').value = ''; document.getElementById('newBankNum').value = ''; document.getElementById('newBankBal').value = '0.00';
+        saveStateLocally(); renderBankAccounts(); activeBankSelector.value = id; renderBankLedger(); updateDashboards();
+        document.getElementById('addBankAccForm').style.display = 'none'; document.getElementById('newBankName').value = ''; document.getElementById('newBankNum').value = ''; document.getElementById('newBankBal').value = '0.00';
     });
 
     function renderBankAccounts() {
         activeBankSelector.innerHTML = '';
-        appState.bankAccounts.forEach(acc => {
-            activeBankSelector.innerHTML += `<option value="${acc.id}">${acc.name} (${acc.balance.toFixed(2)} Br)</option>`;
-        });
+        appState.bankAccounts.forEach(acc => { activeBankSelector.innerHTML += `<option value="${acc.id}">${acc.name} (${acc.balance.toFixed(2)} Br)</option>`; });
     }
 
     activeBankSelector.addEventListener('change', renderBankLedger);
 
     document.getElementById('saveBankTxBtn').addEventListener('click', () => {
-        const accountId = activeBankSelector.value;
-        if(!accountId) return alert("Select active ledger profile.");
-
-        const type = document.getElementById('bankTxType').value;
-        const amount = parseFloat(document.getElementById('bankTxAmount').value);
-        const desc = document.getElementById('bankTxDesc').value.trim();
+        const accountId = activeBankSelector.value; if(!accountId) return alert("Select active ledger profile.");
+        const type = document.getElementById('bankTxType').value; const amount = parseFloat(document.getElementById('bankTxAmount').value); const desc = document.getElementById('bankTxDesc').value.trim();
         if (isNaN(amount) || amount <= 0 || !desc) return alert("Valid amount and reference string required.");
 
         const account = appState.bankAccounts.find(a => a.id === accountId);
-        if (type === 'Deposit') account.balance += amount; 
-        else account.balance -= amount; 
+        if (type === 'Deposit') account.balance += amount; else account.balance -= amount; 
 
-        appState.bankTransactions.push({ 
-            id: 'tx_' + Date.now(), date: new Date().toLocaleDateString(), 
-            type, amount, desc, accountId, balanceAfter: account.balance 
-        });
-        
-        saveStateLocally();
-        renderBankAccounts();
-        activeBankSelector.value = accountId;
-        renderBankLedger();
-        updateDashboards();
-        
+        appState.bankTransactions.push({ id: 'tx_' + Date.now(), date: new Date().toLocaleDateString(), type, amount, desc, accountId, balanceAfter: account.balance });
+        saveStateLocally(); renderBankAccounts(); activeBankSelector.value = accountId; renderBankLedger(); updateDashboards();
         document.getElementById('bankTxAmount').value = ''; document.getElementById('bankTxDesc').value = '';
     });
 
@@ -837,72 +896,43 @@
         
         if(!accountId) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No account selected.</td></tr>`;
-            document.getElementById('lblActiveBankBal').textContent = "Account Balance";
-            document.getElementById('kpiBankBalance').textContent = "0.00";
-            return;
+            document.getElementById('lblActiveBankBal').textContent = "Account Balance"; document.getElementById('kpiBankBalance').textContent = "0.00"; return;
         }
 
         const account = appState.bankAccounts.find(a => a.id === accountId);
-        document.getElementById('lblActiveBankBal').textContent = `${account.name} Balance`;
-        document.getElementById('kpiBankBalance').textContent = account.balance.toFixed(2);
+        document.getElementById('lblActiveBankBal').textContent = `${account.name} Balance`; document.getElementById('kpiBankBalance').textContent = account.balance.toFixed(2);
         
         const txs = appState.bankTransactions.filter(tx => tx.accountId === accountId);
-        if(txs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions recorded.</td></tr>`;
-            return;
-        }
+        if(txs.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">No transactions recorded.</td></tr>`; return; }
 
         tbody.innerHTML = '';
         txs.forEach((tx) => {
             const typeColor = tx.type === 'Deposit' ? 'color: var(--z-success);' : 'color: var(--z-danger);';
-            tbody.innerHTML += `<tr>
-                <td>${tx.date}</td><td>${tx.desc}</td><td><span style="${typeColor} font-weight: 600;">${tx.type}</span></td>
-                <td class="col-right" style="${typeColor}">${tx.type==='Deposit'?'+':'-'}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td>
-                <td><button class="btn-danger-outline" onclick="deleteBankTxAuth('${tx.id}')">Discard</button></td>
-            </tr>`;
+            tbody.innerHTML += `<tr><td>${tx.date}</td><td>${tx.desc}</td><td><span style="${typeColor} font-weight: 600;">${tx.type}</span></td><td class="col-right" style="${typeColor}">${tx.type==='Deposit'?'+':'-'}${tx.amount.toFixed(2)}</td><td class="col-right"><strong>${tx.balanceAfter.toFixed(2)}</strong></td><td><button class="btn-danger-outline" onclick="deleteBankTxAuth('${tx.id}')">Discard</button></td></tr>`;
         });
     }
 
     window.deleteBankTxAuth = function(txId) {
         requireAuth(() => {
-            const txIndex = appState.bankTransactions.findIndex(t => t.id === txId);
-            if(txIndex === -1) return;
-            const accountId = appState.bankTransactions[txIndex].accountId;
-            appState.bankTransactions.splice(txIndex, 1);
+            const txIndex = appState.bankTransactions.findIndex(t => t.id === txId); if(txIndex === -1) return;
+            const accountId = appState.bankTransactions[txIndex].accountId; appState.bankTransactions.splice(txIndex, 1);
             
-            const account = appState.bankAccounts.find(a => a.id === accountId);
-            account.balance = 0;
-            
+            const account = appState.bankAccounts.find(a => a.id === accountId); account.balance = 0;
             appState.bankTransactions.forEach(t => {
-                if(t.accountId === accountId) {
-                    if (t.type === 'Deposit') account.balance += t.amount; 
-                    else account.balance -= t.amount;
-                    t.balanceAfter = account.balance;
-                }
+                if(t.accountId === accountId) { if (t.type === 'Deposit') account.balance += t.amount; else account.balance -= t.amount; t.balanceAfter = account.balance; }
             });
-            
-            saveStateLocally();
-            renderBankAccounts();
-            activeBankSelector.value = accountId;
-            renderBankLedger();
-            updateDashboards();
+            saveStateLocally(); renderBankAccounts(); activeBankSelector.value = accountId; renderBankLedger(); updateDashboards();
         });
     };
 
-    document.getElementById('generateStatementBtn').addEventListener('click', () => {
-        const accountId = activeBankSelector.value;
-        if(!accountId) return alert("Select an account profile.");
-        triggerReportView("Account Transactions");
-    });
+    document.getElementById('generateStatementBtn').addEventListener('click', () => { triggerReportView("Account Transactions"); });
 
     // --- CRM, SERVICES CATALOG AND TRANSACTIONS LOGIC ---
     function renderClients() {
         const tbody = document.getElementById('clientTableBody');
         tbody.innerHTML = appState.customers.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#9ca3af; padding:20px;">No client profiles tracked.</td></tr>` : '';
-        const invSelect = document.getElementById('invoiceClientSelect');
-        const qtSelect = document.getElementById('quoteClientSelect');
-        invSelect.innerHTML = '<option value="">-- Select Client --</option>';
-        qtSelect.innerHTML = '<option value="">-- Select Client --</option>';
+        const invSelect = document.getElementById('invoiceClientSelect'); const qtSelect = document.getElementById('quoteClientSelect');
+        invSelect.innerHTML = '<option value="">-- Select Client --</option>'; qtSelect.innerHTML = '<option value="">-- Select Client --</option>';
         appState.customers.forEach((c, i) => {
             tbody.innerHTML += `<tr><td><strong>${c.name}</strong><br><span style="font-size:12px;color:var(--z-text-muted);">${c.email}</span></td><td>${c.phone || 'N/A'}<br><span style="font-size:12px;color:var(--z-text-muted);">${c.demo || 'N/A'}</span></td><td><button class="btn-edit-outline" onclick="loadClientForEdit(${i})">Edit</button><button class="btn-danger-outline" onclick="deleteClientAuth(${i})" style="margin-left:5px;">Delete</button></td></tr>`;
             invSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; qtSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
@@ -986,43 +1016,20 @@
     
     document.getElementById('saveInvoiceBtn').addEventListener('click', async () => { 
         if (appState.currentInvoiceItems.length === 0) return alert("Add service lines before saving.");
-        const client = document.getElementById('invoiceClientSelect').value; 
-        const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned"; 
+        const client = document.getElementById('invoiceClientSelect').value; const agent = document.getElementById('invoiceAgentSelect').value || "Unassigned"; 
         if(!client) return alert("Select billing profile."); 
 
-        const total = parseFloat(document.getElementById('subtotalDisplay').textContent); 
-        const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent); 
+        const total = parseFloat(document.getElementById('subtotalDisplay').textContent); const payout = parseFloat(document.getElementById('agentPaymentDisplay').textContent); 
         const id = "INV-" + Math.floor(10000 + Math.random() * 90000); 
 
-        appState.invoices.push({ id, client, agent, total, payout, status: 'Active' }); 
-        appState.metrics.revenue += total; 
-        appState.metrics.payouts += payout; 
+        appState.invoices.push({ id, client, agent, total, payout, status: 'Active' }); appState.metrics.revenue += total; appState.metrics.payouts += payout; 
 
-        // CLOUD NETWORK INTEGRATION LOG ENGINE
         if (db) {
-            try {
-                await addDoc(collection(db, "concierge_invoices"), { 
-                    id, 
-                    client, 
-                    agent, 
-                    totalAmount: total, 
-                    agentPayment: payout, 
-                    timestamp: new Date() 
-                });
-                console.log(`Cloud Synchronization Success: Record ${id} updated to Firestore.`);
-            } catch(error) {
-                console.error("CRITICAL FIRESTORE ROUTE ERROR:", error);
-                alert(`Cloud Integration Warning!\nLocal state saved successfully, but Firestore sync failed.\nReason: ${error.message}\nCheck your DB Rules security parameters or connection profiles.`);
-            }
-        } else {
-            console.warn("Cloud write skipped: DB client initialized offline.");
+            try { await addDoc(collection(db, "concierge_invoices"), { id, client, agent, totalAmount: total, agentPayment: payout, timestamp: new Date() }); } 
+            catch(error) { console.error(error); alert(`Cloud Sync Failed.\n${error.message}`); }
         }
 
-        appState.currentInvoiceItems = []; 
-        saveStateLocally(); 
-        updateInvoiceUI(); 
-        renderInvoiceLedger(); 
-        updateDashboards(); 
+        appState.currentInvoiceItems = []; saveStateLocally(); updateInvoiceUI(); renderInvoiceLedger(); updateDashboards(); 
     });
 
     function renderInvoiceLedger() { const tbody = document.getElementById('masterInvoiceListBody'); tbody.innerHTML = appState.invoices.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#9ca3af; padding: 20px;">No historical invoices found.</td></tr>` : ''; appState.invoices.forEach((inv, i) => { const badge = inv.status === 'Active' ? `<span class="status-badge">Active</span>` : `<span class="status-badge-void">Voided</span>`; const actionBtn = inv.status === 'Active' ? `<button class="btn-danger-outline" onclick="voidInvoiceAuth(${i})">Void</button>` : '-'; tbody.innerHTML += `<tr><td><strong>${inv.id}</strong></td><td>${inv.client}</td><td>${inv.agent}</td><td class="col-right">${inv.total.toFixed(2)}</td><td style="text-align: center;">${badge}</td><td>${actionBtn}</td></tr>`; }); }
@@ -1030,17 +1037,9 @@
     document.getElementById('invoiceAgentSelect').addEventListener('change', (e) => { const agent = appState.agents.find(a => a.name === e.target.value); if(agent) { const r = parseFloat(agent.tier) / 100; Array.from(document.getElementById('agentRate').options).forEach(opt => { if(parseFloat(opt.value) === r) opt.selected = true; }); updateInvoiceUI(); } });
 
     document.getElementById('saveExpenseBtn').addEventListener('click', () => { 
-        const vendor = document.getElementById('expenseVendor').value.trim(); 
-        const amount = parseFloat(document.getElementById('expenseAmount').value);
-        const title = document.getElementById('expenseTitle').value.trim() || 'Direct Purchase';
+        const vendor = document.getElementById('expenseVendor').value.trim(); const amount = parseFloat(document.getElementById('expenseAmount').value); const title = document.getElementById('expenseTitle').value.trim() || 'Direct Purchase';
         if(!vendor || isNaN(amount)) return alert("Expense metrics invalid."); 
-        
-        appState.purchases.push({ vendor, amount, title, date: new Date().toLocaleDateString() }); 
-        appState.metrics.expenses += amount; 
-        saveStateLocally(); 
-        renderPurchases(); 
-        updateDashboards(); 
-        document.getElementById('expenseVendor').value = ''; document.getElementById('expenseAmount').value = ''; document.getElementById('expenseTitle').value = '';
+        appState.purchases.push({ vendor, amount, title, date: new Date().toLocaleDateString() }); appState.metrics.expenses += amount; saveStateLocally(); renderPurchases(); updateDashboards(); document.getElementById('expenseVendor').value = ''; document.getElementById('expenseAmount').value = ''; document.getElementById('expenseTitle').value = '';
     });
     
     function renderPurchases() { const tbody = document.getElementById('expenseTableBody'); tbody.innerHTML = appState.purchases.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#9ca3af;">No direct expenditures logged.</td></tr>` : ''; appState.purchases.forEach(p => { tbody.innerHTML += `<tr><td>${p.date || new Date().toLocaleDateString()}</td><td><strong>${p.title}</strong></td><td>${p.vendor}</td><td class="col-right">${p.amount.toFixed(2)}</td></tr>`; }); }
@@ -1048,11 +1047,8 @@
     function renderTimeLogs() { const tbody = document.getElementById('timeTableBody'); tbody.innerHTML = appState.timeLogs.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#9ca3af;">No tracking sequences filed.</td></tr>` : ''; appState.timeLogs.forEach(t => { tbody.innerHTML += `<tr><td>${t.date}</td><td><strong>${t.agent}</strong></td><td>${t.task}</td><td class="col-right"><span class="status-badge">${t.hours} hrs</span></td></tr>`; }); }
 
     function updateDashboards() {
-        let globalCash = 0;
-        appState.bankAccounts.forEach(acc => globalCash += acc.balance);
-        document.getElementById('kpiGlobalBank').textContent = globalCash.toFixed(2);
-        document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2);
-        document.getElementById('kpiExpenses').textContent = appState.metrics.expenses.toFixed(2);
+        let globalCash = 0; appState.bankAccounts.forEach(acc => globalCash += acc.balance); document.getElementById('kpiGlobalBank').textContent = globalCash.toFixed(2);
+        document.getElementById('kpiRevenue').textContent = appState.metrics.revenue.toFixed(2); document.getElementById('kpiExpenses').textContent = appState.metrics.expenses.toFixed(2);
     }
 
     // --- INITIALIZE APPLICATION RUNTIME ---
