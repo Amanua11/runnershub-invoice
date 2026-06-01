@@ -26,7 +26,8 @@
         /* SIDEBAR */
         .sidebar { width: 240px; background: var(--z-sidebar-bg); color: var(--z-sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--z-border); transition: left 0.3s ease; z-index: 10000;}
         .sidebar-brand { padding: 20px 24px; font-size: 17px; font-weight: 700; color: var(--z-text-dark); display: flex; align-items: center; gap: 10px; }
-        .org-logo { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--z-border); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .org-icon { background: var(--z-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        
         .nav-group { padding: 10px 0; display: flex; flex-direction: column; gap: 2px; }
         .nav-item { padding: 10px 16px; margin: 0 12px; cursor: pointer; font-size: 14px; color: var(--z-sidebar-text); display: flex; align-items: center; border-radius: 8px; transition: 0.15s ease-in-out; font-weight: 500; }
         .nav-item:hover { background: #f0f4f8; color: var(--z-text-dark); }
@@ -151,8 +152,8 @@
             .sidebar-overlay.open { display: block; }
             
             .top-header { padding: 0 15px; }
-            .header-title { display: none; } /* Hide title on small screens to save space */
-            .cloud-status-badge span { display: none; } /* Hide text, keep icon */
+            .header-title { display: none; } 
+            .cloud-status-badge span { display: none; } 
             
             .kpi-grid { grid-template-columns: 1fr; gap: 15px; }
             .form-grid { grid-template-columns: 1fr; gap: 15px; }
@@ -182,6 +183,7 @@
 </head>
 <body>
 
+<!-- SECURITY AUTHENTICATION MODAL -->
 <div id="authModal" class="modal-overlay">
     <div class="modal-box">
         <h3>Security Verification</h3>
@@ -195,6 +197,7 @@
     </div>
 </div>
 
+<!-- REPORT VIEWER OVERLAY & EXPORT CONTROLS -->
 <div id="statementOverlay" class="statement-overlay">
     <div class="export-btn-group">
         <button class="btn-outline" id="exportPdfBtn" style="background: white;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
@@ -202,17 +205,19 @@
         <button class="btn-primary" id="closeStatementBtn"><i class="fa-solid fa-xmark"></i> Close</button>
     </div>
     <div class="statement-paper" id="renderPaperArea">
-        </div>
+        <!-- Rendered Dynamically -->
+    </div>
 </div>
 
 <div id="app-screen">
     
+    <!-- SIDEBAR OVERLAY FOR MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="mainSidebar">
         <div class="sidebar-brand">
-            <img src="photo_2026-06-01_15-23-43.jpg" alt="RunnersHUB Logo" class="org-logo">
-            RunnersHUB
+            <span class="org-icon">RH</span> RunnersHUB
         </div>
         <div class="nav-group">
             <div class="nav-item active" data-target="view-dashboard"><i class="fa-solid fa-house nav-icon"></i> Home</div>
@@ -236,6 +241,7 @@
         </div>
     </aside>
 
+    <!-- WORKSPACE -->
     <main class="workspace">
         <header class="top-header">
             <div class="header-left">
@@ -253,6 +259,7 @@
 
         <div class="scroll-area">
             
+            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section active-view">
                 <div class="kpi-grid">
                     <div class="kpi-card"><div class="kpi-title">Global Cash Balance</div><div class="kpi-value" id="kpiGlobalBank">0.00</div></div>
@@ -263,11 +270,12 @@
                 <div class="card">
                     <h3 class="card-header">Welcome to RunnersHUB ERP</h3>
                     <p style="color: var(--z-text-muted); line-height: 1.6;">
-                        <strong>System Update:</strong> Your ERP is now fully mobile-responsive. Additionally, you can now export any report generated in the <strong>Reports Center</strong> directly to PDF or Excel formats. Your official logo has been integrated into the system header.
+                        <strong>System Update:</strong> Your ERP is now fully mobile-responsive. Additionally, you can now export any report generated in the <strong>Reports Center</strong> directly to PDF or Excel formats. The broken logo image has been successfully removed.
                     </p>
                 </div>
             </div>
 
+            <!-- ITEMS -->
             <div id="view-items" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Service Catalog</h3>
@@ -287,6 +295,7 @@
                 </div>
             </div>
 
+            <!-- BANKING -->
             <div id="view-banking" class="view-section">
                 <div style="display: flex; gap: 15px; margin-bottom: 24px; align-items: center; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--z-border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 200px;">
@@ -337,6 +346,7 @@
                 </div>
             </div>
 
+            <!-- QUOTES -->
             <div id="view-quotes" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Generate Quote</h3>
@@ -369,6 +379,7 @@
                 </div>
             </div>
 
+            <!-- INVOICES -->
             <div id="view-invoices" class="view-section">
                 <div class="card">
                     <h3 class="card-header">New Concierge Invoice</h3>
@@ -412,46 +423,49 @@
                 </div>
             </div>
 
+            <!-- PURCHASES -->
             <div id="view-purchases" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Log Expense</h3>
                     <div class="form-grid">
-                        <div class="input-group"><label>Vendor</label><input type="text" id="expenseVendor"></div>
+                        <div class="input-group"><label>Vendor / Service Provider</label><input type="text" id="expenseVendor"></div>
                         <div class="input-group"><label>Amount (Br)</label><input type="number" id="expenseAmount"></div>
-                        <div class="input-group" style="flex: 2;"><label>Expense Title</label><input type="text" id="expenseTitle"></div>
+                        <div class="input-group" style="flex: 2;"><label>Reference / Expense Title</label><input type="text" id="expenseTitle"></div>
                         <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveExpenseBtn">Log Purchase</button></div>
                     </div>
                 </div>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div class="table-responsive">
                         <table class="data-table">
-                            <thead><tr><th>Date</th><th>Title</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
+                            <thead><tr><th>Date</th><th>Title / Purpose</th><th>Vendor</th><th class="col-right">Amount (Br)</th></tr></thead>
                             <tbody id="expenseTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No expenses.</td></tr></tbody>
                         </table>
                     </div>
                 </div>
             </div>
             
+            <!-- TIME TRACKING -->
             <div id="view-timetracking" class="view-section">
                 <div class="card">
                     <h3 class="card-header">Log Time</h3>
                     <div class="form-grid">
                         <div class="input-group"><label>Agent</label><select id="timeAgentSelect"></select></div>
                         <div class="input-group"><label>Hours</label><input type="number" id="timeHours" min="0.5" step="0.5"></div>
-                        <div class="input-group" style="flex: 2;"><label>Task</label><input type="text" id="timeTaskDesc"></div>
+                        <div class="input-group" style="flex: 2;"><label>Task Details</label><input type="text" id="timeTaskDesc"></div>
                         <div class="input-group" style="justify-content: flex-end;"><button class="btn-primary" id="saveTimeLogBtn">Log Time</button></div>
                     </div>
                 </div>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div class="table-responsive">
                         <table class="data-table">
-                            <thead><tr><th>Date</th><th>Agent</th><th>Task</th><th class="col-right">Hours</th></tr></thead>
+                            <thead><tr><th>Date</th><th>Agent</th><th>Task Description</th><th class="col-right">Hours Registered</th></tr></thead>
                             <tbody id="timeTableBody"><tr><td colspan="4" style="text-align:center; padding: 20px;">No logs.</td></tr></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
+            <!-- AGENTS -->
             <div id="view-agents" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="agentFormHeader">Register Agent</h3>
@@ -459,7 +473,7 @@
                         <div class="input-group"><label>Agent Full Name</label><input type="text" id="newAgentName"></div>
                         <div class="input-group"><label>Commission Tier</label><select id="newAgentTier"><option value="15%">Tier 1 (15%)</option><option value="20%">Tier 2 (20%)</option><option value="25%">Tier 3 (25%)</option><option value="28%">Tier 4 (28%)</option></select></div>
                         <div class="input-group"><label>Phone Number</label><input type="text" id="newAgentPhone"></div>
-                        <div class="input-group"><label>Location</label><input type="text" id="newAgentDemo"></div>
+                        <div class="input-group"><label>Location / Demographics</label><input type="text" id="newAgentDemo"></div>
                     </div>
                     <input type="hidden" id="editAgentIndex" value="-1">
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -477,6 +491,7 @@
                 </div>
             </div>
 
+            <!-- CUSTOMERS -->
             <div id="view-customers" class="view-section">
                 <div class="card">
                     <h3 class="card-header" id="clientFormHeader">Add Client</h3>
@@ -502,6 +517,7 @@
                 </div>
             </div>
 
+            <!-- REPORTS CENTER -->
             <div id="view-reports" class="view-section">
                 <div class="reports-hero">
                     <h2>Reports Center</h2>
@@ -521,6 +537,7 @@
                 </div>
             </div>
 
+            <!-- SETTINGS -->
             <div id="view-settings" class="view-section">
                 <div class="card" style="max-width: 500px;">
                     <h3 class="card-header">Security Preferences</h3>
@@ -537,13 +554,22 @@
     </main>
 </div>
 
+<!-- COMPILER LOGIC -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+    // 🛑 NOTICE: TO FIX THE FIREBASE "auth/api-key-not-valid" ERROR:
+    // 1. Go to console.cloud.google.com -> APIs & Services -> Credentials
+    // 2. Generate a completely new API Key for your project.
+    // 3. Paste the new key below replacing "PASTE_NEW_API_KEY_HERE"
     const firebaseConfig = {
-        apiKey: "AIzaSyASI28WSbK1u2fQcl7ew1gGzVegmBqUoy8", authDomain: "runnershuberp.firebaseapp.com",
-        projectId: "runnershuberp", storageBucket: "runnershuberp.firebasestorage.app"
+        apiKey: "PASTE_NEW_API_KEY_HERE", 
+        authDomain: "runnershuberp.firebaseapp.com",
+        projectId: "runnershuberp", 
+        storageBucket: "runnershuberp.firebasestorage.app",
+        messagingSenderId: "867809864192",
+        appId: "1:867809864192:web:f1b28454491128780046e5"
     };
 
     let db = null;
@@ -811,25 +837,21 @@
         const title = titleEl ? titleEl.innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'report';
         
         let csv = [];
-        // Header info
         csv.push(`"RunnersHUB ERP - ${title.toUpperCase()}"`);
         csv.push(`"Generated on: ${new Date().toLocaleDateString()}"`);
         csv.push("");
 
-        // Parse Table Data
         const rows = document.querySelectorAll("#renderPaperArea table tr");
         for (let i = 0; i < rows.length; i++) {
             let rowData = [];
             let cols = rows[i].querySelectorAll("td, th");
             for (let j = 0; j < cols.length; j++) {
-                // Clean data for CSV
                 let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
                 rowData.push('"' + data + '"');
             }
             csv.push(rowData.join(","));
         }
 
-        // Trigger Download
         let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
         let downloadLink = document.createElement("a");
         downloadLink.download = `${title}_export.csv`;
@@ -1025,8 +1047,14 @@
         appState.invoices.push({ id, client, agent, total, payout, status: 'Active' }); appState.metrics.revenue += total; appState.metrics.payouts += payout; 
 
         if (db) {
-            try { await addDoc(collection(db, "concierge_invoices"), { id, client, agent, totalAmount: total, agentPayment: payout, timestamp: new Date() }); } 
-            catch(error) { console.error(error); alert(`Cloud Sync Failed.\n${error.message}`); }
+            try { 
+                await addDoc(collection(db, "concierge_invoices"), { id, client, agent, totalAmount: total, agentPayment: payout, timestamp: new Date() }); 
+                console.log(`Firestore Success: Invoice ${id} pushed.`);
+            } 
+            catch(error) { 
+                console.error("Firestore Error:", error); 
+                alert(`Cloud Sync Error:\n${error.message}\n(Local state saved. Please check Firebase Rules/Keys.)`); 
+            }
         }
 
         appState.currentInvoiceItems = []; saveStateLocally(); updateInvoiceUI(); renderInvoiceLedger(); updateDashboards(); 
